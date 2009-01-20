@@ -1,0 +1,10 @@
+C:\AgusK\Padjajaran\indhiang\Source Code\Indhiang\Indhiang\bin\Debug\Indhiang.exe
+C:\AgusK\Padjajaran\indhiang\Source Code\Indhiang\Indhiang\bin\Debug\Indhiang.pdb
+C:\AgusK\Padjajaran\indhiang\Source Code\Indhiang\Indhiang\obj\Debug\ResolveAssemblyReference.cache
+C:\AgusK\Padjajaran\indhiang\Source Code\Indhiang\Indhiang\obj\Debug\Indhiang.Forms.MainForm.resources
+C:\AgusK\Padjajaran\indhiang\Source Code\Indhiang\Indhiang\obj\Debug\Indhiang.Properties.Resources.resources
+C:\AgusK\Padjajaran\indhiang\Source Code\Indhiang\Indhiang\obj\Debug\Indhiang.csproj.GenerateResource.Cache
+C:\AgusK\Padjajaran\indhiang\Source Code\Indhiang\Indhiang\obj\Debug\Indhiang.exe
+C:\AgusK\Padjajaran\indhiang\Source Code\Indhiang\Indhiang\obj\Debug\Indhiang.pdb
+C:\AgusK\Padjajaran\indihiang\Source Code\Indhiang\Indhiang\obj\Debug\Indhiang.exe
+C:\AgusK\Padjajaran\indihiang\Source Code\Indhiang\Indhiang\obj\Debug\Indhiang.pdb
