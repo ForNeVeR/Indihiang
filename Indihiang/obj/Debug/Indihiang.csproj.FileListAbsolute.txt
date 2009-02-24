@@ -17,3 +17,6 @@ C:\AgusK\Padjajaran\indihiang\Source Code\Indihiang\Indihiang\obj\Debug\Indihian
 C:\AgusK\Padjajaran\indihiang\Source Code\Indihiang\Indihiang\bin\Debug\Indihiang.exe
 C:\AgusK\Padjajaran\indihiang\Source Code\Indihiang\Indihiang\bin\Debug\Indihiang.pdb
 C:\AgusK\Padjajaran\indihiang\Source Code\Indihiang\Indihiang\obj\Debug\Indihiang.Forms.AboutIndihiang.resources
+C:\AgusK\Padjajaran\indihiang\Source Code\Indihiang\Indihiang\obj\Debug\Indihiang.Modules.UserAgentControl.resources
+C:\AgusK\Padjajaran\indihiang\Source Code\Indihiang\Indihiang\bin\Debug\Indihiang.exe.config
+C:\AgusK\Padjajaran\indihiang\Source Code\Indihiang\Indihiang\bin\Debug\ZedGraph.dll

@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -46,6 +47,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph, Version=5.1.5.28844, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ThirdParty\ZedGraph.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cores\BaseLogParser.cs" />
@@ -59,6 +64,7 @@
     <Compile Include="Cores\LogParserFactory.cs" />
     <Compile Include="Cores\LogParserQueue.cs" />
     <Compile Include="Cores\LogProcessStatus.cs" />
+    <Compile Include="Cores\ThreadBarrierExtensions.cs" />
     <Compile Include="Cores\W3cExtendedLogParser.cs" />
     <Compile Include="DomainObject\IisLog.cs" />
     <Compile Include="DomainObject\NcsaLog.cs" />
@@ -75,6 +81,13 @@
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\BaseControl.cs" />
+    <Compile Include="Modules\UserAgentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\UserAgentControl.Designer.cs">
+      <DependentUpon>UserAgentControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\WebLogUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -89,6 +102,9 @@
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Modules\UserAgentControl.resx">
+      <DependentUpon>UserAgentControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Modules\WebLogUserControl.resx">
       <DependentUpon>WebLogUserControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -102,6 +118,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

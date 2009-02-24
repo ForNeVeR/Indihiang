@@ -54,14 +54,21 @@ namespace Indihiang.Cores
             using (StreamReader sr = new StreamReader(this._logFile))
             {
                 string line = sr.ReadLine();
-                while (line != "")
+                System.Diagnostics.Debug.WriteLine("Indihiang Read: " + line);
+                while (line != null && line != string.Empty)
                 {
+                    System.Diagnostics.Debug.WriteLine("Read: " + line);
                     if (!ParseHeader(line))
                     {
-                        string[] rows = line.Split(new char[] { ' ' });
-                        for (int i = 0; i < _features.Count; i++)
-                            _features[i].Run(_currentHeader, rows);
+                        if (line != string.Empty && line != null)
+                        {
+                            string[] rows = line.Split(new char[] { ' ' });
+                            for (int i = 0; i < _features.Count; i++)
+                                _features[i].Run(_currentHeader, rows);
+                        }
                     }
+                    line = sr.ReadLine();
+                    System.Diagnostics.Debug.WriteLine("Indihiang Read: " + line);
                 }
             }
             return true;

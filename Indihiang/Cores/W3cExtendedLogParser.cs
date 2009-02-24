@@ -18,6 +18,9 @@ namespace Indihiang.Cores
         {
             bool isHeader = false;
 
+            if (line == string.Empty || line==null)
+                return isHeader;
+
             if (line.StartsWith("#"))
             {
                 isHeader = true;
@@ -33,9 +36,6 @@ namespace Indihiang.Cores
 
             return isHeader;
         }
-
-
-
 
     }
 }

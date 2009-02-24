@@ -28,95 +28,132 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabWebLog = new System.Windows.Forms.TabControl();
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WebLogUserControl));
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.txtLog = new System.Windows.Forms.TextBox();
+            this.cboStatus = new System.Windows.Forms.ComboBox();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.tabMainLog = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
-            this.tabAccessTime = new System.Windows.Forms.TabPage();
-            this.tabAccessMethod = new System.Windows.Forms.TabPage();
-            this.tabAccessUserAgent = new System.Windows.Forms.TabPage();
-            this.tabAccessResource = new System.Windows.Forms.TabPage();
-            this.tabWebLog.SuspendLayout();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.tabMainLog.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabWebLog
+            // panel1
             // 
-            this.tabWebLog.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.tabWebLog.Controls.Add(this.tabGeneral);
-            this.tabWebLog.Controls.Add(this.tabAccessTime);
-            this.tabWebLog.Controls.Add(this.tabAccessMethod);
-            this.tabWebLog.Controls.Add(this.tabAccessUserAgent);
-            this.tabWebLog.Controls.Add(this.tabAccessResource);
-            this.tabWebLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabWebLog.Location = new System.Drawing.Point(0, 0);
-            this.tabWebLog.Name = "tabWebLog";
-            this.tabWebLog.SelectedIndex = 0;
-            this.tabWebLog.Size = new System.Drawing.Size(848, 504);
-            this.tabWebLog.TabIndex = 0;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.txtLog);
+            this.panel1.Controls.Add(this.cboStatus);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 377);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(848, 127);
+            this.panel1.TabIndex = 0;
+            // 
+            // txtLog
+            // 
+            this.txtLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLog.Location = new System.Drawing.Point(0, 21);
+            this.txtLog.Multiline = true;
+            this.txtLog.Name = "txtLog";
+            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtLog.Size = new System.Drawing.Size(846, 104);
+            this.txtLog.TabIndex = 1;
+            // 
+            // cboStatus
+            // 
+            this.cboStatus.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cboStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStatus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cboStatus.FormattingEnabled = true;
+            this.cboStatus.Items.AddRange(new object[] {
+            "Log Status"});
+            this.cboStatus.Location = new System.Drawing.Point(0, 0);
+            this.cboStatus.Name = "cboStatus";
+            this.cboStatus.Size = new System.Drawing.Size(846, 21);
+            this.cboStatus.TabIndex = 0;
+            // 
+            // splitter1
+            // 
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter1.Location = new System.Drawing.Point(0, 371);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(848, 6);
+            this.splitter1.TabIndex = 1;
+            this.splitter1.TabStop = false;
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.tabMainLog);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(848, 371);
+            this.panel2.TabIndex = 2;
+            // 
+            // tabMainLog
+            // 
+            this.tabMainLog.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.tabMainLog.Controls.Add(this.tabGeneral);
+            this.tabMainLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabMainLog.ImageList = this.imageList1;
+            this.tabMainLog.Location = new System.Drawing.Point(0, 0);
+            this.tabMainLog.Name = "tabMainLog";
+            this.tabMainLog.SelectedIndex = 0;
+            this.tabMainLog.Size = new System.Drawing.Size(846, 369);
+            this.tabMainLog.TabIndex = 0;
             // 
             // tabGeneral
             // 
-            this.tabGeneral.Location = new System.Drawing.Point(4, 25);
+            this.tabGeneral.ImageIndex = 0;
+            this.tabGeneral.Location = new System.Drawing.Point(4, 26);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGeneral.Size = new System.Drawing.Size(840, 475);
+            this.tabGeneral.Size = new System.Drawing.Size(838, 339);
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
             // 
-            // tabAccessTime
+            // imageList1
             // 
-            this.tabAccessTime.Location = new System.Drawing.Point(4, 25);
-            this.tabAccessTime.Name = "tabAccessTime";
-            this.tabAccessTime.Size = new System.Drawing.Size(840, 475);
-            this.tabAccessTime.TabIndex = 1;
-            this.tabAccessTime.Text = "Access-by-Time";
-            this.tabAccessTime.UseVisualStyleBackColor = true;
-            // 
-            // tabAccessMethod
-            // 
-            this.tabAccessMethod.Location = new System.Drawing.Point(4, 25);
-            this.tabAccessMethod.Name = "tabAccessMethod";
-            this.tabAccessMethod.Size = new System.Drawing.Size(840, 475);
-            this.tabAccessMethod.TabIndex = 2;
-            this.tabAccessMethod.Text = "Access-by-Methods";
-            this.tabAccessMethod.UseVisualStyleBackColor = true;
-            // 
-            // tabAccessUserAgent
-            // 
-            this.tabAccessUserAgent.Location = new System.Drawing.Point(4, 25);
-            this.tabAccessUserAgent.Name = "tabAccessUserAgent";
-            this.tabAccessUserAgent.Size = new System.Drawing.Size(840, 475);
-            this.tabAccessUserAgent.TabIndex = 3;
-            this.tabAccessUserAgent.Text = "Access-by-UserAgent";
-            this.tabAccessUserAgent.UseVisualStyleBackColor = true;
-            // 
-            // tabAccessResource
-            // 
-            this.tabAccessResource.Location = new System.Drawing.Point(4, 25);
-            this.tabAccessResource.Name = "tabAccessResource";
-            this.tabAccessResource.Size = new System.Drawing.Size(840, 475);
-            this.tabAccessResource.TabIndex = 4;
-            this.tabAccessResource.Text = "Access-by-Resource";
-            this.tabAccessResource.UseVisualStyleBackColor = true;
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "ActiveX.png");
             // 
             // WebLogUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tabWebLog);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.splitter1);
+            this.Controls.Add(this.panel1);
             this.Name = "WebLogUserControl";
             this.Size = new System.Drawing.Size(848, 504);
-            this.tabWebLog.ResumeLayout(false);
+            this.Load += new System.EventHandler(this.WebLogUserControl_Load);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.tabMainLog.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabWebLog;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Splitter splitter1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ComboBox cboStatus;
+        private System.Windows.Forms.TabControl tabMainLog;
         private System.Windows.Forms.TabPage tabGeneral;
-        private System.Windows.Forms.TabPage tabAccessTime;
-        private System.Windows.Forms.TabPage tabAccessMethod;
-        private System.Windows.Forms.TabPage tabAccessUserAgent;
-        private System.Windows.Forms.TabPage tabAccessResource;
+        private System.Windows.Forms.TextBox txtLog;
+        private System.Windows.Forms.ImageList imageList1;
+
     }
 }
