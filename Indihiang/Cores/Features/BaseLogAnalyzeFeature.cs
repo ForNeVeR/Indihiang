@@ -8,10 +8,10 @@ namespace Indihiang.Cores.Features
     public abstract class BaseLogAnalyzeFeature
     {
         protected EnumLogFile _logFile = EnumLogFile.UNKNOWN;
-        protected string _featureName;
-        protected LogCollection<int> _items = new LogCollection<int>();
+        protected LogFeature _featureName;
+        protected LogCollection<string> _items = new LogCollection<string>();
 
-        public string FeatureName
+        public LogFeature FeatureName
         {
             get
             {
@@ -24,7 +24,7 @@ namespace Indihiang.Cores.Features
                 _featureName = value;
             }
         }
-        public LogCollection<int> Items
+        public LogCollection<string> Items
         {
             set
             {

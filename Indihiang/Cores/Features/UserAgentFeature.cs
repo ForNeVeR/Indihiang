@@ -10,6 +10,7 @@ namespace Indihiang.Cores.Features
         public UserAgentFeature(EnumLogFile logFile)
             : base(logFile)
         {
+            _featureName = LogFeature.USERAGENT;
         }
         protected override bool RunFeature(List<string> header, string[] item)
         {
@@ -29,24 +30,48 @@ namespace Indihiang.Cores.Features
 
         private void RunW3cext(List<string> header, string[] item)
         {
+
+//            if(suppliers.Exist(delegate (Supplier match)
+//{
+//return match.Name == whateverValueYouWantToMatchOn;
+//}))
+//{
+//do something
+//}
+//else
+//{
+//do something else
+//}
+
+
             //check useragent header
             if (header.Exists(FindUserAgent))
             {
-                int index = header.FindIndex(FindUserAgent);
-                string key = item[index];
-                if (_items.Colls.ContainsKey(key))
+                if (header.Exists(FindDate))
                 {
-                    int val = Convert.ToInt32(_items.Colls[key]);
-                    val++;
-                    _items.Colls[key] = val.ToString();
+                    int index = header.FindIndex(FindDate);
+                    string key = item[index];
+                    if (_items.Exists())
+                    {
+                        int val = Convert.ToInt32(_items.Colls[key]);
+                        val++;
+                        _items.Colls[key] = val.ToString();
+                    }
+                    else
+                        _items.Colls.Add(key, "1");
                 }
-                else
-                    _items.Colls.Add(key, "1");
             }
         }
-        private bool FindUserAgent(string userAgent)
+        private bool FindUserAgent(string item)
         {
-            if (userAgent == "cs(User-Agent)")
+            if (item == "cs(User-Agent)")
+                return true;
+
+            return false;
+        }
+        private bool FindDate(string item)
+        {
+            if (item == "date")
                 return true;
 
             return false;

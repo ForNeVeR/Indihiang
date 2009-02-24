@@ -47,18 +47,26 @@ namespace Indihiang.Forms
             this.toolstatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripOpenLogFile = new System.Windows.Forms.ToolStripButton();
+            this.toolStripOpenComputer = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripRunAnalyzer = new System.Windows.Forms.ToolStripButton();
             this.imgList = new System.Windows.Forms.ImageList(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.treeMain = new System.Windows.Forms.TreeView();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
             this.splitter1 = new System.Windows.Forms.Splitter();
+            this.openLogFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabWelcome = new System.Windows.Forms.TabPage();
-            this.tabStatus = new System.Windows.Forms.TabPage();
-            this.openLogFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -183,11 +191,49 @@ namespace Indihiang.Forms
             // 
             // toolStrip1
             // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripOpenLogFile,
+            this.toolStripOpenComputer,
+            this.toolStripSeparator1,
+            this.toolStripRunAnalyzer});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(900, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripOpenLogFile
+            // 
+            this.toolStripOpenLogFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripOpenLogFile.Image = ((System.Drawing.Image)(resources.GetObject("toolStripOpenLogFile.Image")));
+            this.toolStripOpenLogFile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripOpenLogFile.Name = "toolStripOpenLogFile";
+            this.toolStripOpenLogFile.Size = new System.Drawing.Size(23, 22);
+            this.toolStripOpenLogFile.ToolTipText = "Open log file";
+            this.toolStripOpenLogFile.Click += new System.EventHandler(this.toolStripOpenLogFile_Click);
+            // 
+            // toolStripOpenComputer
+            // 
+            this.toolStripOpenComputer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripOpenComputer.Image = ((System.Drawing.Image)(resources.GetObject("toolStripOpenComputer.Image")));
+            this.toolStripOpenComputer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripOpenComputer.Name = "toolStripOpenComputer";
+            this.toolStripOpenComputer.Size = new System.Drawing.Size(23, 22);
+            this.toolStripOpenComputer.ToolTipText = "View current log file on remote computer";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripRunAnalyzer
+            // 
+            this.toolStripRunAnalyzer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripRunAnalyzer.Image = ((System.Drawing.Image)(resources.GetObject("toolStripRunAnalyzer.Image")));
+            this.toolStripRunAnalyzer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripRunAnalyzer.Name = "toolStripRunAnalyzer";
+            this.toolStripRunAnalyzer.Size = new System.Drawing.Size(23, 22);
+            this.toolStripRunAnalyzer.ToolTipText = "Run log file analyzer";
             // 
             // imgList
             // 
@@ -195,7 +241,7 @@ namespace Indihiang.Forms
             this.imgList.TransparentColor = System.Drawing.Color.Transparent;
             this.imgList.Images.SetKeyName(0, "indhiang.ico");
             this.imgList.Images.SetKeyName(1, "Folder.ico");
-            this.imgList.Images.SetKeyName(2, "Web.ico");
+            this.imgList.Images.SetKeyName(2, "db.ico");
             this.imgList.Images.SetKeyName(3, "Computers.ico");
             this.imgList.Images.SetKeyName(4, "Computer.ico");
             this.imgList.Images.SetKeyName(5, "server.ico");
@@ -213,6 +259,7 @@ namespace Indihiang.Forms
             // 
             // treeMain
             // 
+            this.treeMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.treeMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeMain.ImageIndex = 0;
             this.treeMain.ImageList = this.imgList;
@@ -226,14 +273,28 @@ namespace Indihiang.Forms
             // 
             // panel2
             // 
+            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.label1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(238, 24);
             this.panel2.TabIndex = 0;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label1.Location = new System.Drawing.Point(1, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(92, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Web Log Explorer";
+            // 
             // splitter1
             // 
+            this.splitter1.BackColor = System.Drawing.SystemColors.Control;
             this.splitter1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitter1.Location = new System.Drawing.Point(238, 49);
             this.splitter1.Name = "splitter1";
@@ -241,51 +302,52 @@ namespace Indihiang.Forms
             this.splitter1.TabIndex = 4;
             this.splitter1.TabStop = false;
             // 
-            // tabMain
-            // 
-            this.tabMain.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.tabMain.Controls.Add(this.tabWelcome);
-            this.tabMain.Controls.Add(this.tabStatus);
-            this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabMain.Location = new System.Drawing.Point(241, 49);
-            this.tabMain.Name = "tabMain";
-            this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(659, 399);
-            this.tabMain.TabIndex = 5;
-            // 
-            // tabWelcome
-            // 
-            this.tabWelcome.BackColor = System.Drawing.Color.White;
-            this.tabWelcome.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.tabWelcome.Location = new System.Drawing.Point(4, 25);
-            this.tabWelcome.Name = "tabWelcome";
-            this.tabWelcome.Padding = new System.Windows.Forms.Padding(3);
-            this.tabWelcome.Size = new System.Drawing.Size(651, 370);
-            this.tabWelcome.TabIndex = 0;
-            this.tabWelcome.Text = "Welcome";
-            this.tabWelcome.UseVisualStyleBackColor = true;
-            // 
-            // tabStatus
-            // 
-            this.tabStatus.Location = new System.Drawing.Point(4, 25);
-            this.tabStatus.Name = "tabStatus";
-            this.tabStatus.Size = new System.Drawing.Size(651, 370);
-            this.tabStatus.TabIndex = 1;
-            this.tabStatus.Text = "Status";
-            this.tabStatus.UseVisualStyleBackColor = true;
-            // 
             // openLogFileDialog
             // 
             this.openLogFileDialog.FileName = "openFileDialog1";
             this.openLogFileDialog.Filter = "Log file|*.log|All log files|*.*";
             this.openLogFileDialog.Title = "Open Log File";
             // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.Control;
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.tabMain);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(241, 49);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(659, 399);
+            this.panel3.TabIndex = 5;
+            // 
+            // tabMain
+            // 
+            this.tabMain.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.tabMain.Controls.Add(this.tabWelcome);
+            this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabMain.ImageList = this.imgList;
+            this.tabMain.Location = new System.Drawing.Point(0, 0);
+            this.tabMain.Name = "tabMain";
+            this.tabMain.SelectedIndex = 0;
+            this.tabMain.Size = new System.Drawing.Size(657, 397);
+            this.tabMain.TabIndex = 0;
+            // 
+            // tabWelcome
+            // 
+            this.tabWelcome.BackColor = System.Drawing.Color.White;
+            this.tabWelcome.ImageIndex = 0;
+            this.tabWelcome.Location = new System.Drawing.Point(4, 26);
+            this.tabWelcome.Name = "tabWelcome";
+            this.tabWelcome.Padding = new System.Windows.Forms.Padding(3);
+            this.tabWelcome.Size = new System.Drawing.Size(649, 367);
+            this.tabWelcome.TabIndex = 0;
+            this.tabWelcome.Text = "Welcome";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(900, 470);
-            this.Controls.Add(this.tabMain);
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
@@ -295,12 +357,19 @@ namespace Indihiang.Forms
             this.MainMenuStrip = this.menuMain;
             this.Name = "MainForm";
             this.Text = "Indihiang - Web Log Analyzer";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.menuMain.ResumeLayout(false);
             this.menuMain.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
             this.tabMain.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -331,9 +400,14 @@ namespace Indihiang.Forms
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.TreeView treeMain;
+        private System.Windows.Forms.OpenFileDialog openLogFileDialog;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripButton toolStripOpenLogFile;
+        private System.Windows.Forms.ToolStripButton toolStripOpenComputer;
+        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TabControl tabMain;
         private System.Windows.Forms.TabPage tabWelcome;
-        private System.Windows.Forms.OpenFileDialog openLogFileDialog;
-        private System.Windows.Forms.TabPage tabStatus;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton toolStripRunAnalyzer;
     }
 }

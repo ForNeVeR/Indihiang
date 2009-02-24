@@ -1,6 +1,8 @@
 using System;
 using System.Text;
 using System.IO;
+using System.Reflection;
+using System.Configuration;
 
 namespace Indihiang.Cores
 {
@@ -25,16 +27,13 @@ namespace Indihiang.Cores
                 }
             }
 
-            switch (logFormat)
+            string asm = ConfigurationManager.AppSettings[logFormat.ToString()];
+            if(asm!=null && asm!="")
             {
-                case EnumLogFile.MSIISLOG:
-                    break;
-                case EnumLogFile.NCSA:
-                    break;
-                case EnumLogFile.W3CEXT:
-                    baseParser = new W3cExtendedLogParser(logFile);
-                    break;
+                baseParser = (BaseLogParser)Activator.CreateInstance(Type.GetType(asm,true),logFile);
+                
             }
+           
             return baseParser;
         }
         
