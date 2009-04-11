@@ -69,8 +69,7 @@ namespace Indihiang.Cores
             if (_thread == null)
                 _thread = new Thread(new ThreadStart(Process));
 
-            _thread.IsBackground = true;
-            
+            _thread.IsBackground = true;            
             _thread.Start();
         }
 
@@ -140,7 +139,9 @@ namespace Indihiang.Cores
                     "Preparing log parser...");
             this._synContext.Post(OnAnalyzeLog, logInfo);
 
+            this._parser.Features.Add(new HitsFeature(_parser.LogFileFormat));
             this._parser.Features.Add(new UserAgentFeature(_parser.LogFileFormat));
+            
 
             logInfo = new LogInfoEventArgs(
                    _fileName,

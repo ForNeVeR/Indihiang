@@ -90,31 +90,31 @@ namespace Indihiang.Forms
             this.toolStripMenuItem1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openLogFileToolStripMenuItem
             // 
             this.openLogFileToolStripMenuItem.Name = "openLogFileToolStripMenuItem";
-            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.openLogFileToolStripMenuItem.Text = "Open Log File";
             this.openLogFileToolStripMenuItem.Click += new System.EventHandler(this.openLogFileToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.closeToolStripMenuItem.Text = "Close";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(136, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(144, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // toolsToolStripMenuItem
@@ -122,13 +122,13 @@ namespace Indihiang.Forms
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.analyzingToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // analyzingToolStripMenuItem
             // 
             this.analyzingToolStripMenuItem.Name = "analyzingToolStripMenuItem";
-            this.analyzingToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.analyzingToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.analyzingToolStripMenuItem.Text = "Analyze";
             // 
             // helpToolStripMenuItem
@@ -139,30 +139,30 @@ namespace Indihiang.Forms
             this.toolStripMenuItem2,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // howToUseToolStripMenuItem
             // 
             this.howToUseToolStripMenuItem.Name = "howToUseToolStripMenuItem";
-            this.howToUseToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.howToUseToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.howToUseToolStripMenuItem.Text = "How to use";
             // 
             // visitToIndhiangWebsiteToolStripMenuItem
             // 
             this.visitToIndhiangWebsiteToolStripMenuItem.Name = "visitToIndhiangWebsiteToolStripMenuItem";
-            this.visitToIndhiangWebsiteToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.visitToIndhiangWebsiteToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.visitToIndhiangWebsiteToolStripMenuItem.Text = "Visit to Indihiang website";
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(190, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(203, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.aboutToolStripMenuItem.Text = "About...";
             // 
             // statusStrip1
@@ -179,7 +179,7 @@ namespace Indihiang.Forms
             // toolstatus
             // 
             this.toolstatus.Name = "toolstatus";
-            this.toolstatus.Size = new System.Drawing.Size(38, 17);
+            this.toolstatus.Size = new System.Drawing.Size(39, 17);
             this.toolstatus.Text = "Ready";
             this.toolstatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -304,7 +304,6 @@ namespace Indihiang.Forms
             // 
             // openLogFileDialog
             // 
-            this.openLogFileDialog.FileName = "openFileDialog1";
             this.openLogFileDialog.Filter = "Log file|*.log|All log files|*.*";
             this.openLogFileDialog.Title = "Open Log File";
             // 

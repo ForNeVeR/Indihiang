@@ -8,7 +8,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Indihiang.Cores.W3cExtendedLogParser">
-    <Position X="7" Y="5" Width="1.5" />
+    <Position X="7" Y="5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Cores\W3cExtendedLogParser.cs</FileName>

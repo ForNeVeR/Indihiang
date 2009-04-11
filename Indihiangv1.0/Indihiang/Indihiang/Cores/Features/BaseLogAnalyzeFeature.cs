@@ -9,7 +9,7 @@ namespace Indihiang.Cores.Features
     {
         protected EnumLogFile _logFile = EnumLogFile.UNKNOWN;
         protected LogFeature _featureName;
-        protected LogCollection<string> _items = new LogCollection<string>();
+        protected Dictionary<string, LogCollection> _logs = new Dictionary<string, LogCollection>();  
 
         public LogFeature FeatureName
         {
@@ -24,15 +24,11 @@ namespace Indihiang.Cores.Features
                 _featureName = value;
             }
         }
-        public LogCollection<string> Items
-        {
-            set
-            {
-                _items = value;
-            }
+        public Dictionary<string, LogCollection> Items
+        {           
             get
             {
-                return _items;
+                return _logs;
             }
         }
 
@@ -41,7 +37,7 @@ namespace Indihiang.Cores.Features
             _logFile = logFile;
         }
 
-        public void Run(List<string> header,string[] item)
+        public void Parse(List<string> header,string[] item)
         {
             RunFeature(header, item);
         }

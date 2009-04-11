@@ -13,8 +13,7 @@ namespace Indihiang.Modules
 {
     public partial class UserAgentControl : UserControl,BaseControl
     {
- 
-        private LogCollection<int> _items;
+        private Dictionary<string, LogCollection> _items;
 
         public UserAgentControl()
         {
@@ -22,62 +21,174 @@ namespace Indihiang.Modules
         }
 
         #region BaseControl Members
-
-
-
-        public Indihiang.Cores.Features.LogCollection<int> Items
+        public Dictionary<string, LogCollection> DataSource
         {
-            set { throw new NotImplementedException(); }
+            set
+            {
+                _items = value;
+            }
         }
-
         public void Populate()
         {
-            GenerateGraph();
+            GenerateGraphUserAgent1();
+            GenerateGraphUserAgent2();
+            SetSize();
         }
-
         #endregion
 
-        private void GenerateGraph()
+        private void GenerateGraphUserAgent1()
         {
-            GraphPane pane = this.zedUserAgent.GraphPane;
+            GraphPane pane = this.zedUserAgent1.GraphPane;
 
-            // Set the Titles
-            pane.Title.Text = "User Agent Graph";
+            pane.Title.Text = "Total Hist per Day by User Agent Graph";
             pane.XAxis.Title.Text = "Date";
-            pane.YAxis.Title.Text = "Total Access";
+            pane.XAxis.Type = AxisType.Date;
+            pane.XAxis.Scale.Format = "yyyy-MMM-dd";
+            pane.YAxis.Title.Text = "Total Hits";
+            pane.Legend.Position = LegendPos.Bottom;
+            pane.Chart.Fill = new Fill(Color.White,Color.SkyBlue, 90F);
+            pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
-            // Make up some data arrays based on the Sine function
-            double x, y1, y2;
-            PointPairList list1 = new PointPairList();
-            PointPairList list2 = new PointPairList();
-            for (int i = 0; i < 36; i++)
+            if (_items.Count > 0)
             {
-                x = (double)i + 5;
-                y1 = 1.5 + Math.Sin((double)i * 0.2);
-                y2 = 3.0 * (1.5 + Math.Sin((double)i * 0.2));
-                list1.Add(x, y1);
-                list2.Add(x, y2);
+                double x;
+                Dictionary<string, PointPairList> list = new Dictionary<string, PointPairList>();
+                
+                foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
+                {
+                    if (item.Value != null)
+                    {
+                        DateTime date = DateTime.ParseExact(item.Key, "yyyy-MM-dd", null);
+                        x = date.ToOADate();
+
+                        foreach (KeyValuePair<string, string> ilog in item.Value.Items)
+                        {
+                            if (list.ContainsKey(ilog.Key))
+                                list[ilog.Key].Add(x, Convert.ToDouble(ilog.Value));
+                            else
+                            {
+                                PointPairList tmp = new PointPairList();
+                                tmp.Add(x,Convert.ToDouble(ilog.Value));
+                                list.Add(ilog.Key, tmp);
+                            }
+                        }                       
+                    }
+                }
+                foreach (KeyValuePair<string, PointPairList> item in list)
+                {
+                    if(item.Key=="MS Internet Explorer")
+                        pane.AddCurve(item.Key, item.Value, Color.Blue, SymbolType.Diamond);
+                    if (item.Key == "Firefox")
+                        pane.AddCurve(item.Key, item.Value, Color.Red, SymbolType.Diamond);
+                    if (item.Key == "Safari")
+                        pane.AddCurve(item.Key, item.Value, Color.Green, SymbolType.Diamond);
+                    if (item.Key == "Google Chrome")
+                        pane.AddCurve(item.Key, item.Value, Color.Cyan, SymbolType.Diamond);
+                    if (item.Key == "Mozilla")
+                        pane.AddCurve(item.Key, item.Value, Color.Yellow, SymbolType.Diamond);
+                    if (item.Key == "Opera")
+                        pane.AddCurve(item.Key, item.Value, Color.Purple, SymbolType.Diamond);
+                    if (item.Key == "Netscape")
+                        pane.AddCurve(item.Key, item.Value, Color.Brown, SymbolType.Diamond);
+                    if (item.Key == "Unknown")
+                        pane.AddCurve(item.Key, item.Value, Color.Black, SymbolType.Diamond);
+                }
+             
             }
 
-            // Generate a red curve with diamond
-            // symbols, and "Porsche" in the legend
-            LineItem myCurve = pane.AddCurve("Porsche",
-                  list1, Color.Red, SymbolType.Diamond);
+            this.zedUserAgent1.AxisChange();
+        }
+        private void GenerateGraphUserAgent2()
+        {
+            GraphPane pane = this.zedUserAgent2.GraphPane;
 
-            // Generate a blue curve with circle
-            // symbols, and "Piper" in the legend
-            LineItem myCurve2 = pane.AddCurve("Piper",
-                  list2, Color.Blue, SymbolType.Circle);
+            pane.Title.Text = "User Agent Percent Graph";            
+            pane.Legend.Position = LegendPos.InsideTopRight;
+            pane.Chart.Fill = new Fill(Color.White, Color.SkyBlue, 90F);
+            pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
-            // Tell ZedGraph to refigure the
-            // axes since the data have changed
-            this.zedUserAgent.AxisChange();
+            if (_items.Count > 0)
+            {
+                Dictionary<string, int> list = new Dictionary<string, int>();
+                double total = 0.0;
+                foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
+                {
+                    if (item.Value != null)
+                    {
+                        foreach (KeyValuePair<string, string> ilog in item.Value.Items)
+                        {
+                            if (list.ContainsKey(ilog.Key))
+                            {
+                                list[ilog.Key] = list[ilog.Key] + Convert.ToInt32(ilog.Value);
+                            }
+                            else
+                                list.Add(ilog.Key, Convert.ToInt32(ilog.Value));
 
+                            total = total + Convert.ToInt32(ilog.Value);
+                        }
+                    }
+                }
+                foreach (KeyValuePair<string, int> item in list)
+                {                    
+                    if (item.Key == "MS Internet Explorer")
+                        pane.AddPieSlice(item.Value, 
+                            Color.Blue, 
+                            Color.White, 45f, 0.2, 
+                            item.Key + " (" + 
+                            string.Format("{0:0.##}",(double)(item.Value*100/total))+ " %)");
+                    if (item.Key == "Firefox")
+                        pane.AddPieSlice(item.Value, 
+                            Color.Red, 
+                            Color.White, 45f, 0, 
+                            item.Key + " (" +
+                            string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
+                    if (item.Key == "Safari")
+                        pane.AddPieSlice(item.Value, 
+                            Color.Green, 
+                            Color.White, 45f, 0, 
+                            item.Key + " (" +
+                            string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
+                    if (item.Key == "Google Chrome")
+                        pane.AddPieSlice(item.Value, 
+                            Color.Cyan,
+                            Color.White, 45f, 0, item.Key + " (" +
+                            string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
+                    if (item.Key == "Mozilla")
+                        pane.AddPieSlice(item.Value, 
+                            Color.Yellow,
+                            Color.White, 45f, 0, item.Key + " (" +
+                            string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
+                    if (item.Key == "Opera")
+                        pane.AddPieSlice(item.Value, 
+                            Color.Purple, 
+                            Color.White, 45f, 0, item.Key + " (" +
+                            string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
+                    if (item.Key == "Netscape")
+                        pane.AddPieSlice(item.Value, 
+                            Color.Brown, 
+                            Color.White, 45f, 0, item.Key + " (" +
+                            string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
+                    if (item.Key == "Unknown")
+                        pane.AddPieSlice(item.Value, Color.Black, 
+                            Color.White, 45f, 0.2, item.Key + " (" +
+                            string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
+                }
+
+            }
+
+            this.zedUserAgent2.AxisChange();
+        }
+        private void SetSize()
+        {
+            zedUserAgent1.Location = new Point(10, 10);
+            zedUserAgent1.Size = new Size(ClientRectangle.Width - 20,ClientRectangle.Height - 20);
+            zedUserAgent2.Location = new Point(10, 10);
+            zedUserAgent2.Size = new Size(ClientRectangle.Width - 20, ClientRectangle.Height - 20);
         }
 
         private void UserAgentControl_Resize(object sender, EventArgs e)
         {
-
+            SetSize();
         }
     }
 }
