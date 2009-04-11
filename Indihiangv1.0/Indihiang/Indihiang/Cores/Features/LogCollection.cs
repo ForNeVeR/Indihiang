@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
 
 namespace Indihiang.Cores.Features
 {
-    public class LogCollection<T> : List<T>
+    public class LogCollection 
     {
-        private Dictionary<string, string> _colls = new Dictionary<string, string>();
-        public Dictionary<string, string> Colls
+        private Dictionary<string, WebLog> _list = new Dictionary<string, WebLog>();
+        public Dictionary<string, WebLog> Colls
         {
-            set
-            {
-                _colls = value;
-            }
             get
             {
-                return _colls;
+                return _list;
+            }
+            set
+            {
+                _list = value;
             }
         }
 
-        public LogCollection() { }
-    
+        public LogCollection():base() { }
     }
 }

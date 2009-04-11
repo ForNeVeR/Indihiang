@@ -58,11 +58,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cores\BaseLogParser.cs" />
+    <Compile Include="Cores\Features\AccessPageFeature.cs" />
+    <Compile Include="Cores\Features\AccessStatusFeature.cs" />
+    <Compile Include="Cores\Features\HitsFeature.cs" />
     <Compile Include="Cores\Features\LogCollection.cs" />
     <Compile Include="Cores\EnumLogFile.cs" />
     <Compile Include="Cores\Features\BaseLogAnalyzeFeature.cs" />
     <Compile Include="Cores\Features\LogFeature.cs" />
     <Compile Include="Cores\Features\UserAgentFeature.cs" />
+    <Compile Include="Cores\Features\WebLog.cs" />
     <Compile Include="Cores\LogInfoEventArgs.cs" />
     <Compile Include="Cores\LogParser.cs" />
     <Compile Include="Cores\LogParserFactory.cs" />
@@ -85,7 +89,25 @@
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\AccessPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\AccessPageControl.Designer.cs">
+      <DependentUpon>AccessPageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\AccessStatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\AccessStatusControl.Designer.cs">
+      <DependentUpon>AccessStatusControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\BaseControl.cs" />
+    <Compile Include="Modules\HitsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\HitsControl.Designer.cs">
+      <DependentUpon>HitsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\UserAgentControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -106,6 +128,15 @@
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Modules\AccessPageControl.resx">
+      <DependentUpon>AccessPageControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\AccessStatusControl.resx">
+      <DependentUpon>AccessStatusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\HitsControl.resx">
+      <DependentUpon>HitsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Modules\UserAgentControl.resx">
       <DependentUpon>UserAgentControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -123,6 +154,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.config" />
+    <None Include="IndihiangClassDiagram.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -27,18 +27,32 @@ namespace Indihiang.Modules
         }
         public void Populate(LogParser parser)
         {
+            string id = "";
             for (int i = 0; i < parser.Features.Count;i++ )
             {
                 switch (parser.Features[i].FeatureName)
                 {
                     case LogFeature.USERAGENT:
-                        string id = LogFeature.USERAGENT.ToString();
-                        UserAgentControl uc = new UserAgentControl();
+                        id = LogFeature.USERAGENT.ToString();
+                        UserAgentControl uc1 = new UserAgentControl();
 
                         tabMainLog.TabPages.Add(id, "User Agent", 0);
-                        tabMainLog.TabPages[id].Controls.Add(uc);
-                        uc.Dock = DockStyle.Fill;
+                        tabMainLog.TabPages[id].Controls.Add(uc1);
+                        uc1.Dock = DockStyle.Fill;
+                        uc1.DataSource = parser.Features[i].Items;
+                        uc1.Populate();
+                        tabMainLog.SelectedTab = tabMainLog.TabPages[id];
 
+                        break;
+                    case LogFeature.HITS:
+                        id = LogFeature.HITS.ToString();
+                        HitsControl uc2 = new HitsControl();
+
+                        tabMainLog.TabPages.Add(id, "Hits", 0);
+                        tabMainLog.TabPages[id].Controls.Add(uc2);
+                        uc2.Dock = DockStyle.Fill;
+                        uc2.DataSource = parser.Features[i].Items;
+                        uc2.Populate();
                         tabMainLog.SelectedTab = tabMainLog.TabPages[id];
 
                         break;

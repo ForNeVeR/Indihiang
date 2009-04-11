@@ -9,8 +9,8 @@ namespace Indihiang.Cores
     public class W3cExtendedLogParser : BaseLogParser
     {
 
-        public W3cExtendedLogParser(string logFile)
-            :base(logFile) 
+        public W3cExtendedLogParser(string logFile, EnumLogFile logFileFormat)
+            : base(logFile, logFileFormat) 
         { 
         }
 
@@ -26,6 +26,7 @@ namespace Indihiang.Cores
                 isHeader = true;
                 if (line.StartsWith("#Fields:"))
                 {
+
                     string temp = line.Substring(9);
                     string[] header = temp.Split(new char[] { ' ' });
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
 
 using Indihiang.Cores.Features;
 namespace Indihiang.Cores
@@ -41,10 +42,11 @@ namespace Indihiang.Cores
                 _features = value;
             }
         }
-        
-        protected BaseLogParser(string logFile)
+
+        protected BaseLogParser(string logFile, EnumLogFile logFileFormat)
         {
             _logFile = logFile;
+            _logFileFormat = logFileFormat;
             _features = new List<BaseLogAnalyzeFeature>();
             _currentHeader = new List<string>();
         }
@@ -54,21 +56,23 @@ namespace Indihiang.Cores
             using (StreamReader sr = new StreamReader(this._logFile))
             {
                 string line = sr.ReadLine();
-                System.Diagnostics.Debug.WriteLine("Indihiang Read: " + line);
+                //Debug.WriteLine("Indihiang Read: " + line);
                 while (line != null && line != string.Empty)
-                {
-                    System.Diagnostics.Debug.WriteLine("Read: " + line);
+                {                    
+                    //Debug.WriteLine("Read: " + line);
                     if (!ParseHeader(line))
                     {
                         if (line != string.Empty && line != null)
                         {
                             string[] rows = line.Split(new char[] { ' ' });
                             for (int i = 0; i < _features.Count; i++)
-                                _features[i].Run(_currentHeader, rows);
+                                _features[i].Parse(_currentHeader, rows);
                         }
                     }
                     line = sr.ReadLine();
-                    System.Diagnostics.Debug.WriteLine("Indihiang Read: " + line);
+                    if(line!=null)
+                        line = line.TrimEnd('\0');
+                    //Debug.WriteLine("Indihiang Read: " + line);
                 }
             }
             return true;

@@ -127,12 +127,26 @@ namespace Indihiang.Forms
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (KeyValuePair<string, LogParser> parser in _listParser)
+            DialogResult dlg = MessageBox.Show("Are you sure to exit?", 
+                                    "Confirmation", 
+                                    MessageBoxButtons.YesNo, 
+                                    MessageBoxIcon.Question);
+
+            if (dlg == DialogResult.Yes)
             {
-                if (parser.Value!=null)
-                    ((LogParser)parser.Value).CancelAnalyze();
+                if (_listParser.Keys.Count > 0)
+                {
+                   
+                    foreach (KeyValuePair<string, LogParser> parser in _listParser)
+                    {
+                        if (parser.Value != null)
+                            ((LogParser)parser.Value).CancelAnalyze();
+                    }
+                    _listParser.Clear();
+                }
             }
-                
+            else
+                e.Cancel = true;
         }
 
         private void toolStripOpenLogFile_Click(object sender, EventArgs e)

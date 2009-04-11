@@ -7,6 +7,7 @@ namespace Indihiang.Cores.Features
         GENERAL,
         TIMEDATE,
         USERAGENT,
+        HITS,
         STATUS,
         METHODS
     }

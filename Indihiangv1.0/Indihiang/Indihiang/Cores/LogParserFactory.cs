@@ -30,7 +30,10 @@ namespace Indihiang.Cores
             string asm = ConfigurationManager.AppSettings[logFormat.ToString()];
             if(asm!=null && asm!="")
             {
-                baseParser = (BaseLogParser)Activator.CreateInstance(Type.GetType(asm,true),logFile);
+                //params pars = new 
+                object[] pars = new object[]{logFile,logFormat};
+                baseParser = (BaseLogParser)Activator.CreateInstance(Type.GetType(asm, true), pars);
+                
                 
             }
            

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 
 namespace Indihiang.Cores.Features
 {
@@ -11,6 +10,9 @@ namespace Indihiang.Cores.Features
             : base(logFile)
         {
             _featureName = LogFeature.USERAGENT;
+
+            LogCollection log = new LogCollection();
+            _logs.Add("General", log);
         }
         protected override bool RunFeature(List<string> header, string[] item)
         {
@@ -27,49 +29,69 @@ namespace Indihiang.Cores.Features
 
             return true;
         }
+       
 
         private void RunW3cext(List<string> header, string[] item)
-        {
-
-//            if(suppliers.Exist(delegate (Supplier match)
-//{
-//return match.Name == whateverValueYouWantToMatchOn;
-//}))
-//{
-//do something
-//}
-//else
-//{
-//do something else
-//}
-
-
-            //check useragent header
+        {            
             if (header.Exists(FindUserAgent))
             {
                 if (header.Exists(FindDate))
                 {
+                    int val = 0;
                     int index = header.FindIndex(FindDate);
+                    int index2 = header.FindIndex(FindUserAgent);
                     string key = item[index];
-                    if (_items.Exists())
+                    string data = item[index2];
+
+                    if (data != "" && data != null && data != "-")
                     {
-                        int val = Convert.ToInt32(_items.Colls[key]);
-                        val++;
-                        _items.Colls[key] = val.ToString();
+                        string browser = CheckBrowser(data);
+
+                        if (_logs["General"].Colls.ContainsKey(key))
+                        {
+                            if (_logs["General"].Colls[key].Items.ContainsKey(browser))
+                            {
+                                val = Convert.ToInt32(_logs["General"].Colls[key].Items[browser]);
+                                val++;
+                                _logs["General"].Colls[key].Items[browser] = val.ToString();
+                            }
+                            else
+                                _logs["General"].Colls[key].Items.Add(browser, "1");
+                        }
+                        else
+                            _logs["General"].Colls.Add(key, new WebLog(browser, "1"));
                     }
-                    else
-                        _items.Colls.Add(key, "1");
                 }
             }
         }
-        private bool FindUserAgent(string item)
+        private string CheckBrowser(string line)
+        {
+            if (line.Contains("MSIE"))            
+                return "MS Internet Explorer";
+            if (line.Contains("Firefox"))
+                return "Firefox";
+            if (line.Contains("Safari"))
+                return "Safari";
+            if (line.Contains("Chrome"))
+                return "Google Chrome";
+            if (line.Contains("Gecko"))
+                return "Mozilla";
+            if (line.Contains("Opera"))
+                return "Opera ";
+            if (line.Contains("Netscape") || line.Contains("Navigator"))
+                return "Netscape ";
+
+            System.Diagnostics.Debug.WriteLine(line);
+            return "Unknown";
+        }
+        private static bool FindUserAgent(string item)
         {
             if (item == "cs(User-Agent)")
                 return true;
 
             return false;
         }
-        private bool FindDate(string item)
+        private static bool FindDate(string item)
         {
             if (item == "date")
                 return true;
