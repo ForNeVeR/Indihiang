@@ -34,11 +34,13 @@ namespace Indihiang.Modules
             this.label3 = new System.Windows.Forms.Label();
             this.lbTime = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Gainsboro;
             this.label1.Location = new System.Drawing.Point(29, 32);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(57, 13);
@@ -48,6 +50,7 @@ namespace Indihiang.Modules
             // lbFileName
             // 
             this.lbFileName.AutoSize = true;
+            this.lbFileName.BackColor = System.Drawing.Color.Gainsboro;
             this.lbFileName.Location = new System.Drawing.Point(92, 32);
             this.lbFileName.Name = "lbFileName";
             this.lbFileName.Size = new System.Drawing.Size(13, 13);
@@ -57,6 +60,7 @@ namespace Indihiang.Modules
             // lbDirectory
             // 
             this.lbDirectory.AutoSize = true;
+            this.lbDirectory.BackColor = System.Drawing.Color.Gainsboro;
             this.lbDirectory.Location = new System.Drawing.Point(92, 55);
             this.lbDirectory.Name = "lbDirectory";
             this.lbDirectory.Size = new System.Drawing.Size(13, 13);
@@ -66,6 +70,7 @@ namespace Indihiang.Modules
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Gainsboro;
             this.label3.Location = new System.Drawing.Point(29, 55);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(52, 13);
@@ -75,6 +80,7 @@ namespace Indihiang.Modules
             // lbTime
             // 
             this.lbTime.AutoSize = true;
+            this.lbTime.BackColor = System.Drawing.Color.Gainsboro;
             this.lbTime.Location = new System.Drawing.Point(92, 80);
             this.lbTime.Name = "lbTime";
             this.lbTime.Size = new System.Drawing.Size(13, 13);
@@ -84,11 +90,22 @@ namespace Indihiang.Modules
             // label5
             // 
             this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Gainsboro;
             this.label5.Location = new System.Drawing.Point(29, 80);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(33, 13);
             this.label5.TabIndex = 4;
             this.label5.Text = "Time:";
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(520, 228);
+            this.panel1.TabIndex = 6;
             // 
             // GeneralControl
             // 
@@ -100,6 +117,7 @@ namespace Indihiang.Modules
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lbFileName);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.panel1);
             this.Name = "GeneralControl";
             this.Size = new System.Drawing.Size(520, 228);
             this.ResumeLayout(false);
@@ -115,5 +133,6 @@ namespace Indihiang.Modules
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lbTime;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Panel panel1;
     }
 }
