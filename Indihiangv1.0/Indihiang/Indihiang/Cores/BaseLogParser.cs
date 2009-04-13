@@ -56,10 +56,10 @@ namespace Indihiang.Cores
             using (StreamReader sr = new StreamReader(this._logFile))
             {
                 string line = sr.ReadLine();
-                //Debug.WriteLine("Indihiang Read: " + line);
+                Debug.WriteLine("Indihiang Read: " + line);
                 while (line != null && line != string.Empty)
                 {                    
-                    //Debug.WriteLine("Read: " + line);
+                    Debug.WriteLine("Read: " + line);
                     if (!ParseHeader(line))
                     {
                         if (line != string.Empty && line != null)
@@ -72,7 +72,6 @@ namespace Indihiang.Cores
                     line = sr.ReadLine();
                     if(line!=null)
                         line = line.TrimEnd('\0');
-                    //Debug.WriteLine("Indihiang Read: " + line);
                 }
             }
             return true;

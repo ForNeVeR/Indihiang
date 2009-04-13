@@ -96,6 +96,7 @@ namespace Indihiang.Modules
              
             }
 
+            this.zedUserAgent1.IsShowPointValues = true;
             this.zedUserAgent1.AxisChange();
         }
         private void GenerateGraphUserAgent2()
@@ -189,6 +190,15 @@ namespace Indihiang.Modules
         private void UserAgentControl_Resize(object sender, EventArgs e)
         {
             SetSize();
+        }
+
+        private string zedUserAgent1_PointValueEvent(ZedGraphControl sender, GraphPane pane, CurveItem curve, int iPt)
+        {
+            PointPair pt = curve[iPt];
+            DateTime date = DateTime.FromOADate(pt.X);
+
+            return "[" + date.ToString("yyyy-MMM-dd") + " --> " + pt.Y.ToString("f2") + " Hit(s)]";
+
         }
     }
 }

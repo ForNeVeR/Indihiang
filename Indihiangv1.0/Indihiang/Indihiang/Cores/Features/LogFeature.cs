@@ -5,10 +5,10 @@ namespace Indihiang.Cores.Features
     public enum LogFeature
     {
         GENERAL,
-        TIMEDATE,
-        USERAGENT,
         HITS,
+        USERAGENT,        
         STATUS,
+        ACCESS,
         METHODS
     }
 }

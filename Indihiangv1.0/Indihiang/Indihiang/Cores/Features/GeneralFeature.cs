@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Indihiang.Cores.Features
 {
-    public class AccessPageFeature : BaseLogAnalyzeFeature
+    public class GeneralFeature : BaseLogAnalyzeFeature
     {
-        public AccessPageFeature(EnumLogFile logFile)
+        public GeneralFeature(EnumLogFile logFile)
             : base(logFile)
         {
-            _featureName = LogFeature.ACCESS;
+            _featureName = LogFeature.GENERAL;
 
             LogCollection log = new LogCollection();
             _logs.Add("General", log);

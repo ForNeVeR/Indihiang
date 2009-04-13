@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Threading;
 using System.ComponentModel;
+using System.Diagnostics;
 
 using Indihiang.Cores.Features;
 namespace Indihiang.Cores
@@ -94,14 +95,14 @@ namespace Indihiang.Cores
             if (this.AnalyzeLogHandler != null)
                 this.AnalyzeLogHandler(this, e);
 
-            System.Diagnostics.Debug.WriteLine("Indihiang:: " + e.Message);
+            Debug.WriteLine("Indihiang:: " + e.Message);
         }
         protected virtual void OnEndAnalyze(LogInfoEventArgs logInfo)
         {
             if (this.EndAnalyzeHandler != null)
                 this.EndAnalyzeHandler(this, logInfo);
 
-            System.Diagnostics.Debug.WriteLine("Indihiang:: " + logInfo.Message);
+            Debug.WriteLine("Indihiang:: " + logInfo.Message);
         }
 
         private void Process()
@@ -139,10 +140,12 @@ namespace Indihiang.Cores
                     "Preparing log parser...");
             this._synContext.Post(OnAnalyzeLog, logInfo);
 
+            this._parser.Features.Add(new GeneralFeature(_parser.LogFileFormat));
             this._parser.Features.Add(new HitsFeature(_parser.LogFileFormat));
             this._parser.Features.Add(new UserAgentFeature(_parser.LogFileFormat));
+            this._parser.Features.Add(new AccessPageFeature(_parser.LogFileFormat));
+            this._parser.Features.Add(new AccessStatusFeature(_parser.LogFileFormat));
             
-
             logInfo = new LogInfoEventArgs(
                    _fileName,
                    EnumLogFile.UNKNOWN,

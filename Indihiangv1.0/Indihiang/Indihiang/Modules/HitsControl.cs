@@ -41,22 +41,18 @@ namespace Indihiang.Modules
         {
             GraphPane pane = this.zedHits1.GraphPane;
 
-            // Set the Titles
-            pane.Title.Text = "Total Hist per Day User Agent Graph";
+            pane.Title.Text = "Total Hist per Day Graph";
             pane.XAxis.Title.Text = "Date";
             pane.XAxis.Type = AxisType.Date;
             pane.XAxis.Scale.Format = "yyyy-MMM-dd";
             pane.YAxis.Title.Text = "Total Hits";
             pane.Chart.Fill = new Fill(Color.White, Color.FromArgb(255, 255, 166), 90F);
-            pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
+            pane.Fill = new Fill(Color.FromArgb(250, 250, 255));            
 
-
-            // Make up some data arrays based on the Sine function
             if (_items.Count > 0)
             {
                 double x, y;
                 PointPairList list1 = new PointPairList();
-                PointPairList list2 = new PointPairList();
 
                 foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
                 {
@@ -65,14 +61,18 @@ namespace Indihiang.Modules
                         DateTime date = DateTime.ParseExact(item.Key, "yyyy-MM-dd", null);
                         x = date.ToOADate();
 
-                        y = Convert.ToDouble(item.Value.Items[item.Key]);                                              
-                        list1.Add(x, y);
+                        if (item.Value.Items[item.Key] != "" && item.Value.Items[item.Key] != "-")
+                        {
+                            y = Convert.ToDouble(item.Value.Items[item.Key]);
+                            list1.Add(x, y);
+                        }
                     }
                 }
 
                 LineItem line = pane.AddCurve("Hits",list1, Color.Red, SymbolType.Diamond);
             }
 
+            this.zedHits1.IsShowPointValues = true;
             this.zedHits1.AxisChange();
 
         }
@@ -85,6 +85,14 @@ namespace Indihiang.Modules
         private void HitsControl_Resize(object sender, EventArgs e)
         {
             SetSize();
+        }     
+
+        private string zedHits1_PointValueEvent(ZedGraphControl sender, GraphPane pane, CurveItem curve, int iPt)
+        {
+            PointPair pt = curve[iPt];
+            DateTime date = DateTime.FromOADate(pt.X);
+
+            return "[" + date.ToString("yyyy-MMM-dd") + " --> " + pt.Y.ToString("f2") + " Hit(s)]";
         }
     }
 }
