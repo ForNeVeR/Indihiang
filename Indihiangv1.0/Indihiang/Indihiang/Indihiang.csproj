@@ -60,6 +60,7 @@
     <Compile Include="Cores\BaseLogParser.cs" />
     <Compile Include="Cores\Features\AccessPageFeature.cs" />
     <Compile Include="Cores\Features\AccessStatusFeature.cs" />
+    <Compile Include="Cores\Features\GeneralFeature.cs" />
     <Compile Include="Cores\Features\HitsFeature.cs" />
     <Compile Include="Cores\Features\LogCollection.cs" />
     <Compile Include="Cores\EnumLogFile.cs" />
@@ -102,6 +103,12 @@
       <DependentUpon>AccessStatusControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\BaseControl.cs" />
+    <Compile Include="Modules\GeneralControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\GeneralControl.Designer.cs">
+      <DependentUpon>GeneralControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\HitsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -114,6 +121,7 @@
     <Compile Include="Modules\UserAgentControl.Designer.cs">
       <DependentUpon>UserAgentControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\UserControlUtil.cs" />
     <Compile Include="Modules\WebLogUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -133,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\AccessStatusControl.resx">
       <DependentUpon>AccessStatusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\GeneralControl.resx">
+      <DependentUpon>GeneralControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\HitsControl.resx">
       <DependentUpon>HitsControl.cs</DependentUpon>

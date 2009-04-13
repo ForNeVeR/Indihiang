@@ -46,6 +46,7 @@
             this.zedHits1.ScrollMinY2 = 0;
             this.zedHits1.Size = new System.Drawing.Size(690, 395);
             this.zedHits1.TabIndex = 0;
+            this.zedHits1.PointValueEvent += new ZedGraph.ZedGraphControl.PointValueHandler(this.zedHits1_PointValueEvent);
             // 
             // HitsControl
             // 

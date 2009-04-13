@@ -32,32 +32,48 @@ namespace Indihiang.Modules
             {
                 switch (parser.Features[i].FeatureName)
                 {
+                    case LogFeature.GENERAL:
+                        id = LogFeature.GENERAL.ToString();
+                        GeneralControl uc1 = new GeneralControl();
+                        Attach(uc1, id, "General", parser.Features[i].Items); 
+
+                        break;
                     case LogFeature.USERAGENT:
                         id = LogFeature.USERAGENT.ToString();
-                        UserAgentControl uc1 = new UserAgentControl();
-
-                        tabMainLog.TabPages.Add(id, "User Agent", 0);
-                        tabMainLog.TabPages[id].Controls.Add(uc1);
-                        uc1.Dock = DockStyle.Fill;
-                        uc1.DataSource = parser.Features[i].Items;
-                        uc1.Populate();
-                        tabMainLog.SelectedTab = tabMainLog.TabPages[id];
-
+                        UserAgentControl uc2 = new UserAgentControl();
+                        Attach(uc2, id, "User Agent", parser.Features[i].Items); 
+                       
                         break;
                     case LogFeature.HITS:
                         id = LogFeature.HITS.ToString();
-                        HitsControl uc2 = new HitsControl();
-
-                        tabMainLog.TabPages.Add(id, "Hits", 0);
-                        tabMainLog.TabPages[id].Controls.Add(uc2);
-                        uc2.Dock = DockStyle.Fill;
-                        uc2.DataSource = parser.Features[i].Items;
-                        uc2.Populate();
-                        tabMainLog.SelectedTab = tabMainLog.TabPages[id];
+                        HitsControl uc3 = new HitsControl();
+                        Attach(uc3, id, "Hits", parser.Features[i].Items); 
 
                         break;
-                }
+                    case LogFeature.ACCESS:
+                        id = LogFeature.ACCESS.ToString();
+                        AccessPageControl uc4 = new AccessPageControl();
+                        Attach(uc4, id, "Access Page", parser.Features[i].Items);                        
+
+                        break;
+                    case LogFeature.STATUS:
+                        id = LogFeature.STATUS.ToString();
+                        AccessStatusControl uc5 = new AccessStatusControl();
+                        Attach(uc5, id, "HTTP Status",parser.Features[i].Items);
+
+                        break;
+                }                
             }
+            tabMainLog.SelectedTab = tabMainLog.TabPages[LogFeature.GENERAL.ToString()];
+        }
+
+        private void Attach(UserControl control, string id,string name,Dictionary<string, LogCollection> dataSource)
+        {
+            tabMainLog.TabPages.Add(id, name, 0);
+            tabMainLog.TabPages[id].Controls.Add(control);
+            control.Dock = DockStyle.Fill;
+            ((BaseControl)control).DataSource = dataSource;
+            ((BaseControl)control).Populate();
         }
 
         private void WebLogUserControl_Load(object sender, EventArgs e)

@@ -36,11 +36,9 @@
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tabMainLog = new System.Windows.Forms.TabControl();
-            this.tabGeneral = new System.Windows.Forms.TabPage();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.tabMainLog.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -100,7 +98,6 @@
             // tabMainLog
             // 
             this.tabMainLog.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.tabMainLog.Controls.Add(this.tabGeneral);
             this.tabMainLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabMainLog.ImageList = this.imageList1;
             this.tabMainLog.Location = new System.Drawing.Point(0, 0);
@@ -108,17 +105,6 @@
             this.tabMainLog.SelectedIndex = 0;
             this.tabMainLog.Size = new System.Drawing.Size(846, 369);
             this.tabMainLog.TabIndex = 0;
-            // 
-            // tabGeneral
-            // 
-            this.tabGeneral.ImageIndex = 0;
-            this.tabGeneral.Location = new System.Drawing.Point(4, 26);
-            this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGeneral.Size = new System.Drawing.Size(838, 339);
-            this.tabGeneral.TabIndex = 0;
-            this.tabGeneral.Text = "General";
-            this.tabGeneral.UseVisualStyleBackColor = true;
             // 
             // imageList1
             // 
@@ -139,7 +125,6 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
-            this.tabMainLog.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -151,7 +136,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.ComboBox cboStatus;
         private System.Windows.Forms.TabControl tabMainLog;
-        private System.Windows.Forms.TabPage tabGeneral;
         private System.Windows.Forms.TextBox txtLog;
         private System.Windows.Forms.ImageList imageList1;
 

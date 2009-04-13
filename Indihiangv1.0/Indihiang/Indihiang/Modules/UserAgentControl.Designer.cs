@@ -32,8 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserAgentControl));
             this.tabMainUserAgent = new System.Windows.Forms.TabControl();
             this.tabUserAgent1 = new System.Windows.Forms.TabPage();
-            this.tabUserAgent2 = new System.Windows.Forms.TabPage();
             this.zedUserAgent1 = new ZedGraph.ZedGraphControl();
+            this.tabUserAgent2 = new System.Windows.Forms.TabPage();
             this.zedUserAgent2 = new ZedGraph.ZedGraphControl();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.tabMainUserAgent.SuspendLayout();
@@ -66,18 +66,6 @@
             this.tabUserAgent1.Text = "UserAgent per Time";
             this.tabUserAgent1.UseVisualStyleBackColor = true;
             // 
-            // tabUserAgent2
-            // 
-            this.tabUserAgent2.Controls.Add(this.zedUserAgent2);
-            this.tabUserAgent2.ImageIndex = 0;
-            this.tabUserAgent2.Location = new System.Drawing.Point(4, 26);
-            this.tabUserAgent2.Name = "tabUserAgent2";
-            this.tabUserAgent2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabUserAgent2.Size = new System.Drawing.Size(797, 381);
-            this.tabUserAgent2.TabIndex = 1;
-            this.tabUserAgent2.Text = "UserAgent %";
-            this.tabUserAgent2.UseVisualStyleBackColor = true;
-            // 
             // zedUserAgent1
             // 
             this.zedUserAgent1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -92,6 +80,19 @@
             this.zedUserAgent1.ScrollMinY2 = 0;
             this.zedUserAgent1.Size = new System.Drawing.Size(791, 375);
             this.zedUserAgent1.TabIndex = 0;
+            this.zedUserAgent1.PointValueEvent += new ZedGraph.ZedGraphControl.PointValueHandler(this.zedUserAgent1_PointValueEvent);
+            // 
+            // tabUserAgent2
+            // 
+            this.tabUserAgent2.Controls.Add(this.zedUserAgent2);
+            this.tabUserAgent2.ImageIndex = 0;
+            this.tabUserAgent2.Location = new System.Drawing.Point(4, 26);
+            this.tabUserAgent2.Name = "tabUserAgent2";
+            this.tabUserAgent2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabUserAgent2.Size = new System.Drawing.Size(797, 381);
+            this.tabUserAgent2.TabIndex = 1;
+            this.tabUserAgent2.Text = "UserAgent %";
+            this.tabUserAgent2.UseVisualStyleBackColor = true;
             // 
             // zedUserAgent2
             // 
