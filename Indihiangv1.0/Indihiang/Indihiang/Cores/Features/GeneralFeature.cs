@@ -14,6 +14,7 @@ namespace Indihiang.Cores.Features
 
             LogCollection log = new LogCollection();
             _logs.Add("General", log);
+            
         }
         protected override bool RunFeature(List<string> header, string[] item)
         {
@@ -32,39 +33,19 @@ namespace Indihiang.Cores.Features
         }
         private void RunW3cext(List<string> header, string[] item)
         {
-            if (header.Exists(FindPage))
-            {
-                int val = 0;
-                int index = header.FindIndex(FindDate);
-                int index2 = header.FindIndex(FindPage);
+            if (header.Exists(FindDate))
+            {               
+                int index = header.FindIndex(FindDate);                
                 string key = item[index];
-                string dataKey = item[index2];
 
-                if (dataKey != "" && dataKey != null && dataKey != "-")
+                if (key != "" && key != null && key != "-")
                 {
-                    if (_logs["General"].Colls.ContainsKey(key))
-                    {
-                        if (_logs["General"].Colls[key].Items.ContainsKey(dataKey))
-                        {
-                            val = Convert.ToInt32(_logs["General"].Colls[key].Items[dataKey]);
-                            val++;
-                            _logs["General"].Colls[key].Items[dataKey] = val.ToString();
-                        }
-                        else
-                            _logs["General"].Colls[key].Items.Add(dataKey, "1");
-                    }
-                    else
-                        _logs["General"].Colls.Add(key, new WebLog(dataKey, "1"));
+                    if (!_logs["General"].Colls.ContainsKey(key))
+                        _logs["General"].Colls.Add(key, null);                  
                 }
             }
         }
-        private static bool FindPage(string item)
-        {
-            if (item == "cs-uri-stem")
-                return true;
-
-            return false;
-        }
+        
         private static bool FindDate(string item)
         {
             if (item == "date")

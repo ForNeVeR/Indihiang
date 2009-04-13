@@ -26,7 +26,7 @@ namespace Indihiang.Modules
             this.txtLog.Text = newLog;            
         }
         public void Populate(LogParser parser)
-        {
+        {            
             string id = "";
             for (int i = 0; i < parser.Features.Count;i++ )
             {
@@ -35,6 +35,7 @@ namespace Indihiang.Modules
                     case LogFeature.GENERAL:
                         id = LogFeature.GENERAL.ToString();
                         GeneralControl uc1 = new GeneralControl();
+                        uc1.FileName = parser.FileName;
                         Attach(uc1, id, "General", parser.Features[i].Items); 
 
                         break;
