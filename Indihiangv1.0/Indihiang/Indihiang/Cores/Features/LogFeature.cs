@@ -9,6 +9,7 @@ namespace Indihiang.Cores.Features
         USERAGENT,        
         STATUS,
         ACCESS,
+        IPADDRESS,
         METHODS
     }
 }

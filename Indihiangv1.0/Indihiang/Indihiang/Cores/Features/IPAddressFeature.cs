@@ -5,15 +5,14 @@ using System.Text;
 
 namespace Indihiang.Cores.Features
 {
-    public class GeneralFeature : BaseLogAnalyzeFeature
+    public class IPAddressFeature : BaseLogAnalyzeFeature
     {
-        public GeneralFeature(EnumLogFile logFile)
+        public IPAddressFeature(EnumLogFile logFile)
             : base(logFile)
         {
-            _featureName = LogFeature.GENERAL;
+            _featureName = LogFeature.IPADDRESS;
 
             _logs.Add("General", new LogCollection());
-            _logs.Add("IPServer", new LogCollection());
             
         }
         protected override bool RunFeature(List<string> header, string[] item)
@@ -37,19 +36,22 @@ namespace Indihiang.Cores.Features
             {               
                 int index = header.FindIndex(FindDate);                
                 string key = item[index];
-                int index2 = header.FindIndex(FindIPServer);
+                int index2 = header.FindIndex(FindIP);
                 string key2 = item[index2];
+                int index3 = header.FindIndex(FindPage);
+                string key3 = item[index3];
 
                 if (key != "" && key != null && key != "-")
                 {
-                    if (!_logs["General"].Colls.ContainsKey(key))
-                        _logs["General"].Colls.Add(key, new WebLog(key,""));                  
-                }
-                if (key2 != "" && key2 != null && key2 != "-")
-                {
-                    if (!_logs["IPServer"].Colls.ContainsKey(key2))
-                        _logs["IPServer"].Colls.Add(key2, new WebLog(key2, ""));
-                }
+                    if (key2 != "" && key2 != null && key2 != "-")
+                    {
+                        if (_logs["General"].Colls.ContainsKey(key2))
+                            _logs["General"].Colls[key2].Items.Add(key, key3);
+                        else
+                            _logs["General"].Colls.Add(key2, new WebLog(key, key3));
+                    }
+
+                }                
             }
         }
         private static bool FindDate(string item)
@@ -59,9 +61,16 @@ namespace Indihiang.Cores.Features
 
             return false;
         }
-        private static bool FindIPServer(string item)
+        private static bool FindIP(string item)
         {
-            if (item == "s-ip")
+            if (item == "c-ip")
+                return true;
+
+            return false;
+        }
+        private static bool FindPage(string item)
+        {
+            if (item == "cs-uri-stem")
                 return true;
 
             return false;

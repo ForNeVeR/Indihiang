@@ -62,6 +62,7 @@
     <Compile Include="Cores\Features\AccessStatusFeature.cs" />
     <Compile Include="Cores\Features\GeneralFeature.cs" />
     <Compile Include="Cores\Features\HitsFeature.cs" />
+    <Compile Include="Cores\Features\IPAddressFeature.cs" />
     <Compile Include="Cores\Features\LogCollection.cs" />
     <Compile Include="Cores\EnumLogFile.cs" />
     <Compile Include="Cores\Features\BaseLogAnalyzeFeature.cs" />
@@ -115,6 +116,12 @@
     <Compile Include="Modules\HitsControl.Designer.cs">
       <DependentUpon>HitsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\IPAddressControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\IPAddressControl.Designer.cs">
+      <DependentUpon>IPAddressControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\UserAgentControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -147,6 +154,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\HitsControl.resx">
       <DependentUpon>HitsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\IPAddressControl.resx">
+      <DependentUpon>IPAddressControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\UserAgentControl.resx">
       <DependentUpon>UserAgentControl.cs</DependentUpon>

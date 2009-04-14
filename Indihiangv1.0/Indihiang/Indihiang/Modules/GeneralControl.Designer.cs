@@ -29,12 +29,13 @@ namespace Indihiang.Modules
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.lbFileName = new System.Windows.Forms.Label();
-            this.lbDirectory = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.lbTime = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.listBoxIPAddress = new System.Windows.Forms.ListBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.listBoxFileName = new System.Windows.Forms.ListBox();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -47,41 +48,11 @@ namespace Indihiang.Modules
             this.label1.TabIndex = 0;
             this.label1.Text = "File Name:";
             // 
-            // lbFileName
-            // 
-            this.lbFileName.AutoSize = true;
-            this.lbFileName.BackColor = System.Drawing.Color.Gainsboro;
-            this.lbFileName.Location = new System.Drawing.Point(92, 32);
-            this.lbFileName.Name = "lbFileName";
-            this.lbFileName.Size = new System.Drawing.Size(13, 13);
-            this.lbFileName.TabIndex = 1;
-            this.lbFileName.Text = "[]";
-            // 
-            // lbDirectory
-            // 
-            this.lbDirectory.AutoSize = true;
-            this.lbDirectory.BackColor = System.Drawing.Color.Gainsboro;
-            this.lbDirectory.Location = new System.Drawing.Point(92, 55);
-            this.lbDirectory.Name = "lbDirectory";
-            this.lbDirectory.Size = new System.Drawing.Size(13, 13);
-            this.lbDirectory.TabIndex = 3;
-            this.lbDirectory.Text = "[]";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Gainsboro;
-            this.label3.Location = new System.Drawing.Point(29, 55);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(52, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Directory:";
-            // 
             // lbTime
             // 
             this.lbTime.AutoSize = true;
             this.lbTime.BackColor = System.Drawing.Color.Gainsboro;
-            this.lbTime.Location = new System.Drawing.Point(92, 80);
+            this.lbTime.Location = new System.Drawing.Point(91, 225);
             this.lbTime.Name = "lbTime";
             this.lbTime.Size = new System.Drawing.Size(13, 13);
             this.lbTime.TabIndex = 5;
@@ -91,7 +62,7 @@ namespace Indihiang.Modules
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Gainsboro;
-            this.label5.Location = new System.Drawing.Point(29, 80);
+            this.label5.Location = new System.Drawing.Point(28, 225);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(33, 13);
             this.label5.TabIndex = 4;
@@ -101,25 +72,57 @@ namespace Indihiang.Modules
             // 
             this.panel1.BackColor = System.Drawing.Color.Gainsboro;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.listBoxIPAddress);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.lbTime);
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.listBoxFileName);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(520, 228);
+            this.panel1.Size = new System.Drawing.Size(554, 287);
             this.panel1.TabIndex = 6;
+            // 
+            // listBoxIPAddress
+            // 
+            this.listBoxIPAddress.FormattingEnabled = true;
+            this.listBoxIPAddress.HorizontalScrollbar = true;
+            this.listBoxIPAddress.Location = new System.Drawing.Point(94, 131);
+            this.listBoxIPAddress.Name = "listBoxIPAddress";
+            this.listBoxIPAddress.ScrollAlwaysVisible = true;
+            this.listBoxIPAddress.Size = new System.Drawing.Size(320, 82);
+            this.listBoxIPAddress.TabIndex = 8;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Gainsboro;
+            this.label2.Location = new System.Drawing.Point(28, 131);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(54, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "IP Server:";
+            // 
+            // listBoxFileName
+            // 
+            this.listBoxFileName.FormattingEnabled = true;
+            this.listBoxFileName.HorizontalScrollbar = true;
+            this.listBoxFileName.Location = new System.Drawing.Point(94, 31);
+            this.listBoxFileName.Name = "listBoxFileName";
+            this.listBoxFileName.ScrollAlwaysVisible = true;
+            this.listBoxFileName.Size = new System.Drawing.Size(320, 95);
+            this.listBoxFileName.TabIndex = 0;
             // 
             // GeneralControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.lbTime);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.lbDirectory);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.lbFileName);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Name = "GeneralControl";
-            this.Size = new System.Drawing.Size(520, 228);
+            this.Size = new System.Drawing.Size(554, 287);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -128,11 +131,11 @@ namespace Indihiang.Modules
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label lbFileName;
-        private System.Windows.Forms.Label lbDirectory;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lbTime;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ListBox listBoxIPAddress;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ListBox listBoxFileName;
     }
 }

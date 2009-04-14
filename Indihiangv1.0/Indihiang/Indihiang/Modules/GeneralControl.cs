@@ -13,20 +13,20 @@ namespace Indihiang.Modules
 {
     public partial class GeneralControl : UserControl, BaseControl
     {
-        string _fileName;
+        List<string> _listFiles = new List<string>();
         private Dictionary<string, LogCollection> _items;
 
-        public string FileName
+        public List<string> FileNames
         {
             get
             {
-                return _fileName;
+                return _listFiles;
             }
             set
             {
-                if (_fileName == value)
+                if (_listFiles == value)
                     return;
-                _fileName = value;
+                _listFiles = value;
             }
         }
         public GeneralControl()
@@ -57,14 +57,23 @@ namespace Indihiang.Modules
                 List<DateTime> list = new List<DateTime>();
                 foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
                 {
-                    list.Add(DateTime.ParseExact(item.Key, "yyyy-MM-dd", null));
+                    if (item.Key != "" && item.Key != "-" && item.Key!=null)
+                        list.Add(DateTime.ParseExact(item.Key, "yyyy-MM-dd", null));
                 }
                 DateTime startDate = list.Min();
                 DateTime endDate = list.Max();
 
+                List<string> list2 = new List<string>();
+                foreach (KeyValuePair<string, WebLog> item in _items["IPServer"].Colls)
+                {
+                    if (item.Key != "" && item.Key != "-" && item.Key != null)
+                        list2.Add(item.Key);
+                }
+
                 lbTime.Text = startDate.ToString("dd-MMM-yyyy") + " - " + endDate.ToString("dd-MMM-yyyy");
-                lbFileName.Text = Path.GetFileName(_fileName);
-                lbDirectory.Text = Path.GetDirectoryName(_fileName);
+                listBoxFileName.Items.AddRange(_listFiles.ToArray());
+                listBoxIPAddress.Items.AddRange(list2.ToArray());
+                
             }
         }
 
