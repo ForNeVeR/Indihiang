@@ -35,7 +35,7 @@ namespace Indihiang.Modules
                     case LogFeature.GENERAL:
                         id = LogFeature.GENERAL.ToString();
                         GeneralControl uc1 = new GeneralControl();
-                        uc1.FileName = parser.FileName;
+                        uc1.FileNames.Add(parser.FileName);
                         Attach(uc1, id, "General", parser.Features[i].Items); 
 
                         break;
@@ -57,10 +57,16 @@ namespace Indihiang.Modules
                         Attach(uc4, id, "Access Page", parser.Features[i].Items);                        
 
                         break;
+                    case LogFeature.IPADDRESS:
+                        id = LogFeature.IPADDRESS.ToString();
+                        AccessPageControl uc5 = new AccessPageControl();
+                        Attach(uc5, id, "IP Address", parser.Features[i].Items);
+
+                        break;
                     case LogFeature.STATUS:
                         id = LogFeature.STATUS.ToString();
-                        AccessStatusControl uc5 = new AccessStatusControl();
-                        Attach(uc5, id, "HTTP Status",parser.Features[i].Items);
+                        AccessStatusControl uc6 = new AccessStatusControl();
+                        Attach(uc6, id, "HTTP Status",parser.Features[i].Items);
 
                         break;
                 }                

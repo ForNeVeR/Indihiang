@@ -144,6 +144,7 @@ namespace Indihiang.Cores
             this._parser.Features.Add(new HitsFeature(_parser.LogFileFormat));
             this._parser.Features.Add(new UserAgentFeature(_parser.LogFileFormat));
             this._parser.Features.Add(new AccessPageFeature(_parser.LogFileFormat));
+            this._parser.Features.Add(new IPAddressFeature(_parser.LogFileFormat));
             this._parser.Features.Add(new AccessStatusFeature(_parser.LogFileFormat));
             
             logInfo = new LogInfoEventArgs(
