@@ -59,10 +59,10 @@ namespace Indihiang.Forms
             this.panel3 = new System.Windows.Forms.Panel();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabWelcome = new System.Windows.Forms.TabPage();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.ctxTab = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.closeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -71,8 +71,8 @@ namespace Indihiang.Forms
             this.panel3.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabWelcome.SuspendLayout();
-            this.ctxTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.ctxTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuMain
@@ -138,6 +138,7 @@ namespace Indihiang.Forms
             this.howToUseToolStripMenuItem.Name = "howToUseToolStripMenuItem";
             this.howToUseToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.howToUseToolStripMenuItem.Text = "How to use";
+            this.howToUseToolStripMenuItem.Click += new System.EventHandler(this.howToUseToolStripMenuItem_Click);
             // 
             // visitToIndhiangWebsiteToolStripMenuItem
             // 
@@ -340,6 +341,16 @@ namespace Indihiang.Forms
             this.tabWelcome.TabIndex = 0;
             this.tabWelcome.Text = "Welcome";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::Indihiang.Properties.Resources.main;
+            this.pictureBox1.Location = new System.Drawing.Point(-10, -24);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(400, 220);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
             // ctxTab
             // 
             this.ctxTab.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -361,16 +372,6 @@ namespace Indihiang.Forms
             this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
             this.closeAllToolStripMenuItem.Text = "Close All";
             this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.closeAllToolStripMenuItem_Click);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::Indihiang.Properties.Resources.main;
-            this.pictureBox1.Location = new System.Drawing.Point(-10, -24);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(400, 220);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // MainForm
             // 
@@ -403,8 +404,8 @@ namespace Indihiang.Forms
             this.tabMain.ResumeLayout(false);
             this.tabWelcome.ResumeLayout(false);
             this.tabWelcome.PerformLayout();
-            this.ctxTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.ctxTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
