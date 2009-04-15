@@ -36,8 +36,6 @@ namespace Indihiang.Forms
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.analyzingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.howToUseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.visitToIndhiangWebsiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,6 +59,10 @@ namespace Indihiang.Forms
             this.panel3 = new System.Windows.Forms.Panel();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabWelcome = new System.Windows.Forms.TabPage();
+            this.ctxTab = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.closeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -68,13 +70,15 @@ namespace Indihiang.Forms
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.tabMain.SuspendLayout();
+            this.tabWelcome.SuspendLayout();
+            this.ctxTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuMain
             // 
             this.menuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuMain.Location = new System.Drawing.Point(0, 0);
             this.menuMain.Name = "menuMain";
@@ -105,6 +109,7 @@ namespace Indihiang.Forms
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.closeToolStripMenuItem.Text = "Close";
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -116,20 +121,6 @@ namespace Indihiang.Forms
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.exitToolStripMenuItem.Text = "Exit";
-            // 
-            // toolsToolStripMenuItem
-            // 
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.analyzingToolStripMenuItem});
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.toolsToolStripMenuItem.Text = "Tools";
-            // 
-            // analyzingToolStripMenuItem
-            // 
-            this.analyzingToolStripMenuItem.Name = "analyzingToolStripMenuItem";
-            this.analyzingToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
-            this.analyzingToolStripMenuItem.Text = "Analyze";
             // 
             // helpToolStripMenuItem
             // 
@@ -153,6 +144,7 @@ namespace Indihiang.Forms
             this.visitToIndhiangWebsiteToolStripMenuItem.Name = "visitToIndhiangWebsiteToolStripMenuItem";
             this.visitToIndhiangWebsiteToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.visitToIndhiangWebsiteToolStripMenuItem.Text = "Visit to Indihiang website";
+            this.visitToIndhiangWebsiteToolStripMenuItem.Click += new System.EventHandler(this.visitToIndhiangWebsiteToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -164,6 +156,7 @@ namespace Indihiang.Forms
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.aboutToolStripMenuItem.Text = "About...";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -220,6 +213,7 @@ namespace Indihiang.Forms
             this.toolStripOpenComputer.Name = "toolStripOpenComputer";
             this.toolStripOpenComputer.Size = new System.Drawing.Size(23, 22);
             this.toolStripOpenComputer.ToolTipText = "View current log file on remote computer";
+            this.toolStripOpenComputer.Visible = false;
             // 
             // toolStripSeparator1
             // 
@@ -234,6 +228,7 @@ namespace Indihiang.Forms
             this.toolStripRunAnalyzer.Name = "toolStripRunAnalyzer";
             this.toolStripRunAnalyzer.Size = new System.Drawing.Size(23, 22);
             this.toolStripRunAnalyzer.ToolTipText = "Run log file analyzer";
+            this.toolStripRunAnalyzer.Visible = false;
             // 
             // imgList
             // 
@@ -329,10 +324,14 @@ namespace Indihiang.Forms
             this.tabMain.SelectedIndex = 0;
             this.tabMain.Size = new System.Drawing.Size(657, 397);
             this.tabMain.TabIndex = 0;
+            this.tabMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabMain_MouseDown);
+            this.tabMain.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tabMain_MouseUp);
             // 
             // tabWelcome
             // 
             this.tabWelcome.BackColor = System.Drawing.Color.White;
+            this.tabWelcome.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.tabWelcome.Controls.Add(this.pictureBox1);
             this.tabWelcome.ImageIndex = 0;
             this.tabWelcome.Location = new System.Drawing.Point(4, 26);
             this.tabWelcome.Name = "tabWelcome";
@@ -340,6 +339,38 @@ namespace Indihiang.Forms
             this.tabWelcome.Size = new System.Drawing.Size(649, 367);
             this.tabWelcome.TabIndex = 0;
             this.tabWelcome.Text = "Welcome";
+            // 
+            // ctxTab
+            // 
+            this.ctxTab.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.closeToolStripMenuItem1,
+            this.closeAllToolStripMenuItem});
+            this.ctxTab.Name = "ctxTab";
+            this.ctxTab.Size = new System.Drawing.Size(121, 48);
+            // 
+            // closeToolStripMenuItem1
+            // 
+            this.closeToolStripMenuItem1.Name = "closeToolStripMenuItem1";
+            this.closeToolStripMenuItem1.Size = new System.Drawing.Size(120, 22);
+            this.closeToolStripMenuItem1.Text = "Close";
+            this.closeToolStripMenuItem1.Click += new System.EventHandler(this.closeToolStripMenuItem1_Click);
+            // 
+            // closeAllToolStripMenuItem
+            // 
+            this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
+            this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            this.closeAllToolStripMenuItem.Text = "Close All";
+            this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.closeAllToolStripMenuItem_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::Indihiang.Properties.Resources.main;
+            this.pictureBox1.Location = new System.Drawing.Point(-10, -24);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(400, 220);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
             // 
             // MainForm
             // 
@@ -370,6 +401,10 @@ namespace Indihiang.Forms
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.tabMain.ResumeLayout(false);
+            this.tabWelcome.ResumeLayout(false);
+            this.tabWelcome.PerformLayout();
+            this.ctxTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -383,8 +418,6 @@ namespace Indihiang.Forms
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem analyzingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem howToUseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem visitToIndhiangWebsiteToolStripMenuItem;
@@ -408,5 +441,10 @@ namespace Indihiang.Forms
         private System.Windows.Forms.TabPage tabWelcome;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton toolStripRunAnalyzer;
+        private System.Windows.Forms.ContextMenuStrip ctxTab;
+        private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem closeAllToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pictureBox1;
+
     }
 }

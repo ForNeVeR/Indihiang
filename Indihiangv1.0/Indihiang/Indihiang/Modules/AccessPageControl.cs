@@ -60,7 +60,7 @@ namespace Indihiang.Modules
 
             if (_items.Count > 0)
             {
-                double x;
+                List<double> listX = new List<double>();
                 List<string> labels = new List<string>();
                 Dictionary<string, List<double>> listBar = new Dictionary<string, List<double>>();
                 
@@ -69,7 +69,7 @@ namespace Indihiang.Modules
                     if (item.Value != null)
                     {
                         DateTime date = DateTime.ParseExact(item.Key, "yyyy-MM-dd", null);
-                        x = date.ToOADate();
+                        listX.Add(date.ToOADate());
 
                         if (!labels.Contains(item.Key))
                             labels.Add(date.ToString("yyyy-MMM-dd"));
@@ -109,7 +109,7 @@ namespace Indihiang.Modules
                             } while (listColor.Contains(color));
                             listColor.Add(color);
 
-                            BarItem bar = pane.AddBar(item.Key, null, item.Value.ToArray(), color);
+                            BarItem bar = pane.AddBar(item.Key, listX.ToArray(), item.Value.ToArray(), color);
                             bar.Bar.Fill = new Fill(color, Color.White, color);
                             total++;
                             if (total > 4)
@@ -124,9 +124,7 @@ namespace Indihiang.Modules
                     }
                 }
 
-                pane.XAxis.MajorTic.IsBetweenLabels = true;
-                pane.XAxis.Scale.TextLabels = labels.ToArray();                 
-                pane.XAxis.Type = AxisType.Text;
+                pane.XAxis.Type = AxisType.Date; 
                 pane.Chart.Fill = new Fill(Color.White,Color.FromArgb(255, 255, 166), 90F);
                 pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 

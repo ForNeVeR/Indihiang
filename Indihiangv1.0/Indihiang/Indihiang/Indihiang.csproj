@@ -16,6 +16,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <ApplicationIcon>indhiang.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,7 +73,6 @@
     <Compile Include="Cores\LogInfoEventArgs.cs" />
     <Compile Include="Cores\LogParser.cs" />
     <Compile Include="Cores\LogParserFactory.cs" />
-    <Compile Include="Cores\LogParserQueue.cs" />
     <Compile Include="Cores\LogProcessStatus.cs" />
     <Compile Include="Cores\ThreadBarrierExtensions.cs" />
     <Compile Include="Cores\W3cExtendedLogParser.cs" />
@@ -84,6 +84,12 @@
     </Compile>
     <Compile Include="Forms\AboutIndihiang.Designer.cs">
       <DependentUpon>AboutIndihiang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\LightIndihiangForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LightIndihiangForm.Designer.cs">
+      <DependentUpon>LightIndihiangForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
@@ -140,6 +146,9 @@
     <EmbeddedResource Include="Forms\AboutIndihiang.resx">
       <DependentUpon>AboutIndihiang.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LightIndihiangForm.resx">
+      <DependentUpon>LightIndihiangForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -185,6 +194,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\main.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="indhiang.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

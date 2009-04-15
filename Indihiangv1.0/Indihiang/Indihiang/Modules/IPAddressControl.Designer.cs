@@ -39,17 +39,22 @@ namespace Indihiang.Modules
             this.label1 = new System.Windows.Forms.Label();
             this.cmbIPAddress = new System.Windows.Forms.ComboBox();
             this.dataGridIPPage = new System.Windows.Forms.DataGridView();
+            this.tabIPGrid = new System.Windows.Forms.TabPage();
+            this.dataGridIP = new System.Windows.Forms.DataGridView();
             this.tabIPAddress.SuspendLayout();
             this.tabIPAccess.SuspendLayout();
             this.tabIPPage.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridIPPage)).BeginInit();
+            this.tabIPGrid.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridIP)).BeginInit();
             this.SuspendLayout();
             // 
             // tabIPAddress
             // 
             this.tabIPAddress.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.tabIPAddress.Controls.Add(this.tabIPAccess);
+            this.tabIPAddress.Controls.Add(this.tabIPGrid);
             this.tabIPAddress.Controls.Add(this.tabIPPage);
             this.tabIPAddress.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabIPAddress.ImageList = this.imageList1;
@@ -131,17 +136,44 @@ namespace Indihiang.Modules
             this.cmbIPAddress.FormattingEnabled = true;
             this.cmbIPAddress.Location = new System.Drawing.Point(119, 13);
             this.cmbIPAddress.Name = "cmbIPAddress";
-            this.cmbIPAddress.Size = new System.Drawing.Size(240, 21);
+            this.cmbIPAddress.Size = new System.Drawing.Size(174, 21);
             this.cmbIPAddress.TabIndex = 1;
+            this.cmbIPAddress.SelectedIndexChanged += new System.EventHandler(this.cmbIPAddress_SelectedIndexChanged);
             // 
             // dataGridIPPage
             // 
+            this.dataGridIPPage.AllowUserToAddRows = false;
+            this.dataGridIPPage.AllowUserToDeleteRows = false;
             this.dataGridIPPage.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridIPPage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridIPPage.Location = new System.Drawing.Point(3, 52);
             this.dataGridIPPage.Name = "dataGridIPPage";
+            this.dataGridIPPage.ReadOnly = true;
             this.dataGridIPPage.Size = new System.Drawing.Size(687, 337);
             this.dataGridIPPage.TabIndex = 1;
+            // 
+            // tabIPGrid
+            // 
+            this.tabIPGrid.Controls.Add(this.dataGridIP);
+            this.tabIPGrid.ImageIndex = 0;
+            this.tabIPGrid.Location = new System.Drawing.Point(4, 26);
+            this.tabIPGrid.Name = "tabIPGrid";
+            this.tabIPGrid.Size = new System.Drawing.Size(693, 392);
+            this.tabIPGrid.TabIndex = 2;
+            this.tabIPGrid.Text = "IP Access Grid";
+            this.tabIPGrid.UseVisualStyleBackColor = true;
+            // 
+            // dataGridIP
+            // 
+            this.dataGridIP.AllowUserToAddRows = false;
+            this.dataGridIP.AllowUserToDeleteRows = false;
+            this.dataGridIP.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridIP.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridIP.Location = new System.Drawing.Point(0, 0);
+            this.dataGridIP.Name = "dataGridIP";
+            this.dataGridIP.ReadOnly = true;
+            this.dataGridIP.Size = new System.Drawing.Size(693, 392);
+            this.dataGridIP.TabIndex = 0;
             // 
             // IPAddressControl
             // 
@@ -157,6 +189,8 @@ namespace Indihiang.Modules
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridIPPage)).EndInit();
+            this.tabIPGrid.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridIP)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -172,5 +206,7 @@ namespace Indihiang.Modules
         private System.Windows.Forms.DataGridView dataGridIPPage;
         private System.Windows.Forms.ComboBox cmbIPAddress;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TabPage tabIPGrid;
+        private System.Windows.Forms.DataGridView dataGridIP;
     }
 }
