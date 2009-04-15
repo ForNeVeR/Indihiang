@@ -201,12 +201,18 @@ namespace Indihiang.Forms
         private void closeToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             TabPage selectedTab = tabMain.SelectedTab;
-            string key = (string)selectedTab.Tag;
-            if (selectedTab.Text!="Welcome")
-                tabMain.TabPages.Remove(selectedTab);
+            if (selectedTab != null)
+            {
+                string key = (string)selectedTab.Tag;
+                if (key != null && key != "")
+                {
+                    if (selectedTab.Text != "Welcome")
+                        tabMain.TabPages.Remove(selectedTab);
 
-            _logFileaNode.Nodes.RemoveByKey(key);
-            _listParser.Remove(key);
+                    _logFileaNode.Nodes.RemoveByKey(key);
+                    _listParser.Remove(key);
+                }
+            }
         }
 
         private void closeAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -221,7 +227,12 @@ namespace Indihiang.Forms
 
             _logFileaNode.Nodes.Clear();
             _listParser.Clear();
-        }  
+        }
+        private void howToUseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo("http://geeks.netindonesia.net/blogs/agus/archive/2009/04/15/indihiang-how-to-use.aspx");
+            System.Diagnostics.Process.Start(startInfo);
+        } 
 
 
         /// <summary>
@@ -251,7 +262,9 @@ namespace Indihiang.Forms
             }
         }
         [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);             
+        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);
+
+                    
 
         ///////////////////////////////////////////////////
     }
