@@ -12,11 +12,16 @@ namespace Indihiang
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.SetCompatibleTextRenderingDefault(false);            
+
+            //args = new string[] { "c:\\Data_sample_2008.log" };           
+            if (args.Length >= 1)
+                Application.Run(new LightIndihiangForm(args[0]));
+            else
+                Application.Run(new MainForm());
 
             Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
         }

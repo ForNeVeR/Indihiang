@@ -47,7 +47,11 @@ namespace Indihiang.Modules
               }
               );
 
-            return data;
+            Dictionary<string, int> newList = new Dictionary<string, int>();
+            for (int i = 0; i < result.Count; i++)
+                newList.Add(result[i].Key, result[i].Value);
+
+            return newList;
 
         }
     }

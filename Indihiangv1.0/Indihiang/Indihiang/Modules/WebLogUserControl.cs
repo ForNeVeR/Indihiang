@@ -59,7 +59,7 @@ namespace Indihiang.Modules
                         break;
                     case LogFeature.IPADDRESS:
                         id = LogFeature.IPADDRESS.ToString();
-                        AccessPageControl uc5 = new AccessPageControl();
+                        IPAddressControl uc5 = new IPAddressControl();
                         Attach(uc5, id, "IP Address", parser.Features[i].Items);
 
                         break;

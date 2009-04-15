@@ -59,5 +59,12 @@ namespace Indihiang.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Bitmap main {
+            get {
+                object obj = ResourceManager.GetObject("main", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
