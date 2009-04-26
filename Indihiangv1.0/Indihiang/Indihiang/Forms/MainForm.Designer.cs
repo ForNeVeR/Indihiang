@@ -100,27 +100,28 @@
             // openLogFileToolStripMenuItem
             // 
             this.openLogFileToolStripMenuItem.Name = "openLogFileToolStripMenuItem";
-            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openLogFileToolStripMenuItem.Text = "Open Log File";
             this.openLogFileToolStripMenuItem.Click += new System.EventHandler(this.openLogFileToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(144, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -242,6 +243,7 @@
             this.imgList.Images.SetKeyName(4, "Computer.ico");
             this.imgList.Images.SetKeyName(5, "server.ico");
             this.imgList.Images.SetKeyName(6, "help.ico");
+            this.imgList.Images.SetKeyName(7, "dbs.ico");
             // 
             // panel1
             // 
@@ -301,6 +303,7 @@
             // openLogFileDialog
             // 
             this.openLogFileDialog.Filter = "Log file|*.log|All log files|*.*";
+            this.openLogFileDialog.Multiselect = true;
             this.openLogFileDialog.Title = "Open Log File";
             // 
             // panel3

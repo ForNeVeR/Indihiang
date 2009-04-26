@@ -47,8 +47,8 @@ namespace Indihiang.Cores
         public LogParser() 
         {
             _logParserId = Guid.NewGuid();            
-            _synContext = AsyncOperationManager.SynchronizationContext;
-        }
+            _synContext = AsyncOperationManager.SynchronizationContext;           
+        }        
 
         public event EventHandler<LogInfoEventArgs> AnalyzeLogHandler;
         public event EventHandler<LogInfoEventArgs> EndAnalyzeHandler;
@@ -61,11 +61,12 @@ namespace Indihiang.Cores
                    LogProcessStatus.SUCCESS,
                    "Process()",
                    "Starting..");            
-
             this._synContext.Post(OnAnalyzeLog, logInfo);
 
             if (!Verify())
-                return;           
+                return;
+
+            _parser.ParseLogHandler += new EventHandler<LogInfoEventArgs>(ParseLogHandler);
 
             if (_thread == null)
                 _thread = new Thread(new ThreadStart(Process));
@@ -105,11 +106,15 @@ namespace Indihiang.Cores
             Debug.WriteLine("Indihiang:: " + logInfo.Message);
         }
 
+        private void ParseLogHandler(object sender, LogInfoEventArgs e)
+        {
+            this._synContext.Post(OnAnalyzeLog, e);
+        }
+
         private void Process()
         {
             Thread.Sleep(100);
             PrepareFeatures();
-
 
             LogInfoEventArgs logInfo = new LogInfoEventArgs(
                     _fileName,
@@ -155,21 +160,45 @@ namespace Indihiang.Cores
                    "Prepared parser features is done");
             this._synContext.Post(OnAnalyzeLog, logInfo);
         }
-        private bool Verify()
+        private bool CheckFile()
         {
-            if (!File.Exists(_fileName))
+            if (_fileName.StartsWith("--"))
             {
-                LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                    _fileName, 
-                    EnumLogFile.UNKNOWN, 
-                    LogProcessStatus.FAILED,
-                    "LogParser.Verify()", 
-                    _fileName + " isn't found");
-                this._synContext.Post(OnAnalyzeLog, logInfo);
+                List<string> files = IndihiangHelper.ParseFile(_fileName);
 
-                return false;
+                for (int i = 0; i < files.Count; i++)
+                    if (!string.IsNullOrEmpty(files[i]))
+                        if (!File.Exists(files[i]))
+                        {
+                            LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                                _fileName,
+                                EnumLogFile.UNKNOWN,
+                                LogProcessStatus.FAILED,
+                                "LogParser.CheckFile()",
+                                files[i] + " isn't found");
+                            this._synContext.Post(OnAnalyzeLog, logInfo);
+
+                            return false;
+                        }
             }
+            else
+                if (!File.Exists(_fileName))
+                {
+                    LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                        _fileName,
+                        EnumLogFile.UNKNOWN,
+                        LogProcessStatus.FAILED,
+                        "LogParser.CheckFile()",
+                        _fileName + " isn't found");
+                    this._synContext.Post(OnAnalyzeLog, logInfo);
 
+                    return false;
+                }
+
+            return true;
+        }
+        private bool CheckParser()
+        {
             _parser = LogParserFactory.CreateParser(_fileName);
             if (_parser == null)
             {
@@ -183,6 +212,15 @@ namespace Indihiang.Cores
 
                 return false;
             }
+
+            return true;
+        }
+        private bool Verify()
+        {
+            if (!CheckFile())
+                return false;
+            if (!CheckParser())
+                return false;            
 
             return true;
         }

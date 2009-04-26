@@ -19,6 +19,7 @@ namespace Indihiang.Forms
         //private TreeNode _computersNode;   --> next phase
         //private LogParser _parser = null;
         private Dictionary<string, LogParser> _listParser = new Dictionary<string, LogParser>();
+        private int _consolidationId = 0;
 
         public MainForm()
         {
@@ -102,36 +103,53 @@ namespace Indihiang.Forms
         private void openLogFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (openLogFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                string logFile = openLogFileDialog.FileName;
-                if (!_listParser.ContainsKey(logFile))
+            {                
+                string[] logFiles = openLogFileDialog.FileNames;
+
+                if (logFiles != null)
                 {
-                    string name = Path.GetFileName(logFile);
+                    if (logFiles.Length > 1)
+                    {
+                        _consolidationId++;
+                        string key = "--"; // magic number
+                        string name1 = "Consolidation #" + _consolidationId;
 
-                    TreeNode item = _logFileaNode.Nodes.Add(logFile, name);
-                    item.ImageIndex = 2;
-                    item.SelectedImageIndex = 2;
-                    
-                    WebLogUserControl control = new WebLogUserControl();
+                        TreeNode item =CreateNewNode(name1, name1,7);                        
 
-                    tabMain.TabPages.Add(logFile, name, 2);
-                    tabMain.TabPages[logFile].Controls.Add(control);
-                    tabMain.TabPages[logFile].Tag = logFile;
-                    control.Dock = DockStyle.Fill;
+                        for (int i = 0; i < logFiles.Length; i++)
+                        {                            
+                            key = key + logFiles[i] + ";";
+                            string name2 = Path.GetFileName(logFiles[i]);
+                            TreeNode childItem = item.Nodes.Add(logFiles[i], name2);
+                            childItem.ImageIndex = 2;
+                            childItem.SelectedImageIndex = 2;
+                        }
 
-                    LogParser parser = new LogParser();
-                    parser.FileName = logFile;
-                    parser.AnalyzeLogHandler += new EventHandler<LogInfoEventArgs>(OnAnalyzeLog);
-                    parser.EndAnalyzeHandler += new EventHandler<LogInfoEventArgs>(OnEndAnalyze);
+                        AttachUserControl(key, name1);
+                        AttachLogParser(key);                       
+                        tabMain.SelectedTab = tabMain.TabPages[key];
+                        _logFileaNode.ExpandAll();
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(logFiles[0]))
+                        {
+                            if (!_listParser.ContainsKey(logFiles[0]))
+                            {
+                                string name = Path.GetFileName(logFiles[0]);
 
-                    parser.Analyze();
-                    _listParser.Add(logFile, parser);
+                                CreateNewNode(logFiles[0], name, 2);                                
+                                AttachUserControl(logFiles[0], name);
+                                AttachLogParser(logFiles[0]);                                
 
-                    tabMain.SelectedTab = tabMain.TabPages[logFile];
-                    _logFileaNode.ExpandAll();
+                                tabMain.SelectedTab = tabMain.TabPages[logFiles[0]];
+                                _logFileaNode.ExpandAll();
+                            }
+                            else
+                                tabMain.SelectedTab = tabMain.TabPages[logFiles[0]];
+                        }
+                    }
                 }
-                else
-                    tabMain.SelectedTab = tabMain.TabPages[logFile];               
                 
             }
         }
@@ -232,7 +250,40 @@ namespace Indihiang.Forms
         {
             System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo("http://geeks.netindonesia.net/blogs/agus/archive/2009/04/15/indihiang-how-to-use.aspx");
             System.Diagnostics.Process.Start(startInfo);
-        } 
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private TreeNode CreateNewNode(string key,string name,int imageIndex)
+        {
+            TreeNode item = _logFileaNode.Nodes.Add(key, name);
+            item.ImageIndex = imageIndex;
+            item.SelectedImageIndex = imageIndex;
+
+            return item;
+        }
+        private void AttachUserControl(string key,string name)
+        {
+            WebLogUserControl control = new WebLogUserControl();
+
+            tabMain.TabPages.Add(key, name, 2);
+            tabMain.TabPages[key].Controls.Add(control);
+            tabMain.TabPages[key].Tag = key;
+            control.Dock = DockStyle.Fill;
+        }
+        private void AttachLogParser(string fileNames)
+        {
+            LogParser parser = new LogParser();
+            parser.FileName = fileNames;
+            parser.AnalyzeLogHandler += new EventHandler<LogInfoEventArgs>(OnAnalyzeLog);
+            parser.EndAnalyzeHandler += new EventHandler<LogInfoEventArgs>(OnEndAnalyze);
+
+            parser.Analyze();
+            _listParser.Add(fileNames, parser);
+        }
 
 
         /// <summary>
@@ -264,7 +315,7 @@ namespace Indihiang.Forms
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);
 
-                    
+                           
 
         ///////////////////////////////////////////////////
     }

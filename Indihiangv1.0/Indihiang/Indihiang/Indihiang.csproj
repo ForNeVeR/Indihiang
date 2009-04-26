@@ -70,6 +70,7 @@
     <Compile Include="Cores\Features\LogFeature.cs" />
     <Compile Include="Cores\Features\UserAgentFeature.cs" />
     <Compile Include="Cores\Features\WebLog.cs" />
+    <Compile Include="Cores\IndihiangHelper.cs" />
     <Compile Include="Cores\LogInfoEventArgs.cs" />
     <Compile Include="Cores\LogParser.cs" />
     <Compile Include="Cores\LogParserFactory.cs" />

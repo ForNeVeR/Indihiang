@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+using Indihiang.Cores;
 using Indihiang.Cores.Features;
 namespace Indihiang.Modules
 {
@@ -26,7 +27,8 @@ namespace Indihiang.Modules
             {
                 if (_listFiles == value)
                     return;
-                _listFiles = value;
+
+                _listFiles = value;                
             }
         }
         public GeneralControl()
@@ -49,6 +51,7 @@ namespace Indihiang.Modules
             ShowData();
         }
         #endregion
+        
 
         private void ShowData()
         {
