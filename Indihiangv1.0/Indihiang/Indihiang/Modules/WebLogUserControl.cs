@@ -35,7 +35,7 @@ namespace Indihiang.Modules
                     case LogFeature.GENERAL:
                         id = LogFeature.GENERAL.ToString();
                         GeneralControl uc1 = new GeneralControl();
-                        uc1.FileNames.Add(parser.FileName);
+                        uc1.FileNames = IndihiangHelper.ParseFile(parser.FileName);
                         Attach(uc1, id, "General", parser.Features[i].Items); 
 
                         break;

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Threading;
 
 using Indihiang.Cores.Features;
 namespace Indihiang.Cores
@@ -14,6 +16,9 @@ namespace Indihiang.Cores
         protected EnumLogFile _logFileFormat;
         protected List<BaseLogAnalyzeFeature> _features;
         protected List<string> _currentHeader;
+        private SynchronizationContext _synContext;
+
+        public event EventHandler<LogInfoEventArgs> ParseLogHandler;
 
         public string LogFile
         {
@@ -49,16 +54,52 @@ namespace Indihiang.Cores
             _logFileFormat = logFileFormat;
             _features = new List<BaseLogAnalyzeFeature>();
             _currentHeader = new List<string>();
+            _synContext = AsyncOperationManager.SynchronizationContext;
+        }
+
+        protected virtual void OnParseLog(LogInfoEventArgs e)
+        {
+            if (this.ParseLogHandler != null)
+                this.ParseLogHandler(this, e);
+
+            Debug.WriteLine("OnParseLog:: " + e.Message);
         }
 
         public bool Parse()
         {
-            using (StreamReader sr = new StreamReader(this._logFile))
+            if (this._logFile.StartsWith("--"))
+            {
+                string tmp = this._logFile.Substring(2);
+                string[] files = tmp.Split(new char[] { ';' });
+
+                for (int i = 0; i < files.Length; i++)
+                    if(!string.IsNullOrEmpty(files[i]))
+                        ParseLogFile(files[i]);
+            }
+            else
+                ParseLogFile(this._logFile);
+            
+            return true;
+                     
+        }
+        protected void ParseLogFile(string logFile)
+        {
+            using (StreamReader sr = new StreamReader(logFile))
             {
                 string line = sr.ReadLine();
+
+                LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                   this._logFile,
+                   EnumLogFile.UNKNOWN,
+                   LogProcessStatus.SUCCESS,
+                   "ParseLogFile()",
+                   "Read File: " + logFile);
+                this._synContext.Post(OnParseLog, logInfo);
+                
+                Debug.WriteLine("Read File: " + logFile);                
                 Debug.WriteLine("Indihiang Read: " + line);
-                while (line != null && line != string.Empty)
-                {                    
+                while (!string.IsNullOrEmpty(line))
+                {
                     Debug.WriteLine("Read: " + line);
                     if (!ParseHeader(line))
                     {
@@ -70,13 +111,20 @@ namespace Indihiang.Cores
                         }
                     }
                     line = sr.ReadLine();
-                    if(line!=null)
-                        line = line.TrimEnd('\0');
+                    if (line != null)
+                        line = line.TrimEnd('\0');                  
                 }
+
+                logInfo = new LogInfoEventArgs(
+                      this._logFile,
+                      EnumLogFile.UNKNOWN,
+                      LogProcessStatus.SUCCESS,
+                      "ParseLogFile()",
+                      "Read File: " + logFile + " is done");
+                this._synContext.Post(OnParseLog, logInfo);
             }
-            return true;
-                     
         }
+
 
         protected abstract bool ParseHeader(string line);
     }
