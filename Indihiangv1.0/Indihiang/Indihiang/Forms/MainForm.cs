@@ -36,13 +36,13 @@ namespace Indihiang.Forms
             switch (e.LogStatus)
             {
                 case LogProcessStatus.SUCCESS:
-                    info = DateTime.Now.ToString("yyyy/MM/dd hh:mm:dd") + "[info]: " + e.Message;
+                    info = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "[info]: " + e.Message;
                     break;
                 case LogProcessStatus.FAILED:
-                    info = DateTime.Now.ToString("yyyy/MM/dd hh:mm:dd") + "[err]: " + e.Message;
+                    info = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "[err]: " + e.Message;
                     break;
                 case LogProcessStatus.CANCELED:
-                    info = DateTime.Now.ToString("yyyy/MM/dd hh:mm:dd") + "[info]: Log analyzer is canceled by user";
+                    info = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "[info]: Log analyzer is canceled by user";
                     break;
             }
 
@@ -52,7 +52,7 @@ namespace Indihiang.Forms
         internal void OnEndAnalyze(object sender, LogInfoEventArgs e)
         {
             string info = "";
-            info = DateTime.Now.ToString("yyyy/MM/dd hh:mm:dd") + "[info]: Finish";
+            info = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "[info]: Finish";
 
             ((WebLogUserControl)this.tabMain.TabPages[e.FileName].Controls[0]).AddLogStatus(info);
             if (_listParser.ContainsKey(e.FileName))

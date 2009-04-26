@@ -112,7 +112,8 @@ namespace Indihiang.Cores
                     }
                     line = sr.ReadLine();
                     if (line != null)
-                        line = line.TrimEnd('\0');                  
+                        line = line.TrimEnd('\0');
+                    
                 }
 
                 logInfo = new LogInfoEventArgs(
