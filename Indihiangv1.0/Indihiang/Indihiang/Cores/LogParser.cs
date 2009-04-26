@@ -100,6 +100,7 @@ namespace Indihiang.Cores
         }
         protected virtual void OnEndAnalyze(LogInfoEventArgs logInfo)
         {
+            Thread.Sleep(100);
             if (this.EndAnalyzeHandler != null)
                 this.EndAnalyzeHandler(this, logInfo);
 
@@ -132,6 +133,7 @@ namespace Indihiang.Cores
                    LogProcessStatus.SUCCESS,
                    "Process()",
                    "Done");
+            Thread.Sleep(100);
             this._synContext.Post(OnEndAnalyze, logInfo);
         }
 
