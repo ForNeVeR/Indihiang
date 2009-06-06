@@ -41,6 +41,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -75,8 +76,10 @@
     <Compile Include="Cores\LogParser.cs" />
     <Compile Include="Cores\LogParserFactory.cs" />
     <Compile Include="Cores\LogProcessStatus.cs" />
+    <Compile Include="Cores\RemoteFileCopyHelper.cs" />
     <Compile Include="Cores\ThreadBarrierExtensions.cs" />
     <Compile Include="Cores\W3cExtendedLogParser.cs" />
+    <Compile Include="DomainObject\IISInfo.cs" />
     <Compile Include="DomainObject\IisLog.cs" />
     <Compile Include="DomainObject\NcsaLog.cs" />
     <Compile Include="DomainObject\W3cExtendedLog.cs" />
@@ -85,6 +88,12 @@
     </Compile>
     <Compile Include="Forms\AboutIndihiang.Designer.cs">
       <DependentUpon>AboutIndihiang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ConsolidateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConsolidateForm.Designer.cs">
+      <DependentUpon>ConsolidateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\LightIndihiangForm.cs">
       <SubType>Form</SubType>
@@ -97,6 +106,12 @@
     </Compile>
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OpenRemoteIISForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\OpenRemoteIISForm.Designer.cs">
+      <DependentUpon>OpenRemoteIISForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\AccessPageControl.cs">
       <SubType>UserControl</SubType>
@@ -147,11 +162,17 @@
     <EmbeddedResource Include="Forms\AboutIndihiang.resx">
       <DependentUpon>AboutIndihiang.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConsolidateForm.resx">
+      <DependentUpon>ConsolidateForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\LightIndihiangForm.resx">
       <DependentUpon>LightIndihiangForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OpenRemoteIISForm.resx">
+      <DependentUpon>OpenRemoteIISForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\AccessPageControl.resx">
       <DependentUpon>AccessPageControl.cs</DependentUpon>
@@ -197,6 +218,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\DataSources\Indihiang.DomainObject.IISInfo1.datasource" />
     <None Include="Resources\main.jpg" />
   </ItemGroup>
   <ItemGroup>

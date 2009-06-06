@@ -12,28 +12,14 @@ namespace Indihiang.Cores
 {
     public abstract class BaseLogParser
     {
-        protected string _logFile;
-        protected EnumLogFile _logFileFormat;
         protected List<BaseLogAnalyzeFeature> _features;
         protected List<string> _currentHeader;
         private SynchronizationContext _synContext;
 
         public event EventHandler<LogInfoEventArgs> ParseLogHandler;
 
-        public string LogFile
-        {
-            get
-            {
-                return _logFile;
-            }
-        }
-        public EnumLogFile LogFileFormat
-        {
-            get
-            {
-                return _logFileFormat;
-            }
-        }
+        public string LogFile { get; protected set; }
+        public EnumLogFile LogFileFormat { get; protected set; }
         public List<BaseLogAnalyzeFeature> Features
         {
             get
@@ -50,8 +36,8 @@ namespace Indihiang.Cores
 
         protected BaseLogParser(string logFile, EnumLogFile logFileFormat)
         {
-            _logFile = logFile;
-            _logFileFormat = logFileFormat;
+            LogFile = logFile;
+            LogFileFormat = logFileFormat;
             _features = new List<BaseLogAnalyzeFeature>();
             _currentHeader = new List<string>();
             _synContext = AsyncOperationManager.SynchronizationContext;
@@ -62,14 +48,14 @@ namespace Indihiang.Cores
             if (this.ParseLogHandler != null)
                 this.ParseLogHandler(this, e);
 
-            Debug.WriteLine("OnParseLog:: " + e.Message);
+            Debug.WriteLine(String.Format("OnParseLog:: {0}", e.Message));
         }
 
         public bool Parse()
         {
-            if (this._logFile.StartsWith("--"))
+            if (LogFile.StartsWith("--"))
             {
-                string tmp = this._logFile.Substring(2);
+                string tmp = this.LogFile.Substring(2);
                 string[] files = tmp.Split(new char[] { ';' });
 
                 for (int i = 0; i < files.Length; i++)
@@ -77,7 +63,7 @@ namespace Indihiang.Cores
                         ParseLogFile(files[i]);
             }
             else
-                ParseLogFile(this._logFile);
+                ParseLogFile(LogFile);
             
             return true;
                      
@@ -89,18 +75,18 @@ namespace Indihiang.Cores
                 string line = sr.ReadLine();
 
                 LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                   this._logFile,
+                   this.LogFile,
                    EnumLogFile.UNKNOWN,
                    LogProcessStatus.SUCCESS,
                    "ParseLogFile()",
-                   "Read File: " + logFile);
+                   String.Format("Read File: {0}", logFile));
                 this._synContext.Post(OnParseLog, logInfo);
-                
-                Debug.WriteLine("Read File: " + logFile);                
-                Debug.WriteLine("Indihiang Read: " + line);
+
+                Debug.WriteLine(String.Format("Read File: {0}", logFile));
+                Debug.WriteLine(String.Format("Indihiang Read: {0}", line));
                 while (!string.IsNullOrEmpty(line))
                 {
-                    Debug.WriteLine("Read: " + line);
+                    Debug.WriteLine(String.Format("Read: {0}", line));
                     if (!ParseHeader(line))
                     {
                         if (line != string.Empty && line != null)
@@ -117,11 +103,11 @@ namespace Indihiang.Cores
                 }
 
                 logInfo = new LogInfoEventArgs(
-                      this._logFile,
+                      this.LogFile,
                       EnumLogFile.UNKNOWN,
                       LogProcessStatus.SUCCESS,
                       "ParseLogFile()",
-                      "Read File: " + logFile + " is done");
+                      String.Format("Read File: {0} is done", logFile));
                 this._synContext.Post(OnParseLog, logInfo);
             }
         }

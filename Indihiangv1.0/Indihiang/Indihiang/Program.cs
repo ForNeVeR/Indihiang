@@ -15,7 +15,7 @@ namespace Indihiang
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetCompatibleTextRenderingDefault(false);            
 
             //args = new string[] { "c:\\Data_sample_2008.log" };           
             if (args.Length >= 1)
@@ -23,7 +23,7 @@ namespace Indihiang
             else
                 Application.Run(new MainForm());
 
-            Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+            Application.ThreadException += Application_ThreadException;
         }
 
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)

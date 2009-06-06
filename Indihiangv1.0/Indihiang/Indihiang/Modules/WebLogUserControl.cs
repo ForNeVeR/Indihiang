@@ -20,10 +20,10 @@ namespace Indihiang.Modules
 
         public void AddLogStatus(string logMessage)
         {
-            string temp = this.txtLog.Text;
-            string newLog = temp + "\r\n" + logMessage;
+            string temp = txtLog.Text;
+            string newLog = String.Format("{0}\r\n{1}", temp, logMessage);
 
-            this.txtLog.Text = newLog;            
+            txtLog.Text = newLog;            
         }
         public void Populate(LogParser parser)
         {            
