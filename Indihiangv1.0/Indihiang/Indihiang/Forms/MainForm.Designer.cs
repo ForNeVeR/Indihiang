@@ -100,26 +100,26 @@ namespace Indihiang.Forms
             // openLogFileToolStripMenuItem
             // 
             this.openLogFileToolStripMenuItem.Name = "openLogFileToolStripMenuItem";
-            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.openLogFileToolStripMenuItem.Text = "Open Log File";
             this.openLogFileToolStripMenuItem.Click += new System.EventHandler(this.openLogFileToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(144, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -215,7 +215,7 @@ namespace Indihiang.Forms
             this.toolStripOpenComputer.Name = "toolStripOpenComputer";
             this.toolStripOpenComputer.Size = new System.Drawing.Size(23, 22);
             this.toolStripOpenComputer.ToolTipText = "View current log file on remote computer";
-            this.toolStripOpenComputer.Visible = false;
+            this.toolStripOpenComputer.Click += new System.EventHandler(this.toolStripOpenComputer_Click);
             // 
             // toolStripSeparator1
             // 
@@ -240,7 +240,7 @@ namespace Indihiang.Forms
             this.imgList.Images.SetKeyName(1, "Folder.ico");
             this.imgList.Images.SetKeyName(2, "db.ico");
             this.imgList.Images.SetKeyName(3, "Computers.ico");
-            this.imgList.Images.SetKeyName(4, "Computer.ico");
+            this.imgList.Images.SetKeyName(4, "Globe.ico");
             this.imgList.Images.SetKeyName(5, "server.ico");
             this.imgList.Images.SetKeyName(6, "help.ico");
             this.imgList.Images.SetKeyName(7, "dbs.ico");
