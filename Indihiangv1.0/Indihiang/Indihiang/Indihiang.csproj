@@ -231,6 +231,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="indhiang.ico" />
+    <Content Include="ParallelExtLib\System.Threading.dll" />
     <None Include="Resources\main2.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
