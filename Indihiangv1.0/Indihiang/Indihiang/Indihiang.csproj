@@ -80,7 +80,6 @@
     <Compile Include="Cores\ThreadBarrierExtensions.cs" />
     <Compile Include="Cores\W3cExtendedLogParser.cs" />
     <Compile Include="DomainObject\IISInfo.cs" />
-    <Compile Include="DomainObject\IisLog.cs" />
     <Compile Include="DomainObject\NcsaLog.cs" />
     <Compile Include="DomainObject\W3cExtendedLog.cs" />
     <Compile Include="Forms\AboutIndihiang.cs">
@@ -144,6 +143,12 @@
     <Compile Include="Modules\IPAddressControl.Designer.cs">
       <DependentUpon>IPAddressControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\LoadingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\LoadingControl.Designer.cs">
+      <DependentUpon>LoadingControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\UserAgentControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -189,6 +194,9 @@
     <EmbeddedResource Include="Modules\IPAddressControl.resx">
       <DependentUpon>IPAddressControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Modules\LoadingControl.resx">
+      <DependentUpon>LoadingControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Modules\UserAgentControl.resx">
       <DependentUpon>UserAgentControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -223,6 +231,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="indhiang.ico" />
+    <None Include="Resources\main2.jpg" />
+    <None Include="Resources\bar.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

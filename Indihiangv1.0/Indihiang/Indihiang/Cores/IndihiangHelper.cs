@@ -12,7 +12,10 @@ namespace Indihiang.Cores
 
             if (!string.IsNullOrEmpty(listFile))
             {
-                string tmp = listFile.Substring(2);
+                string tmp = listFile;
+                if (tmp.StartsWith("--") || tmp.StartsWith("$$"))
+                    tmp = tmp.Substring(2);
+                
                 string[] files = tmp.Split(new char[] { ';' });
 
                 if (files != null)

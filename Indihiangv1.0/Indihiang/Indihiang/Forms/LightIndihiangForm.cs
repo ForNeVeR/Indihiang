@@ -27,14 +27,18 @@ namespace Indihiang.Forms
             _fileName = fileName;
             InitializeComponent();
 
-            _delegate = new UpdateText(UpdateTextMethod);
-            _delegateControl = new UpdateControl(UpdateControlMethod);
+            _delegate = UpdateTextMethod;
+            _delegateControl = UpdateControlMethod;
         }
+        public LightIndihiangForm()
+        {
+            
+        }         
 
         private void LightIndihiangForm_Load(object sender, EventArgs e)
         {
-            _parser.AnalyzeLogHandler += new EventHandler<LogInfoEventArgs>(OnAnalyzeLog);
-            _parser.EndAnalyzeHandler += new EventHandler<LogInfoEventArgs>(OnEndAnalyze);
+            _parser.AnalyzeLogHandler += OnAnalyzeLog;
+            _parser.EndAnalyzeHandler += OnEndAnalyze;
 
             if (File.Exists(_fileName))
                 RunAnalyer();
@@ -46,7 +50,7 @@ namespace Indihiang.Forms
         {
             string name = Path.GetFileName(_fileName);
 
-            this.Text = "Indihiang - " + name;
+            Text = String.Format("Indihiang - {0}", name);
             _parser.FileName = _fileName;           
             _parser.Analyze();           
         }
@@ -57,25 +61,25 @@ namespace Indihiang.Forms
             switch (e.LogStatus)
             {
                 case LogProcessStatus.SUCCESS:
-                    info = DateTime.Now.ToString("yyyy/MM/dd hh:mm:dd") + "[info]: " + e.Message;
+                    info = String.Format("{0:yyyy/MM/dd hh:mm:dd}[info]: {1}", DateTime.Now, e.Message);
                     break;
                 case LogProcessStatus.FAILED:
-                    info = DateTime.Now.ToString("yyyy/MM/dd hh:mm:dd") + "[err]: " + e.Message;
+                    info = String.Format("{0:yyyy/MM/dd hh:mm:dd}[err]: {1}", DateTime.Now, e.Message);
                     break;
                 case LogProcessStatus.CANCELED:
-                    info = DateTime.Now.ToString("yyyy/MM/dd hh:mm:dd") + "[info]: Log analyzer is canceled by user";
+                    info = String.Format("{0:yyyy/MM/dd hh:mm:dd}[info]: Log analyzer is canceled by user", DateTime.Now);
                     break;
             }
 
-            this.Invoke(this._delegate, new object[] { info });
+            Invoke(this._delegate, new object[] { info });
         }
         internal void OnEndAnalyze(object sender, LogInfoEventArgs e)
         {
             string info = "";
-            info = DateTime.Now.ToString("yyyy/MM/dd hh:mm:dd") + "[info]: Finish";
+            info = String.Format("{0:yyyy/MM/dd hh:mm:dd}[info]: Finish", DateTime.Now);
 
-            this.Invoke(this._delegate, new object[] { info });
-            this.Invoke(this._delegateControl);
+            Invoke(_delegate, new object[] { info });
+            Invoke(_delegateControl);
         }
 
         private void UpdateTextMethod(string data)

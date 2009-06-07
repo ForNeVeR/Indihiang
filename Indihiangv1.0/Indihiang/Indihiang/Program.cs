@@ -15,8 +15,8 @@ namespace Indihiang
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);            
-
+            Application.SetCompatibleTextRenderingDefault(false);
+            
             //args = new string[] { "c:\\Data_sample_2008.log" };           
             if (args.Length >= 1)
                 Application.Run(new LightIndihiangForm(args[0]));

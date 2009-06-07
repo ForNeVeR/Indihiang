@@ -13,6 +13,8 @@ namespace Indihiang.Modules
 {
     public partial class WebLogUserControl : UserControl
     {
+        private Guid _loadingId;
+
         public WebLogUserControl()
         {
             InitializeComponent();
@@ -82,6 +84,17 @@ namespace Indihiang.Modules
             ((BaseControl)control).DataSource = dataSource;
             ((BaseControl)control).Populate();
         }
+
+        public void ShowLoadingControl()
+        {
+            
+            //tabMainLog.TabPages.Add(id, name, 0);
+            //tabMainLog.TabPages[id].Controls.Add(control);
+            //control.Dock = DockStyle.Fill;
+            //((BaseControl)control).DataSource = dataSource;
+            //((BaseControl)control).Populate();
+        }
+
 
         private void WebLogUserControl_Load(object sender, EventArgs e)
         {

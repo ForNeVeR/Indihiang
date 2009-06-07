@@ -54,6 +54,22 @@ namespace Indihiang.Cores
             return baseParser;
         }
 
+        public static BaseLogParser CreateParserByType(EnumLogFile logFormat)
+        {
+            BaseLogParser baseParser = null;
+            string asm = ConfigurationManager.AppSettings[logFormat.ToString()];
+            if (asm != null && asm != "")
+            {
+                //params pars = new 
+                object[] pars = new object[] { "", logFormat };
+                baseParser = (BaseLogParser)Activator.CreateInstance(Type.GetType(asm, true), pars);
+
+
+            }
+
+            return baseParser;
+        }
+
         private static EnumLogFile GetLogFormat(string logFile)
         {
             EnumLogFile logFormat = EnumLogFile.UNKNOWN;
@@ -72,6 +88,7 @@ namespace Indihiang.Cores
 
             return logFormat;
         }
+
         
     }
 }

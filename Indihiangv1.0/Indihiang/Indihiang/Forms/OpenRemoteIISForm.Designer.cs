@@ -42,6 +42,7 @@ namespace Indihiang.Forms
             this.iISInfoBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.btnSelect = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.chkLocal = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.iISInfoBindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -103,7 +104,7 @@ namespace Indihiang.Forms
             // btnConnect
             // 
             this.btnConnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnConnect.Location = new System.Drawing.Point(184, 154);
+            this.btnConnect.Location = new System.Drawing.Point(184, 180);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(75, 23);
             this.btnConnect.TabIndex = 3;
@@ -141,7 +142,7 @@ namespace Indihiang.Forms
             // btnSelect
             // 
             this.btnSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSelect.Location = new System.Drawing.Point(528, 154);
+            this.btnSelect.Location = new System.Drawing.Point(528, 180);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(103, 23);
             this.btnSelect.TabIndex = 5;
@@ -153,7 +154,7 @@ namespace Indihiang.Forms
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Location = new System.Drawing.Point(419, 154);
+            this.btnCancel.Location = new System.Drawing.Point(419, 180);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(103, 23);
             this.btnCancel.TabIndex = 6;
@@ -161,11 +162,23 @@ namespace Indihiang.Forms
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // chkLocal
+            // 
+            this.chkLocal.AutoSize = true;
+            this.chkLocal.Location = new System.Drawing.Point(11, 143);
+            this.chkLocal.Name = "chkLocal";
+            this.chkLocal.Size = new System.Drawing.Size(155, 17);
+            this.chkLocal.TabIndex = 8;
+            this.chkLocal.Text = "Connect to Local Computer";
+            this.chkLocal.UseVisualStyleBackColor = true;
+            this.chkLocal.CheckStateChanged += new System.EventHandler(this.chkLocal_CheckStateChanged);
+            // 
             // OpenRemoteIISForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(652, 202);
+            this.ClientSize = new System.Drawing.Size(652, 226);
+            this.Controls.Add(this.chkLocal);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSelect);
             this.Controls.Add(this.listWebsite);
@@ -203,5 +216,6 @@ namespace Indihiang.Forms
         private System.Windows.Forms.Button btnSelect;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.BindingSource iISInfoBindingSource1;
+        private System.Windows.Forms.CheckBox chkLocal;
     }
 }
