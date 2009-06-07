@@ -43,7 +43,8 @@ namespace Indihiang.Forms
                     break;
             }
 
-            ((WebLogUserControl)this.tabMain.TabPages[e.FileName].Controls[0]).AddLogStatus(info);
+            if(tabMain.TabPages.ContainsKey(e.FileName))
+                ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).AddLogStatus(info);
 
         }
         internal void OnEndAnalyze(object sender, LogInfoEventArgs e)
@@ -54,7 +55,9 @@ namespace Indihiang.Forms
             if (_listParser.ContainsKey(e.FileName))
             {
                 LogParser parser = (LogParser)_listParser[e.FileName];
-                ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).Populate(parser);
+
+                if (tabMain.TabPages.ContainsKey(e.FileName))
+                    ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).Populate(parser);
 
                 UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing is done");
                 UpdateInfoLogStatus(e.FileName, "Finish");              
@@ -65,7 +68,9 @@ namespace Indihiang.Forms
         private void UpdateInfoLogStatus(string tabId,string msg)
         {
             string info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now,msg);
-            ((WebLogUserControl)tabMain.TabPages[tabId].Controls[0]).AddLogStatus(info);            
+
+            if (tabMain.TabPages.ContainsKey(tabId))
+                ((WebLogUserControl)tabMain.TabPages[tabId].Controls[0]).AddLogStatus(info);            
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -191,19 +196,21 @@ namespace Indihiang.Forms
                 if (frm.IISSelected != null)
                 {
                     IISInfo iis = frm.IISSelected;
+                    string key = string.Format("$${0}", iis.IISInfoDisplay);
                     string name = iis.IISInfoDisplay;
 
                     if (!_listParser.ContainsKey(name))
                     {
-                        CreateNewIISRemoteNode(name, name, 4);
-                        AttachUserControl(name, name,4);
-                        AttachIISRemoteLogParser(iis);
+                        CreateNewIISRemoteNode(key, name, 4);
+                        // $$--> Remote IIS node key
+                        AttachUserControl(key, name, 4);
+                        AttachIISRemoteLogParser(key, iis);
 
-                        tabMain.SelectedTab = tabMain.TabPages[name];
+                        tabMain.SelectedTab = tabMain.TabPages[key];
                         _computersNode.ExpandAll();
                     }
                     else
-                        tabMain.SelectedTab = tabMain.TabPages[name];
+                        tabMain.SelectedTab = tabMain.TabPages[key];
                 }
             }
         }
@@ -277,12 +284,31 @@ namespace Indihiang.Forms
             if (selectedTab != null)
             {
                 string key = (string)selectedTab.Tag;
-                if (key != null && key != "")
+                if (!string.IsNullOrEmpty(key))
                 {
+                    if (_listParser.ContainsKey(key))
+                    {
+                        if (_listParser[key].IsBusy)
+                        {
+                            DialogResult result = MessageBox.Show("Log parser still is running in this form. Are you sure to close this?", 
+                                "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                            if (result == DialogResult.No)
+                                return;
+
+                            UpdateInfoLogStatus(key, "Cancelling log parser...");
+                            _listParser[key].CancelAnalyze();
+                            UpdateInfoLogStatus(key, "Log parser is stopped by user");
+                        }
+                    }
+
                     if (selectedTab.Text != "Welcome")
                         tabMain.TabPages.Remove(selectedTab);
 
-                    _logFileaNode.Nodes.RemoveByKey(key);
+                    if (key.StartsWith("$$"))
+                        _computersNode.Nodes.RemoveByKey(key);
+                    else
+                        _logFileaNode.Nodes.RemoveByKey(key);
                     _listParser.Remove(key);
                 }
             }
@@ -299,6 +325,7 @@ namespace Indihiang.Forms
             }
 
             _logFileaNode.Nodes.Clear();
+            _computersNode.Nodes.Clear();
             _listParser.Clear();
         }
         private void howToUseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -347,14 +374,14 @@ namespace Indihiang.Forms
             parser.Analyze();
             _listParser.Add(fileNames, parser);
         }
-        private void AttachIISRemoteLogParser(IISInfo info)
+        private void AttachIISRemoteLogParser(string name,IISInfo info)
         {
-            LogParser parser = new LogParser(info);
+            LogParser parser = new LogParser(info) { FileName = name };
             parser.AnalyzeLogHandler += OnAnalyzeLog;
             parser.EndAnalyzeHandler += OnEndAnalyze;
 
             parser.Analyze();
-            _listParser.Add(info.IISInfoDisplay, parser);
+            _listParser.Add(name, parser);
         }
 
         private void GenerateConsolidateName()

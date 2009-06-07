@@ -17,6 +17,21 @@ namespace Indihiang.Cores
         private BaseLogParser _parser;        
         private Thread _thread = null;
 
+        public bool IsBusy
+        {
+            get
+            {
+                if (_thread != null)
+                {
+                    if (_thread.ThreadState == System.Threading.ThreadState.Stopped)
+                        return false;
+                }
+                else
+                    return false;
+
+                return true;
+            }
+        }
         public List<BaseLogAnalyzeFeature> Features
         {
             get
@@ -68,6 +83,11 @@ namespace Indihiang.Cores
                 if (!Verify())
                     return;
             }
+            else
+            {
+                _parser = LogParserFactory.CreateParserByType(EnumLogFile.W3CEXT);
+                _parser.ParserID = _fileName;
+            }
 
             _parser.ParseLogHandler += ParseLogHandler;
 
@@ -111,23 +131,14 @@ namespace Indihiang.Cores
         }
 
         private void ParseLogHandler(object sender, LogInfoEventArgs e)
-        {
+        {            
             _synContext.Post(OnAnalyzeLog, e);
         }
 
         private void Process()
         {
             Thread.Sleep(100);
-            PrepareFeatures();
-
-            LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                    _fileName,
-                    EnumLogFile.UNKNOWN,
-                    LogProcessStatus.SUCCESS,
-                    "Process()",
-                    "Running log parser...");
-
-            _synContext.Post(OnAnalyzeLog, logInfo);
+            LogInfoEventArgs logInfo = null;
 
             if (_iisInfo != null)
             {
@@ -142,7 +153,24 @@ namespace Indihiang.Cores
                 _synContext.Post(OnAnalyzeLog, logInfo);
                 #endregion
 
-                int total = CopyRemoteLogFile();
+                RemoteFileCopyHelper.CopyRemoteFiles(_iisInfo);
+                string sourceFiles = String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, _iisInfo.RemoteServer, _iisInfo.Id);
+
+                int total = 0;
+                string[] files = Directory.GetFiles(sourceFiles);
+
+                if (files != null)
+                {
+                    total = files.Length;
+                    string file = "--";
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        file = String.Format("{0}{1};", file, files[i]);                       
+                    }
+
+                    _parser.LogFile = file;                    
+                }
+
 
                 #region logging
                 logInfo = new LogInfoEventArgs(
@@ -157,10 +185,21 @@ namespace Indihiang.Cores
                    EnumLogFile.UNKNOWN,
                    LogProcessStatus.SUCCESS,
                    "Process()",
-                   "Total remote log files are " + total);
+                   string.Format("Total remote log files are {0} files", total.ToString()));
                 _synContext.Post(OnAnalyzeLog, logInfo);
                 #endregion
             }
+
+            PrepareFeatures();
+
+            logInfo = new LogInfoEventArgs(
+                    _fileName,
+                    EnumLogFile.UNKNOWN,
+                    LogProcessStatus.SUCCESS,
+                    "Process()",
+                    "Running log parser...");
+
+            _synContext.Post(OnAnalyzeLog, logInfo);            
 
             _parser.Parse();
             logInfo = new LogInfoEventArgs(
@@ -181,14 +220,14 @@ namespace Indihiang.Cores
                     LogProcessStatus.SUCCESS,
                     "PrepareFeatures()",
                     "Preparing log parser...");
-            this._synContext.Post(OnAnalyzeLog, logInfo);
+            _synContext.Post(OnAnalyzeLog, logInfo);
 
-            this._parser.Features.Add(new GeneralFeature(_parser.LogFileFormat));
-            this._parser.Features.Add(new HitsFeature(_parser.LogFileFormat));
-            this._parser.Features.Add(new UserAgentFeature(_parser.LogFileFormat));
-            this._parser.Features.Add(new AccessPageFeature(_parser.LogFileFormat));
-            this._parser.Features.Add(new IPAddressFeature(_parser.LogFileFormat));
-            this._parser.Features.Add(new AccessStatusFeature(_parser.LogFileFormat));
+            _parser.Features.Add(new GeneralFeature(_parser.LogFileFormat));
+            _parser.Features.Add(new HitsFeature(_parser.LogFileFormat));
+            _parser.Features.Add(new UserAgentFeature(_parser.LogFileFormat));
+            _parser.Features.Add(new AccessPageFeature(_parser.LogFileFormat));
+            _parser.Features.Add(new IPAddressFeature(_parser.LogFileFormat));
+            _parser.Features.Add(new AccessStatusFeature(_parser.LogFileFormat));
             
             logInfo = new LogInfoEventArgs(
                    _fileName,
@@ -196,14 +235,9 @@ namespace Indihiang.Cores
                    LogProcessStatus.SUCCESS,
                    "PrepareFeatures()",
                    "Prepared parser features is done");
-            this._synContext.Post(OnAnalyzeLog, logInfo);
+            _synContext.Post(OnAnalyzeLog, logInfo);
         }
-        private int CopyRemoteLogFile()
-        {
-            int totalFile = 0;
-
-            return totalFile;
-        }
+        
         private bool CheckFile()
         {
             if (_fileName.StartsWith("--"))
@@ -244,6 +278,7 @@ namespace Indihiang.Cores
         private bool CheckParser()
         {
             _parser = LogParserFactory.CreateParser(_fileName);
+            _parser.ParserID = _fileName;
             if (_parser == null)
             {
                 LogInfoEventArgs logInfo = new LogInfoEventArgs(

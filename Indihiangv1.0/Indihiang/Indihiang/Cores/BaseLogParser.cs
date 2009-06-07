@@ -18,7 +18,8 @@ namespace Indihiang.Cores
 
         public event EventHandler<LogInfoEventArgs> ParseLogHandler;
 
-        public string LogFile { get; protected set; }
+        public string LogFile { get; set; }
+        public string ParserID { get; set; }
         public EnumLogFile LogFileFormat { get; protected set; }
         public List<BaseLogAnalyzeFeature> Features
         {
@@ -75,7 +76,7 @@ namespace Indihiang.Cores
                 string line = sr.ReadLine();
 
                 LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                   this.LogFile,
+                   ParserID,
                    EnumLogFile.UNKNOWN,
                    LogProcessStatus.SUCCESS,
                    "ParseLogFile()",
@@ -103,12 +104,12 @@ namespace Indihiang.Cores
                 }
 
                 logInfo = new LogInfoEventArgs(
-                      this.LogFile,
+                      ParserID,
                       EnumLogFile.UNKNOWN,
                       LogProcessStatus.SUCCESS,
                       "ParseLogFile()",
                       String.Format("Read File: {0} is done", logFile));
-                this._synContext.Post(OnParseLog, logInfo);
+                _synContext.Post(OnParseLog, logInfo);
             }
         }
 

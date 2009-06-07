@@ -4,44 +4,95 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Security.Permissions;
 
+using Indihiang.DomainObject;
 namespace Indihiang.Cores
 {
     public class RemoteFileCopyHelper
     {
+        public RemoteFileCopyHelper() { }
+
+
         [DllImport("advapi32.DLL", SetLastError = true)]
         public static extern int LogonUser(string lpszUsername, string lpszDomain, string lpszPassword, int dwLogonType, int dwLogonProvider, ref IntPtr phToken);
 
 
-        public static int CopyRemoteFiles(string pathSource, string pathDestination,string remoteServer,string uid,string pwd,string domain)
+        public static bool CopyRemoteFiles(IISInfo iisInfo)
         {
-            int total = 0;
+            bool success = false;
             IntPtr admin_token = default(IntPtr);
             WindowsIdentity wid_current = WindowsIdentity.GetCurrent();
-            WindowsIdentity wid_admin = new WindowsIdentity(admin_token);
-            WindowsImpersonationContext wic = wid_admin.Impersonate();
+            WindowsIdentity wid_admin = null;
+            admin_token = wid_current.Token;
+            WindowsImpersonationContext wic = null;
 
             try
             {
-                if (LogonUser(uid, domain, pwd, 9, 0, ref admin_token) != 0)
+                
+                string uid = "";
+                string domain = "";
+                string tmp = iisInfo.IISUserId;
+                if (tmp.Contains("\\"))
+                {                    
+                    string[] temp1 = tmp.Split(new char[] { '\\' });
+                    if (temp1 != null)
+                    {
+                        uid = temp1[0];
+                        domain = temp1[1];
+                    }
+                }
+                else
                 {
-                    if (!Directory.Exists(String.Format("{0}\\Temp\\", pathDestination)))
-                        Directory.CreateDirectory(String.Format("{0}\\Temp\\", pathDestination));
+                    uid = iisInfo.IISUserId;
+                    domain = iisInfo.RemoteServer;
+                }
 
-                    pathSource = pathSource.Replace(":", "$");
+                if (LogonUser(uid, domain, iisInfo.IISPassword, 9, 0, ref admin_token) != 0)
+                {
+                    ConfigureDestinationPath(iisInfo);
+
+                    string pathSource = iisInfo.LogPath.Replace(":", "$");
+                    string pathDest = String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, iisInfo.RemoteServer, iisInfo.Id);
+
                     wid_admin = new WindowsIdentity(admin_token);
                     wic = wid_admin.Impersonate();
-                    File.Copy(String.Format("{0}\\{1}\\*.*", remoteServer, pathSource),
-                              String.Format("{0}\\{1}\\*.*", pathDestination, pathSource), true);
-                    
+
+                    string[] files = Directory.GetFiles(String.Format("\\\\{0}\\{1}\\W3SVC{2}\\", iisInfo.RemoteServer, pathSource,iisInfo.Id));
+
+                    if (files != null)
+                    {
+                        Array.ForEach(files, s =>
+                        {
+                            string fileName = Path.GetFileName(s);
+                            string destFile = Path.Combine(pathDest, fileName);
+                            File.Copy(s, destFile, true);
+                        });
+                    }
+                    success = true;                    
                 }
 
             }
             catch (Exception err)
             {
                 System.Diagnostics.Debug.WriteLine(String.Format("Error CopyRemoteFiles: {0}", err.Message));
+                System.Diagnostics.Debug.WriteLine(String.Format("Error CopyRemoteFiles: {0}", err.StackTrace)); 
             }
 
-            return total;
+            return success;
+        }
+
+        private static void ConfigureDestinationPath(IISInfo iisInfo)
+        {
+            if (!Directory.Exists(String.Format("{0}\\Temp\\", Environment.CurrentDirectory)))
+                Directory.CreateDirectory(String.Format("{0}\\Temp\\", Environment.CurrentDirectory));
+
+            if (!Directory.Exists(String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, iisInfo.RemoteServer, iisInfo.Id)))
+                Directory.CreateDirectory(String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, iisInfo.RemoteServer, iisInfo.Id));
+            else
+            {
+                string[] filePaths = Directory.GetFiles(String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, iisInfo.RemoteServer, iisInfo.Id));
+                Array.ForEach(filePaths, File.Delete);
+            }
+            
         }
 
     }

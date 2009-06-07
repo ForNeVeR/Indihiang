@@ -15,7 +15,6 @@ namespace Indihiang.Modules
     public partial class GeneralControl : UserControl, BaseControl
     {
         List<string> _listFiles = new List<string>();
-        private Dictionary<string, LogCollection> _items;
 
         public List<string> FileNames
         {
@@ -38,13 +37,7 @@ namespace Indihiang.Modules
 
         #region BaseControl Members
 
-        public Dictionary<string, Indihiang.Cores.Features.LogCollection> DataSource
-        {
-            set
-            {
-                _items = value;
-            }
-        }
+        public Dictionary<string, Indihiang.Cores.Features.LogCollection> DataSource { private get; set; }
 
         public void Populate()
         {
@@ -55,25 +48,25 @@ namespace Indihiang.Modules
 
         private void ShowData()
         {
-            if (_items.Count > 0)
+            if (DataSource.Count > 0)
             {
                 List<DateTime> list = new List<DateTime>();
-                foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
+                foreach (KeyValuePair<string, WebLog> item in DataSource["General"].Colls)
                 {
-                    if (item.Key != "" && item.Key != "-" && item.Key!=null)
+                    if (!string.IsNullOrEmpty(item.Key) && item.Key != "-" )
                         list.Add(DateTime.ParseExact(item.Key, "yyyy-MM-dd", null));
                 }
                 DateTime startDate = list.Min();
                 DateTime endDate = list.Max();
 
                 List<string> list2 = new List<string>();
-                foreach (KeyValuePair<string, WebLog> item in _items["IPServer"].Colls)
+                foreach (KeyValuePair<string, WebLog> item in DataSource["IPServer"].Colls)
                 {
-                    if (item.Key != "" && item.Key != "-" && item.Key != null)
+                    if (!string.IsNullOrEmpty(item.Key) && item.Key != "-")
                         list2.Add(item.Key);
                 }
 
-                lbTime.Text = startDate.ToString("dd-MMM-yyyy") + " - " + endDate.ToString("dd-MMM-yyyy");
+                lbTime.Text = String.Format("{0:dd-MMM-yyyy} - {1:dd-MMM-yyyy}", startDate, endDate);
                 listBoxFileName.Items.AddRange(_listFiles.ToArray());
                 listBoxIPAddress.Items.AddRange(list2.ToArray());
                 

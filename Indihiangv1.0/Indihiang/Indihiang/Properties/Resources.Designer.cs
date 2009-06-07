@@ -60,9 +60,23 @@ namespace Indihiang.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap bar {
+            get {
+                object obj = ResourceManager.GetObject("bar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap main {
             get {
                 object obj = ResourceManager.GetObject("main", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap main2 {
+            get {
+                object obj = ResourceManager.GetObject("main2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

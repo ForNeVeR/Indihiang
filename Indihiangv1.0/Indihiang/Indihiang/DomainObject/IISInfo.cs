@@ -12,6 +12,7 @@ namespace Indihiang.DomainObject
         private string _remoteServer;
         private string _iisUserId;
         private string _iisPassword;
+        private bool _localComputer;
 
         public string Id
         {
@@ -105,13 +106,31 @@ namespace Indihiang.DomainObject
                 _iisPassword = value;
             }
         }
+        public bool LocalComputer
+        {
+            get
+            {
+                return _localComputer;
+            }
+            set
+            {
+                if (_localComputer == value)
+                    return;
+                _localComputer = value;
+            }
+        }
 
         public string IISInfoDisplay
         {
             get
             {
+                if(_localComputer)
+                    return string.Format("{0} (http://localhost:{1})", _serverComment,_serverPort);
+
                 return string.Format("{0} (http://{1}:{2})", _serverComment, _remoteServer,_serverPort);
             }
         }
+
+        public IISInfo() { }
     }
 }
