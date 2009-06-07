@@ -232,7 +232,6 @@
   <ItemGroup>
     <Content Include="indhiang.ico" />
     <None Include="Resources\main2.jpg" />
-    <None Include="Resources\bar.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
