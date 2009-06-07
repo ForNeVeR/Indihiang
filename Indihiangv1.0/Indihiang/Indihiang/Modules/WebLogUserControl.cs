@@ -13,7 +13,7 @@ namespace Indihiang.Modules
 {
     public partial class WebLogUserControl : UserControl
     {
-        private Guid _loadingId;
+        private Guid _loadingId = Guid.NewGuid();
 
         public WebLogUserControl()
         {
@@ -87,14 +87,25 @@ namespace Indihiang.Modules
 
         public void ShowLoadingControl()
         {
-            
-            //tabMainLog.TabPages.Add(id, name, 0);
-            //tabMainLog.TabPages[id].Controls.Add(control);
-            //control.Dock = DockStyle.Fill;
-            //((BaseControl)control).DataSource = dataSource;
-            //((BaseControl)control).Populate();
-        }
+            LoadingControl uc = new LoadingControl();
+            tabMainLog.TabPages.Add(_loadingId.ToString(), "Analyzing...", 1);
+            tabMainLog.TabPages[_loadingId.ToString()].Controls.Add(uc);
+            uc.Dock = DockStyle.Fill;
+            uc.Start();
 
+            tabMainLog.SelectedTab = tabMainLog.TabPages[_loadingId.ToString()];
+        }
+        public void HideLoadingControl()
+        {
+            for (int i = 0; i < tabMainLog.TabPages[_loadingId.ToString()].Controls.Count; i++)
+                if (tabMainLog.TabPages[_loadingId.ToString()].Controls[i] is LoadingControl)
+                {
+                    ((LoadingControl)tabMainLog.TabPages[_loadingId.ToString()].Controls[i]).Stop();
+                    break;
+                }
+
+            tabMainLog.TabPages.Clear();
+        }
 
         private void WebLogUserControl_Load(object sender, EventArgs e)
         {

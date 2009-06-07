@@ -57,8 +57,10 @@ namespace Indihiang.Forms
                 LogParser parser = (LogParser)_listParser[e.FileName];
 
                 if (tabMain.TabPages.ContainsKey(e.FileName))
+                {
+                    ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).HideLoadingControl();
                     ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).Populate(parser);
-
+                }
                 UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing is done");
                 UpdateInfoLogStatus(e.FileName, "Finish");              
             }
@@ -364,6 +366,7 @@ namespace Indihiang.Forms
             tabMain.TabPages[key].Controls.Add(control);
             tabMain.TabPages[key].Tag = key;
             control.Dock = DockStyle.Fill;
+            control.ShowLoadingControl();
         }
         private void AttachLogParser(string fileNames)
         {
