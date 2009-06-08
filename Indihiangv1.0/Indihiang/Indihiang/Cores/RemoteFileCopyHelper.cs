@@ -50,13 +50,22 @@ namespace Indihiang.Cores
                 {
                     ConfigureDestinationPath(iisInfo);
 
-                    string pathSource = iisInfo.LogPath.Replace(":", "$");
+                    string pathSource = "";
+                    if (!iisInfo.LocalComputer)
+                        pathSource = iisInfo.LogPath.Replace(":", "$");
+
                     string pathDest = String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, iisInfo.RemoteServer, iisInfo.Id);
 
                     wid_admin = new WindowsIdentity(admin_token);
                     wic = wid_admin.Impersonate();
 
-                    string[] files = Directory.GetFiles(String.Format("\\\\{0}\\{1}\\W3SVC{2}\\", iisInfo.RemoteServer, pathSource,iisInfo.Id));
+                    string[] files = null;
+                    if (iisInfo.LocalComputer)
+                    {
+                        files = Directory.GetFiles(String.Format("{0}\\W3SVC{1}\\", iisInfo.LogPath, iisInfo.Id));
+                    }
+                    else
+                        files = Directory.GetFiles(String.Format("\\\\{0}\\{1}\\W3SVC{2}\\", iisInfo.RemoteServer, pathSource,iisInfo.Id));
 
                     if (files != null)
                     {

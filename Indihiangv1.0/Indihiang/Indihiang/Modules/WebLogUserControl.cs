@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 using Indihiang.Cores;
 using Indihiang.Cores.Features;
@@ -13,6 +14,9 @@ namespace Indihiang.Modules
 {
     public partial class WebLogUserControl : UserControl
     {
+        public const int EM_REPLACESEL = 0xc2;
+        public const int EM_SETMODIFY = 0xb9;
+
         private Guid _loadingId = Guid.NewGuid();
 
         public WebLogUserControl()
@@ -22,10 +26,15 @@ namespace Indihiang.Modules
 
         public void AddLogStatus(string logMessage)
         {
-            string temp = txtLog.Text;
-            string newLog = String.Format("{0}\r\n{1}", temp, logMessage);
-
-            txtLog.Text = newLog;            
+            string newLog = String.Format("\r\n{0}", logMessage);
+            if (txtLog.IsHandleCreated)
+            {
+                txtLog.Select(txtLog.TextLength, txtLog.TextLength);
+                SendMessage(txtLog.Handle, EM_REPLACESEL, new IntPtr(-1), newLog);
+                SendMessage(txtLog.Handle, EM_SETMODIFY, new IntPtr(0), IntPtr.Zero);
+            }
+            else
+                txtLog.AppendText(newLog);                      
         }
         public void Populate(LogParser parser)
         {            
@@ -116,5 +125,12 @@ namespace Indihiang.Modules
         {
             cboStatus.SelectedIndex = 0;
         }
+
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
+        static extern IntPtr SendMessage(IntPtr hWnd, Int32 Msg, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
+        static extern IntPtr SendMessage(IntPtr hWnd, Int32 Msg, IntPtr wParam, String lParam);
+
     }
 }

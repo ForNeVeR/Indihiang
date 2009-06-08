@@ -45,16 +45,21 @@ namespace Indihiang.Cores.Features
                     if (_logs["General"].Colls.ContainsKey(key))
                     {
                         if (_logs["General"].Colls[key].Items.ContainsKey(dataKey))
-                        {
-                            val = Convert.ToInt32(_logs["General"].Colls[key].Items[dataKey]);
-                            val++;
-                            _logs["General"].Colls[key].Items[dataKey] = val.ToString();
+                        {                            
+                            lock (this) 
+                            {
+                                val = Convert.ToInt32(_logs["General"].Colls[key].Items[dataKey]);
+                                val++;
+                                _logs["General"].Colls[key].Items[dataKey] = val.ToString(); 
+                            }
                         }
                         else
-                            _logs["General"].Colls[key].Items.Add(dataKey, "1");
+                        {
+                            lock (this) { _logs["General"].Colls[key].Items.Add(dataKey, "1"); }
+                        }
                     }
                     else
-                        _logs["General"].Colls.Add(key, new WebLog(dataKey, "1"));
+                        lock (this) { _logs["General"].Colls.Add(key, new WebLog(dataKey, "1")); }
                 }
             }
         }
