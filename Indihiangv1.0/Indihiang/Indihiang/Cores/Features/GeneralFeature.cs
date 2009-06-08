@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Indihiang.Cores.Features
 {
@@ -40,15 +38,22 @@ namespace Indihiang.Cores.Features
                 int index2 = header.FindIndex(FindIPServer);
                 string key2 = item[index2];
 
-                if (key != "" && key != null && key != "-")
+                try
                 {
-                    if (!_logs["General"].Colls.ContainsKey(key))
-                        _logs["General"].Colls.Add(key, new WebLog(key,""));                  
+                    if (!string.IsNullOrEmpty(key) && key != "-")
+                    {
+                        if (!_logs["General"].Colls.ContainsKey(key))
+                            _logs["General"].Colls.Add(key, new WebLog(key, ""));
+                    }
+                    if (!string.IsNullOrEmpty(key2) && key2 != "-")
+                    {
+                        if (!_logs["IPServer"].Colls.ContainsKey(key2))
+                            _logs["IPServer"].Colls.Add(key2, new WebLog(key2, ""));
+                    }
                 }
-                if (key2 != "" && key2 != null && key2 != "-")
+                catch (Exception err)
                 {
-                    if (!_logs["IPServer"].Colls.ContainsKey(key2))
-                        _logs["IPServer"].Colls.Add(key2, new WebLog(key2, ""));
+                    System.Diagnostics.Debug.WriteLine(String.Format("Error: {0}", err.Message));
                 }
             }
         }

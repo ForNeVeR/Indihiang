@@ -59,9 +59,15 @@ namespace Indihiang.Cores
                 string tmp = this.LogFile.Substring(2);
                 string[] files = tmp.Split(new char[] { ';' });
 
-                for (int i = 0; i < files.Length; i++)
-                    if(!string.IsNullOrEmpty(files[i]))
+                Parallel.For(0, files.Length, i =>
+                {
+                    if (!string.IsNullOrEmpty(files[i]))
                         ParseLogFile(files[i]);
+                });
+
+                //for (int i = 0; i < files.Length; i++)
+                //    if(!string.IsNullOrEmpty(files[i]))
+                //        ParseLogFile(files[i]);
             }
             else
                 ParseLogFile(LogFile);

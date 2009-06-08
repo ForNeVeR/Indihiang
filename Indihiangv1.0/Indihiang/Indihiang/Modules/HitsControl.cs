@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using Indihiang.Cores.Features;
@@ -39,7 +36,7 @@ namespace Indihiang.Modules
 
         private void GenerateGraph()
         {
-            GraphPane pane = this.zedHits1.GraphPane;
+            GraphPane pane = zedHits1.GraphPane;
 
             pane.Title.Text = "Total Hist per Day Graph";
             pane.XAxis.Title.Text = "Date";
@@ -54,7 +51,11 @@ namespace Indihiang.Modules
                 double x, y;
                 PointPairList list1 = new PointPairList();
 
-                foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
+                var items = from k in _items["General"].Colls
+                            orderby k.Key ascending
+                            select k;
+
+                foreach (KeyValuePair<string, WebLog> item in items)
                 {
                     if (item.Value != null)
                     {
@@ -67,7 +68,7 @@ namespace Indihiang.Modules
                             list1.Add(x, y);
                         }
                     }
-                }
+                }                
 
                 LineItem line = pane.AddCurve("Hits",list1, Color.Red, SymbolType.Diamond);
             }
@@ -92,7 +93,7 @@ namespace Indihiang.Modules
             PointPair pt = curve[iPt];
             DateTime date = DateTime.FromOADate(pt.X);
 
-            return "[" + date.ToString("yyyy-MMM-dd") + " --> " + pt.Y.ToString("f2") + " Hit(s)]";
+            return String.Format("[{0:yyyy-MMM-dd} --> {1:f2} Hit(s)]", date, pt.Y);
         }
     }
 }

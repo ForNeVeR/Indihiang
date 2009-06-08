@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using Indihiang.Cores.Features;
@@ -40,14 +36,14 @@ namespace Indihiang.Modules
         #endregion
         private void SetGridLayout()
         {
-            this.dataGridHttpStatus.ColumnCount = 2;
-            this.dataGridHttpStatus.Columns[0].Name = "HTTP Status";
-            this.dataGridHttpStatus.Columns[0].Width = 200;
-            this.dataGridHttpStatus.Columns[1].Name = "Total";
-            this.dataGridHttpStatus.Columns[1].Width = 100;
+            dataGridHttpStatus.ColumnCount = 2;
+            dataGridHttpStatus.Columns[0].Name = "HTTP Status";
+            dataGridHttpStatus.Columns[0].Width = 200;
+            dataGridHttpStatus.Columns[1].Name = "Total";
+            dataGridHttpStatus.Columns[1].Width = 100;
 
-            this.dataGridHttpStatus.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridHttpStatus.MultiSelect = false;
+            dataGridHttpStatus.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridHttpStatus.MultiSelect = false;
 
         }
         private void GenerateGraph()
@@ -104,7 +100,7 @@ namespace Indihiang.Modules
                     List<object> data = new List<object>();
                     data.Add(item.Key);
                     data.Add(item.Value);
-                    this.dataGridHttpStatus.Rows.Add(data.ToArray());
+                    dataGridHttpStatus.Rows.Add(data.ToArray());
                 }
 
                 pane.AddPieSlice(another,
@@ -114,16 +110,16 @@ namespace Indihiang.Modules
 
             }
 
-            this.dataGridHttpStatus.Columns[0].DisplayIndex = 0;
-            this.dataGridHttpStatus.Columns[1].DisplayIndex = 1;
-            this.dataGridHttpStatus.Columns[1].ValueType = typeof(System.Int32);
+            dataGridHttpStatus.Columns[0].DisplayIndex = 0;
+            dataGridHttpStatus.Columns[1].DisplayIndex = 1;
+            dataGridHttpStatus.Columns[1].ValueType = typeof(System.Int32);
 
-            this.zedPercentStatus1.AxisChange();
+            zedPercentStatus1.AxisChange();
         }
         private void SetSize()
         {
-            this.zedPercentStatus1.Location = new Point(10, 10);
-            this.zedPercentStatus1.Size = new Size(ClientRectangle.Width - 20, ClientRectangle.Height - 20);
+            zedPercentStatus1.Location = new Point(10, 10);
+            zedPercentStatus1.Size = new Size(ClientRectangle.Width - 20, ClientRectangle.Height - 20);
         }
         private void AccessStatusControl_Resize(object sender, EventArgs e)
         {

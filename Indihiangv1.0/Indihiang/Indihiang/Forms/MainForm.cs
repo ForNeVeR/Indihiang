@@ -244,7 +244,10 @@ namespace Indihiang.Forms
         {
             openLogFileToolStripMenuItem_Click(sender, e);
         }
-
+        private void openRemoteWebServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            toolStripOpenComputer_Click(sender, e);
+        } 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (AboutIndihiang form = new AboutIndihiang())
@@ -314,6 +317,11 @@ namespace Indihiang.Forms
                     _listParser.Remove(key);
                 }
             }
+        }
+
+        private void closeAllToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            closeAllToolStripMenuItem_Click(sender, e);
         }
 
         private void closeAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -424,11 +432,7 @@ namespace Indihiang.Forms
             }
         }
         [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);
-
-        
-
-                           
+        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);                          
 
         ///////////////////////////////////////////////////
     }
