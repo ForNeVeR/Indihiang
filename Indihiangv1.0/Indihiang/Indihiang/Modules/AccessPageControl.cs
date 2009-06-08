@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using Indihiang.Cores.Features;
@@ -38,19 +35,19 @@ namespace Indihiang.Modules
         #endregion
         private void SetGridLayout()
         {
-            this.dataGridAccess.ColumnCount = 2;
-            this.dataGridAccess.Columns[0].Name = "Page Name";
-            this.dataGridAccess.Columns[0].Width = 450;
-            this.dataGridAccess.Columns[1].Name = "Total Access";
-            this.dataGridAccess.Columns[1].Width = 100;            
+            dataGridAccess.ColumnCount = 2;
+            dataGridAccess.Columns[0].Name = "Page Name";
+            dataGridAccess.Columns[0].Width = 450;
+            dataGridAccess.Columns[1].Name = "Total Access";
+            dataGridAccess.Columns[1].Width = 100;            
 
-            this.dataGridAccess.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridAccess.MultiSelect = false;
+            dataGridAccess.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridAccess.MultiSelect = false;
             
         }
         private void GenerateGraph()
         {
-            GraphPane pane = this.zedAccessPage1.GraphPane;
+            GraphPane pane = zedAccessPage1.GraphPane;
 
             pane.Title.Text = "The 5 Top of Total Access Page Graph";
             pane.XAxis.Title.Text = "Date";
@@ -63,8 +60,12 @@ namespace Indihiang.Modules
                 List<double> listX = new List<double>();
                 List<string> labels = new List<string>();
                 Dictionary<string, List<double>> listBar = new Dictionary<string, List<double>>();
-                
-                foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
+
+                var items = from k in _items["General"].Colls
+                            orderby k.Key ascending
+                            select k;
+
+                foreach (KeyValuePair<string, WebLog> item in items)
                 {
                     if (item.Value != null)
                     {
@@ -130,12 +131,12 @@ namespace Indihiang.Modules
 
             }
 
-            this.dataGridAccess.Columns[0].DisplayIndex = 0;
-            this.dataGridAccess.Columns[1].DisplayIndex = 1;
-            this.dataGridAccess.Columns[1].ValueType = typeof(System.Int32);
+            dataGridAccess.Columns[0].DisplayIndex = 0;
+            dataGridAccess.Columns[1].DisplayIndex = 1;
+            dataGridAccess.Columns[1].ValueType = typeof(System.Int32);
 
-            this.zedAccessPage1.IsShowPointValues = true;
-            this.zedAccessPage1.AxisChange();
+            zedAccessPage1.IsShowPointValues = true;
+            zedAccessPage1.AxisChange();
 
         }
 

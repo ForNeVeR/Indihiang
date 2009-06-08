@@ -188,6 +188,20 @@ namespace Indihiang.Cores
                    string.Format("Total remote log files are {0} files", total.ToString()));
                 _synContext.Post(OnAnalyzeLog, logInfo);
                 #endregion
+
+                if (total == 0)
+                {
+                    logInfo = new LogInfoEventArgs(
+                    _fileName,
+                    EnumLogFile.UNKNOWN,
+                    LogProcessStatus.SUCCESS,
+                    "Process()",
+                    "No log file will be analyzed.");
+                    _synContext.Post(OnEndAnalyze, logInfo);
+                    Thread.Sleep(100);
+
+                    return;
+                }
             }
 
             PrepareFeatures();

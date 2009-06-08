@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using Indihiang.Cores.Features;
@@ -54,7 +51,12 @@ namespace Indihiang.Modules
                 double x;
                 Dictionary<string, PointPairList> list = new Dictionary<string, PointPairList>();
                 
-                foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
+                var items = from k in _items["General"].Colls
+                            orderby k.Key ascending
+                            select k;
+
+                foreach (KeyValuePair<string, WebLog> item in items)               
+                //foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
                 {
                     if (item.Value != null)
                     {
@@ -197,7 +199,7 @@ namespace Indihiang.Modules
             PointPair pt = curve[iPt];
             DateTime date = DateTime.FromOADate(pt.X);
 
-            return "[" + date.ToString("yyyy-MMM-dd") + " --> " + pt.Y.ToString("f2") + " Hit(s)]";
+            return String.Format("[{0:yyyy-MMM-dd} --> {1:f2} Hit(s)]", date, pt.Y);
 
         }
     }

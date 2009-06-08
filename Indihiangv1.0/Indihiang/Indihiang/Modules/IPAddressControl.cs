@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using Indihiang.Cores.Features;
@@ -39,28 +35,28 @@ namespace Indihiang.Modules
 
         private void SetGridLayout()
         {
-            this.dataGridIP.ColumnCount = 2;
-            this.dataGridIP.Columns[0].Name = "IP Address";
-            this.dataGridIP.Columns[0].Width = 300;
-            this.dataGridIP.Columns[1].Name = "Total Access";
-            this.dataGridIP.Columns[1].Width = 100;
+            dataGridIP.ColumnCount = 2;
+            dataGridIP.Columns[0].Name = "IP Address";
+            dataGridIP.Columns[0].Width = 300;
+            dataGridIP.Columns[1].Name = "Total Access";
+            dataGridIP.Columns[1].Width = 100;
 
-            this.dataGridIP.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridIP.MultiSelect = false;
+            dataGridIP.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridIP.MultiSelect = false;
 
-            this.dataGridIPPage.ColumnCount = 2;
-            this.dataGridIPPage.Columns[0].Name = "Page Name";
-            this.dataGridIPPage.Columns[0].Width = 450;
-            this.dataGridIPPage.Columns[1].Name = "Total Access";
-            this.dataGridIPPage.Columns[1].Width = 100;
+            dataGridIPPage.ColumnCount = 2;
+            dataGridIPPage.Columns[0].Name = "Page Name";
+            dataGridIPPage.Columns[0].Width = 450;
+            dataGridIPPage.Columns[1].Name = "Total Access";
+            dataGridIPPage.Columns[1].Width = 100;
 
-            this.dataGridIPPage.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridIPPage.MultiSelect = false;
+            dataGridIPPage.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridIPPage.MultiSelect = false;
 
         }
         private void GenerateGraph()
         {
-            GraphPane pane = this.zedIPAccess1.GraphPane;
+            GraphPane pane = zedIPAccess1.GraphPane;
 
             pane.Title.Text = "The 3 Top of IP Access Access Page Graph";
             pane.Legend.Position = LegendPos.InsideTopLeft;
@@ -134,12 +130,12 @@ namespace Indihiang.Modules
                     this.cmbIPAddress.SelectedIndex = 0;
             }
 
-            this.dataGridIP.Columns[0].DisplayIndex = 0;
-            this.dataGridIP.Columns[1].DisplayIndex = 1;
-            this.dataGridIP.Columns[1].ValueType = typeof(System.Int32);
+            dataGridIP.Columns[0].DisplayIndex = 0;
+            dataGridIP.Columns[1].DisplayIndex = 1;
+            dataGridIP.Columns[1].ValueType = typeof(System.Int32);
 
-            this.zedIPAccess1.IsShowPointValues = true;
-            this.zedIPAccess1.AxisChange();
+            zedIPAccess1.IsShowPointValues = true;
+            zedIPAccess1.AxisChange();
 
            
         }

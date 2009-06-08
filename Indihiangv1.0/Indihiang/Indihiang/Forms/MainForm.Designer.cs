@@ -45,7 +45,10 @@
             this.toolstatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripOpenLogFile = new System.Windows.Forms.ToolStripButton();
+            this.toolStripOpenComputer = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripRunAnalyzer = new System.Windows.Forms.ToolStripButton();
             this.imgList = new System.Windows.Forms.ImageList(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.treeMain = new System.Windows.Forms.TreeView();
@@ -56,13 +59,13 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabWelcome = new System.Windows.Forms.TabPage();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.ctxTab = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.closeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.toolStripOpenLogFile = new System.Windows.Forms.ToolStripButton();
-            this.toolStripOpenComputer = new System.Windows.Forms.ToolStripButton();
-            this.toolStripRunAnalyzer = new System.Windows.Forms.ToolStripButton();
+            this.closeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.openRemoteWebServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -71,8 +74,8 @@
             this.panel3.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabWelcome.SuspendLayout();
-            this.ctxTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.ctxTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuMain
@@ -90,7 +93,10 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openLogFileToolStripMenuItem,
+            this.openRemoteWebServerToolStripMenuItem,
+            this.toolStripMenuItem3,
             this.closeToolStripMenuItem,
+            this.closeAllToolStripMenuItem1,
             this.toolStripMenuItem1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -100,26 +106,26 @@
             // openLogFileToolStripMenuItem
             // 
             this.openLogFileToolStripMenuItem.Name = "openLogFileToolStripMenuItem";
-            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.openLogFileToolStripMenuItem.Text = "Open Log File";
             this.openLogFileToolStripMenuItem.Click += new System.EventHandler(this.openLogFileToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(144, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(206, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -197,10 +203,40 @@
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // toolStripOpenLogFile
+            // 
+            this.toolStripOpenLogFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripOpenLogFile.Image = ((System.Drawing.Image)(resources.GetObject("toolStripOpenLogFile.Image")));
+            this.toolStripOpenLogFile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripOpenLogFile.Name = "toolStripOpenLogFile";
+            this.toolStripOpenLogFile.Size = new System.Drawing.Size(23, 22);
+            this.toolStripOpenLogFile.ToolTipText = "Open log file";
+            this.toolStripOpenLogFile.Click += new System.EventHandler(this.toolStripOpenLogFile_Click);
+            // 
+            // toolStripOpenComputer
+            // 
+            this.toolStripOpenComputer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripOpenComputer.Image = ((System.Drawing.Image)(resources.GetObject("toolStripOpenComputer.Image")));
+            this.toolStripOpenComputer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripOpenComputer.Name = "toolStripOpenComputer";
+            this.toolStripOpenComputer.Size = new System.Drawing.Size(23, 22);
+            this.toolStripOpenComputer.ToolTipText = "View current log file on remote computer";
+            this.toolStripOpenComputer.Click += new System.EventHandler(this.toolStripOpenComputer_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripRunAnalyzer
+            // 
+            this.toolStripRunAnalyzer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripRunAnalyzer.Image = ((System.Drawing.Image)(resources.GetObject("toolStripRunAnalyzer.Image")));
+            this.toolStripRunAnalyzer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripRunAnalyzer.Name = "toolStripRunAnalyzer";
+            this.toolStripRunAnalyzer.Size = new System.Drawing.Size(23, 22);
+            this.toolStripRunAnalyzer.ToolTipText = "Run log file analyzer";
+            this.toolStripRunAnalyzer.Visible = false;
             // 
             // imgList
             // 
@@ -314,6 +350,16 @@
             this.tabWelcome.TabIndex = 0;
             this.tabWelcome.Text = "Welcome";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::Indihiang.Properties.Resources.main2;
+            this.pictureBox1.Location = new System.Drawing.Point(-2, -2);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(300, 200);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
             // ctxTab
             // 
             this.ctxTab.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -336,45 +382,24 @@
             this.closeAllToolStripMenuItem.Text = "Close All";
             this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.closeAllToolStripMenuItem_Click);
             // 
-            // pictureBox1
+            // closeAllToolStripMenuItem1
             // 
-            this.pictureBox1.Image = global::Indihiang.Properties.Resources.main2;
-            this.pictureBox1.Location = new System.Drawing.Point(-2, -2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(300, 200);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.closeAllToolStripMenuItem1.Name = "closeAllToolStripMenuItem1";
+            this.closeAllToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
+            this.closeAllToolStripMenuItem1.Text = "Close All";
+            this.closeAllToolStripMenuItem1.Click += new System.EventHandler(this.closeAllToolStripMenuItem1_Click);
             // 
-            // toolStripOpenLogFile
+            // openRemoteWebServerToolStripMenuItem
             // 
-            this.toolStripOpenLogFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripOpenLogFile.Image = ((System.Drawing.Image)(resources.GetObject("toolStripOpenLogFile.Image")));
-            this.toolStripOpenLogFile.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripOpenLogFile.Name = "toolStripOpenLogFile";
-            this.toolStripOpenLogFile.Size = new System.Drawing.Size(23, 22);
-            this.toolStripOpenLogFile.ToolTipText = "Open log file";
-            this.toolStripOpenLogFile.Click += new System.EventHandler(this.toolStripOpenLogFile_Click);
+            this.openRemoteWebServerToolStripMenuItem.Name = "openRemoteWebServerToolStripMenuItem";
+            this.openRemoteWebServerToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.openRemoteWebServerToolStripMenuItem.Text = "Open Remote Web Server";
+            this.openRemoteWebServerToolStripMenuItem.Click += new System.EventHandler(this.openRemoteWebServerToolStripMenuItem_Click);
             // 
-            // toolStripOpenComputer
+            // toolStripMenuItem3
             // 
-            this.toolStripOpenComputer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripOpenComputer.Image = ((System.Drawing.Image)(resources.GetObject("toolStripOpenComputer.Image")));
-            this.toolStripOpenComputer.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripOpenComputer.Name = "toolStripOpenComputer";
-            this.toolStripOpenComputer.Size = new System.Drawing.Size(23, 22);
-            this.toolStripOpenComputer.ToolTipText = "View current log file on remote computer";
-            this.toolStripOpenComputer.Click += new System.EventHandler(this.toolStripOpenComputer_Click);
-            // 
-            // toolStripRunAnalyzer
-            // 
-            this.toolStripRunAnalyzer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripRunAnalyzer.Image = ((System.Drawing.Image)(resources.GetObject("toolStripRunAnalyzer.Image")));
-            this.toolStripRunAnalyzer.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripRunAnalyzer.Name = "toolStripRunAnalyzer";
-            this.toolStripRunAnalyzer.Size = new System.Drawing.Size(23, 22);
-            this.toolStripRunAnalyzer.ToolTipText = "Run log file analyzer";
-            this.toolStripRunAnalyzer.Visible = false;
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(206, 6);
             // 
             // MainForm
             // 
@@ -407,8 +432,8 @@
             this.tabMain.ResumeLayout(false);
             this.tabWelcome.ResumeLayout(false);
             this.tabWelcome.PerformLayout();
-            this.ctxTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.ctxTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -449,6 +474,9 @@
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem closeAllToolStripMenuItem;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ToolStripMenuItem closeAllToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem openRemoteWebServerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
 
     }
 }
