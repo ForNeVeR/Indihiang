@@ -62,7 +62,9 @@ namespace Indihiang.Forms
                     ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).Populate(parser);
                 }
                 UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing is done");
-                UpdateInfoLogStatus(e.FileName, "Finish");              
+                UpdateInfoLogStatus(e.FileName, string.Format("Total Analyzing Process Duration: {0:0.###} seconds", parser.ProcessDuration));
+                UpdateInfoLogStatus(e.FileName, "Finish");                   
+
             }
             
         }
@@ -201,7 +203,7 @@ namespace Indihiang.Forms
                     string key = string.Format("$${0}", iis.IISInfoDisplay);
                     string name = iis.IISInfoDisplay;
 
-                    if (!_listParser.ContainsKey(name))
+                    if (!_listParser.ContainsKey(key))
                     {
                         CreateNewIISRemoteNode(key, name, 4);
                         // $$--> Remote IIS node key

@@ -42,33 +42,36 @@ namespace Indihiang.Cores.Features
                 int index3 = header.FindIndex(FindPage);
                 string key3 = item[index3];
 
-                if (key != "" && key != null && key != "-")
+                if (!string.IsNullOrEmpty(key) && key != "-")
                 {
-                    if (key2 != "" && key2 != null && key2 != "-")
+                    if (!string.IsNullOrEmpty(key2) && key2 != "-")
                     {
-                        if (_logs["General"].Colls.ContainsKey(key2))
+                        lock (this)
                         {
-                            int val = Convert.ToInt32(_logs["General"].Colls[key2].Items[key2]);
-                            val++;
-                            _logs["General"].Colls[key2].Items[key2] = val.ToString();
-                        }
-                        else
-                            _logs["General"].Colls.Add(key2, new WebLog(key2, "1"));
-
-                        if (_logs["IPPage"].Colls.ContainsKey(key2))
-                        {
-                            if (_logs["IPPage"].Colls[key2].Items.ContainsKey(key3))
+                            if (_logs["General"].Colls.ContainsKey(key2))
                             {
-                                int val = Convert.ToInt32(_logs["IPPage"].Colls[key2].Items[key3]);
+                                int val = Convert.ToInt32(_logs["General"].Colls[key2].Items[key2]);
                                 val++;
-                                _logs["IPPage"].Colls[key2].Items[key3] = val.ToString();
+                                _logs["General"].Colls[key2].Items[key2] = val.ToString();
                             }
                             else
-                                _logs["IPPage"].Colls[key2].Items.Add(key3, "1");
-                        }
-                        else
-                        {                            
-                            _logs["IPPage"].Colls.Add(key2, new WebLog(key3, "1"));
+                                _logs["General"].Colls.Add(key2, new WebLog(key2, "1"));
+
+                            if (_logs["IPPage"].Colls.ContainsKey(key2))
+                            {
+                                if (_logs["IPPage"].Colls[key2].Items.ContainsKey(key3))
+                                {
+                                    int val = Convert.ToInt32(_logs["IPPage"].Colls[key2].Items[key3]);
+                                    val++;
+                                    _logs["IPPage"].Colls[key2].Items[key3] = val.ToString();
+                                }
+                                else
+                                    _logs["IPPage"].Colls[key2].Items.Add(key3, "1");
+                            }
+                            else
+                            {
+                                _logs["IPPage"].Colls.Add(key2, new WebLog(key3, "1"));
+                            }
                         }
                     }
 

@@ -38,12 +38,15 @@ namespace Indihiang.Cores.Features
 
                 if (_logs["General"].Colls.ContainsKey(key))
                 {
-                    val = Convert.ToInt32(_logs["General"].Colls[key].Items[key]);
-                    val++;
-                    _logs["General"].Colls[key].Items[key] = val.ToString();
+                    lock (this)
+                    {
+                        val = Convert.ToInt32(_logs["General"].Colls[key].Items[key]);
+                        val++;
+                        _logs["General"].Colls[key].Items[key] = val.ToString();
+                    }
                 }
                 else
-                    _logs["General"].Colls.Add(key, new WebLog(key, "1"));
+                    lock (this) { _logs["General"].Colls.Add(key, new WebLog(key, "1")); }
             }
         }
         private static bool FindDate(string item)

@@ -42,13 +42,19 @@ namespace Indihiang.Cores.Features
                 {
                     if (!string.IsNullOrEmpty(key) && key != "-")
                     {
-                        if (!_logs["General"].Colls.ContainsKey(key))
-                            _logs["General"].Colls.Add(key, new WebLog(key, ""));
+                        lock (this)
+                        {
+                            if (!_logs["General"].Colls.ContainsKey(key))
+                                _logs["General"].Colls.Add(key, new WebLog(key, ""));
+                        }
                     }
                     if (!string.IsNullOrEmpty(key2) && key2 != "-")
                     {
-                        if (!_logs["IPServer"].Colls.ContainsKey(key2))
-                            _logs["IPServer"].Colls.Add(key2, new WebLog(key2, ""));
+                        lock (this)
+                        {
+                            if (!_logs["IPServer"].Colls.ContainsKey(key2))
+                                _logs["IPServer"].Colls.Add(key2, new WebLog(key2, ""));
+                        }
                     }
                 }
                 catch (Exception err)

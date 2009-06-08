@@ -43,23 +43,26 @@ namespace Indihiang.Cores.Features
                     string key = item[index];
                     string data = item[index2];
 
-                    if (data != "" && data != null && data != "-")
+                    if (!string.IsNullOrEmpty(data) && data != "-")
                     {
                         string browser = CheckBrowser(data);
 
-                        if (_logs["General"].Colls.ContainsKey(key))
+                        lock (this)
                         {
-                            if (_logs["General"].Colls[key].Items.ContainsKey(browser))
+                            if (_logs["General"].Colls.ContainsKey(key))
                             {
-                                val = Convert.ToInt32(_logs["General"].Colls[key].Items[browser]);
-                                val++;
-                                _logs["General"].Colls[key].Items[browser] = val.ToString();
+                                if (_logs["General"].Colls[key].Items.ContainsKey(browser))
+                                {
+                                    val = Convert.ToInt32(_logs["General"].Colls[key].Items[browser]);
+                                    val++;
+                                    _logs["General"].Colls[key].Items[browser] = val.ToString();
+                                }
+                                else
+                                    _logs["General"].Colls[key].Items.Add(browser, "1");
                             }
                             else
-                                _logs["General"].Colls[key].Items.Add(browser, "1");
+                                _logs["General"].Colls.Add(key, new WebLog(browser, "1"));
                         }
-                        else
-                            _logs["General"].Colls.Add(key, new WebLog(browser, "1"));
                     }
                 }
             }

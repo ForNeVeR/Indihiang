@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 using Indihiang.DomainObject;
 using Indihiang.Cores.Features;
@@ -16,7 +17,19 @@ namespace Indihiang.Cores
         private IISInfo _iisInfo = null;
         private BaseLogParser _parser;        
         private Thread _thread = null;
+        private long _freq, _startTime, _endTime;
 
+        public double ProcessDuration
+        {
+            get
+            {
+                if (_freq == 0)
+                    return -1;
+
+                return (double)(_endTime - _startTime) / (double)_freq;
+            }
+        }
+ 
         public bool IsBusy
         {
             get
@@ -55,11 +68,19 @@ namespace Indihiang.Cores
         }
         public LogParser() 
         {
+            _startTime = 0;
+            _endTime = 0;
+            QueryPerformanceFrequency(ref _freq);
+
             LogParserId = Guid.NewGuid();            
             _synContext = AsyncOperationManager.SynchronizationContext;           
         }
         public LogParser(IISInfo info)
         {
+            _startTime = 0;
+            _endTime = 0;
+            QueryPerformanceFrequency(ref _freq);
+
             _iisInfo = info;
             LogParserId = Guid.NewGuid();
             _synContext = AsyncOperationManager.SynchronizationContext;
@@ -70,6 +91,8 @@ namespace Indihiang.Cores
 
         public void Analyze()
         {
+            QueryPerformanceCounter(ref _startTime);
+
             LogInfoEventArgs logInfo = new LogInfoEventArgs(
                    _fileName,
                    EnumLogFile.UNKNOWN,
@@ -100,6 +123,7 @@ namespace Indihiang.Cores
 
         public void CancelAnalyze()
         {
+            QueryPerformanceCounter(ref _endTime);
             if (_thread != null)
             {
                 if (_thread.IsAlive)
@@ -123,6 +147,7 @@ namespace Indihiang.Cores
         }
         protected virtual void OnEndAnalyze(LogInfoEventArgs logInfo)
         {
+            QueryPerformanceCounter(ref _endTime);
             Thread.Sleep(100);
             if (EndAnalyzeHandler != null)
                 EndAnalyzeHandler(this, logInfo);
@@ -317,5 +342,18 @@ namespace Indihiang.Cores
 
             return true;
         }
+
+
+        /// <summary>
+        /// Take from http://support.microsoft.com/kb/306979/EN-US/
+        /// </summary>
+        /// <param name="counter"></param>
+        /// <returns></returns>
+        [DllImport("kernel32.dll")]
+        extern static short QueryPerformanceCounter(ref long counter);
+        [DllImport("kernel32.dll")]
+        extern static short QueryPerformanceFrequency(ref long freq);
+
+
     }
 }
