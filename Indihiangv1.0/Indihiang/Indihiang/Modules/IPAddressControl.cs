@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Indihiang.Cores;
 using Indihiang.Cores.Features;
 using ZedGraph;
 namespace Indihiang.Modules
@@ -60,6 +61,7 @@ namespace Indihiang.Modules
 
             pane.Title.Text = "The 3 Top of IP Access Access Page Graph";
             pane.Legend.Position = LegendPos.InsideTopLeft;
+            pane.Fill = new Fill(Color.Yellow,Color.White,Color.Yellow);
 
             if (_items.Count > 0)
             {
@@ -90,7 +92,7 @@ namespace Indihiang.Modules
                     double another = 0d;
                     Color[] colors = new Color[] { Color.Red, Color.PowderBlue, Color.SeaGreen, Color.Gainsboro };
 
-                    Dictionary<string, int> newList = UserControlUtil.SortList(listBar);
+                    Dictionary<string, int> newList = CollectionHelper.SortList(listBar);
                     foreach (KeyValuePair<string, int> item in newList)
                     {                                               
                         if (iTotal < 3)
@@ -157,18 +159,18 @@ namespace Indihiang.Modules
             if (_items["IPPage"].Colls.ContainsKey(selectedIP))
             {
 
-                this.dataGridIPPage.Rows.Clear();
+                dataGridIPPage.Rows.Clear();
                 foreach (KeyValuePair<string, string> item in _items["IPPage"].Colls[selectedIP].Items)
                 {
                     List<object> data = new List<object>();
                     data.Add(item.Key);
                     data.Add(Convert.ToInt32(item.Value));
-                    this.dataGridIPPage.Rows.Add(data.ToArray());
+                    dataGridIPPage.Rows.Add(data.ToArray());
                 }
 
-                this.dataGridIPPage.Columns[0].DisplayIndex = 0;
-                this.dataGridIPPage.Columns[1].DisplayIndex = 1;
-                this.dataGridIPPage.Columns[1].ValueType = typeof(System.Int32);
+                dataGridIPPage.Columns[0].DisplayIndex = 0;
+                dataGridIPPage.Columns[1].DisplayIndex = 1;
+                dataGridIPPage.Columns[1].ValueType = typeof(System.Int32);
 
             }
         }

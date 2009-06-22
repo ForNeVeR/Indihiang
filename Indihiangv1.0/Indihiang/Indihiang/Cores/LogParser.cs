@@ -12,6 +12,7 @@ namespace Indihiang.Cores
 {
     public class LogParser
     {
+        private bool _useParallel;
         private SynchronizationContext _synContext;
         private string _fileName;
         private IISInfo _iisInfo = null;
@@ -19,6 +20,19 @@ namespace Indihiang.Cores
         private Thread _thread = null;
         private long _freq, _startTime, _endTime;
 
+        public bool UseParallel
+        {
+            get
+            {
+                return _useParallel;
+            }
+            set
+            {
+                if (_useParallel == value)
+                    return;
+                _useParallel = value;
+            }
+        }
         public double ProcessDuration
         {
             get
@@ -49,7 +63,14 @@ namespace Indihiang.Cores
         {
             get
             {
-                return this._parser.Features;
+                return _parser.Features;
+            }
+        }
+        public List<BaseLogAnalyzeFeature> ParallelFeatures
+        {
+            get
+            {
+                return _parser.ParalleFeatures;
             }
         }
         public Guid LogParserId { get; private set; }
@@ -113,6 +134,7 @@ namespace Indihiang.Cores
             }
 
             _parser.ParseLogHandler += ParseLogHandler;
+            _parser.UseParallel = _useParallel;
 
             if (_thread == null)
                 _thread = new Thread(Process);
@@ -167,7 +189,7 @@ namespace Indihiang.Cores
 
             if (_iisInfo != null)
             {
-                #region
+                #region Logging
                 logInfo = new LogInfoEventArgs(
                     _fileName,
                     EnumLogFile.UNKNOWN,
@@ -261,12 +283,10 @@ namespace Indihiang.Cores
                     "Preparing log parser...");
             _synContext.Post(OnAnalyzeLog, logInfo);
 
-            _parser.Features.Add(new GeneralFeature(_parser.LogFileFormat));
-            _parser.Features.Add(new HitsFeature(_parser.LogFileFormat));
-            _parser.Features.Add(new UserAgentFeature(_parser.LogFileFormat));
-            _parser.Features.Add(new AccessPageFeature(_parser.LogFileFormat));
-            _parser.Features.Add(new IPAddressFeature(_parser.LogFileFormat));
-            _parser.Features.Add(new AccessStatusFeature(_parser.LogFileFormat));
+            if (_useParallel)
+                _parser.ParalleFeatures = IndihiangHelper.GenerateParallelFeatures(_parser.LogFileFormat);
+            else
+                _parser.Features = IndihiangHelper.GenerateFeatures(_parser.LogFileFormat);
             
             logInfo = new LogInfoEventArgs(
                    _fileName,
@@ -283,20 +303,31 @@ namespace Indihiang.Cores
             {
                 List<string> files = IndihiangHelper.ParseFile(_fileName);
 
+                LogInfoEventArgs logInfo = null;
                 for (int i = 0; i < files.Count; i++)
                     if (!string.IsNullOrEmpty(files[i]))
                         if (!File.Exists(files[i]))
                         {
-                            LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                            logInfo = new LogInfoEventArgs(
                                 _fileName,
                                 EnumLogFile.UNKNOWN,
                                 LogProcessStatus.FAILED,
                                 "LogParser.CheckFile()",
                                 String.Format("{0} isn't found", files[i]));
-                            this._synContext.Post(OnAnalyzeLog, logInfo);
+                            _synContext.Post(OnAnalyzeLog, logInfo);
 
                             return false;
                         }
+
+                logInfo = new LogInfoEventArgs(
+                   _fileName,
+                   EnumLogFile.UNKNOWN,
+                   LogProcessStatus.SUCCESS,
+                   "Process()",
+                   string.Format("Total log files are {0} files", files.Count.ToString()));
+                _synContext.Post(OnAnalyzeLog, logInfo);
+
+
             }
             else
                 if (!File.Exists(_fileName))

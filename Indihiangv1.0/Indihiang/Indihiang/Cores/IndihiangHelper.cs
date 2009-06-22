@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Collections;
+using Indihiang.Cores.Features;
 
 namespace Indihiang.Cores
 {
@@ -29,6 +31,31 @@ namespace Indihiang.Cores
                 list.Add(listFile);
 
             return list;
+        }
+
+        public static List<BaseLogAnalyzeFeature> GenerateParallelFeatures(EnumLogFile format)
+        {
+            List<BaseLogAnalyzeFeature> features = new List<BaseLogAnalyzeFeature>();
+            features.Add(new GeneralFeature(format));
+            features.Add(new HitsFeature(format));
+            features.Add(new UserAgentFeature(format));
+            features.Add(new AccessPageFeature(format));
+            features.Add(new IPAddressFeature(format));
+            features.Add(new AccessStatusFeature(format));
+
+            return features;
+        }
+        public static List<BaseLogAnalyzeFeature> GenerateFeatures(EnumLogFile format)
+        {
+            List<BaseLogAnalyzeFeature> features = new List<BaseLogAnalyzeFeature>();
+            features.Add(new GeneralFeature(format));
+            features.Add(new HitsFeature(format));
+            features.Add(new UserAgentFeature(format));
+            features.Add(new AccessPageFeature(format));
+            features.Add(new IPAddressFeature(format));
+            features.Add(new AccessStatusFeature(format));
+
+            return features;
         }
     }
 }

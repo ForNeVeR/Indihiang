@@ -33,14 +33,33 @@ namespace Indihiang.Cores.Features
         }
         private void RunW3cext(List<string> header, string[] item)
         {
-            if (header.Exists(FindDate))
-            {               
-                int index = header.FindIndex(FindDate);                
-                string key = item[index];
-                int index2 = header.FindIndex(FindIP);
-                string key2 = item[index2];
-                int index3 = header.FindIndex(FindPage);
-                string key3 = item[index3];
+            //if (header.Exists(FindDate))
+            //{
+                int index = header.IndexOf("date");
+                string key;
+                if (index != -1)
+                    key = item[index];
+                else
+                    key = null;
+                int index2 = header.IndexOf("c-ip");
+                string key2;
+                if (index2 != -1)
+                    key2 = item[index2];
+                else
+                    key2 = null;
+                int index3 = header.IndexOf("cs-uri-stem");
+                string key3;
+                if (index3 != -1)
+                    key3 = item[index3];
+                else
+                    key3 = null;
+
+                //int index = header.FindIndex(FindDate);                
+                //string key = item[index];
+                //int index2 = header.FindIndex(FindIP);
+                //string key2 = item[index2];
+                //int index3 = header.FindIndex(FindPage);
+                //string key3 = item[index3];
 
                 if (!string.IsNullOrEmpty(key) && key != "-")
                 {
@@ -76,7 +95,7 @@ namespace Indihiang.Cores.Features
                     }
 
                 }                
-            }
+            //}
         }
         private static bool FindDate(string item)
         {

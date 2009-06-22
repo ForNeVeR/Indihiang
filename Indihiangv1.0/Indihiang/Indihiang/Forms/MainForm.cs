@@ -152,8 +152,11 @@ namespace Indihiang.Forms
                             }
                         }
 
-                        TreeNode item =CreateNewNode(name1, name1,7);                        
+                        for (int i = 0; i < logFiles.Length; i++)
+                            key = String.Format("{0}{1};", key, logFiles[i]);
+                        TreeNode item = CreateNewNode(key, name1, 7);
 
+                        key = "--";
                         for (int i = 0; i < logFiles.Length; i++)
                         {
                             key = String.Format("{0}{1};", key,logFiles[i]);
@@ -162,6 +165,7 @@ namespace Indihiang.Forms
                             childItem.ImageIndex = 2;
                             childItem.SelectedImageIndex = 2;
                         }
+                        
 
                         AttachUserControl(key, name1,7);
                         AttachLogParser(key);                       
@@ -278,11 +282,48 @@ namespace Indihiang.Forms
                 tabMain.ContextMenuStrip = ctxTab;
 
             }
-        }
+        }        
 
         private void tabMain_MouseUp(object sender, MouseEventArgs e)
         {
             tabMain.ContextMenuStrip = null;
+        }
+        
+        private void treeMain_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                TreeViewHitTestInfo hit = treeMain.HitTest(e.X, e.Y);
+                if (hit != null)
+                {
+                    if (hit.Node != null)
+                    {
+                        if (hit.Node.Equals(_logFileaNode) || hit.Node.Equals(_computersNode))
+                        {
+                            if (hit.Node.Equals(_logFileaNode))
+                                ctxTree1.Items[0].Text = "Open Log File(s)";
+                            else
+                                ctxTree1.Items[0].Text = "Open Remote IIS Server";
+                            ctxTree1.Show(treeMain, e.Location);
+                            
+                        }
+                        else
+                            if (hit.Node.Equals(_rootNode))
+                            {
+                                ctxTree2.Show(treeMain, e.Location);
+                            }
+                            else
+                            {
+                                if (hit.Node.Parent.Equals(_logFileaNode) || hit.Node.Parent.Equals(_computersNode))
+                                {
+                                    ctxTree3.Show(treeMain, e.Location);
+                                }
+                            }
+
+                    }
+                }
+                
+            }
         }
 
         private void closeToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -328,18 +369,115 @@ namespace Indihiang.Forms
 
         private void closeAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            while (tabMain.TabPages.Count > 1)
-            {
-                
-                int index = tabMain.TabPages.Count-1;
-                if(tabMain.TabPages[index].Text!="Welcome")
-                    tabMain.TabPages.RemoveAt(index);
-            }
+            DialogResult dlg = MessageBox.Show("Are you sure to close all log analyzing?",
+                                    "Confirmation",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Question);
 
-            _logFileaNode.Nodes.Clear();
-            _computersNode.Nodes.Clear();
-            _listParser.Clear();
+            if (dlg == DialogResult.Yes)
+            {
+                while (tabMain.TabPages.Count > 1)
+                {
+
+                    int index = tabMain.TabPages.Count - 1;
+                    if (tabMain.TabPages[index].Text != "Welcome")
+                        tabMain.TabPages.RemoveAt(index);
+                }
+
+                _logFileaNode.Nodes.Clear();
+                _computersNode.Nodes.Clear();
+                _listParser.Clear();
+            }
         }
+
+        private void closeAllToolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            // close all
+            closeAllToolStripMenuItem_Click(sender, e);
+        }
+        private void closeAllToolStripMenuItem2_Click(object sender, EventArgs e)
+        {            
+            // close all log files or remote IIS
+            if (treeMain.SelectedNode != null)
+            {
+                DialogResult dlg = MessageBox.Show("Are you sure to close all log analyzing?",
+                                    "Confirmation",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Question);
+
+                if (dlg == DialogResult.No)
+                    return;
+            
+
+                bool logFileSelected = false;
+                if (treeMain.SelectedNode.Equals(_logFileaNode))
+                    logFileSelected = true;
+                                
+                List<string> keys = new List<string>();
+                int totalTabs = tabMain.TabPages.Count;
+                for (int i = 0; i < totalTabs; i++)
+                {
+                    if (tabMain.TabPages[i].Text != "Welcome")
+                    {
+                        if (!tabMain.TabPages[i].Tag.ToString().StartsWith("$$"))
+                        {
+                            if (logFileSelected)
+                                keys.Add(tabMain.TabPages[i].Tag.ToString());
+                        }
+                        else
+                        {
+                            if (!logFileSelected)
+                                keys.Add(tabMain.TabPages[i].Tag.ToString());
+                        }
+                    }
+                }
+
+                while (keys.Count>0)
+                {
+                    string key = keys[0];
+                    if (tabMain.TabPages.ContainsKey(key))
+                    {
+                        tabMain.TabPages.RemoveByKey(key);
+                    }
+                    if (_listParser.ContainsKey(key))
+                    {
+                        if (_listParser[key].IsBusy)
+                            _listParser[key].CancelAnalyze();
+
+                        _listParser.Remove(key);
+                    }
+                    keys.RemoveAt(0);
+                }
+
+                if (treeMain.SelectedNode.Equals(_logFileaNode))
+                    _logFileaNode.Nodes.Clear();
+                else
+                    _computersNode.Nodes.Clear();
+
+
+            }
+        }
+        private void openLogFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //open log file
+            openLogFileToolStripMenuItem_Click(sender, e);
+        }
+
+        private void openRemoteIISServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //open remote IIS 
+            toolStripOpenComputer_Click(sender, e);
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //open log file or remote IIS
+            if (treeMain.SelectedNode.Equals(_logFileaNode))
+                openLogFileToolStripMenuItem_Click(sender, e);
+            else
+                toolStripOpenComputer_Click(sender, e);
+        }
+
         private void howToUseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // version 0.2
@@ -380,7 +518,11 @@ namespace Indihiang.Forms
         }
         private void AttachLogParser(string fileNames)
         {
-            LogParser parser = new LogParser { FileName = fileNames };
+            LogParser parser = new LogParser { 
+                FileName = fileNames, 
+                UseParallel = enableParallelComputingToolStripMenuItem.Checked 
+            };
+
             parser.AnalyzeLogHandler += OnAnalyzeLog;
             parser.EndAnalyzeHandler += OnEndAnalyze;
 
@@ -389,7 +531,11 @@ namespace Indihiang.Forms
         }
         private void AttachIISRemoteLogParser(string name,IISInfo info)
         {
-            LogParser parser = new LogParser(info) { FileName = name };
+            LogParser parser = new LogParser(info)
+            {
+                FileName = name,
+                UseParallel = enableParallelComputingToolStripMenuItem.Checked
+            };
             parser.AnalyzeLogHandler += OnAnalyzeLog;
             parser.EndAnalyzeHandler += OnEndAnalyze;
 
@@ -434,7 +580,11 @@ namespace Indihiang.Forms
             }
         }
         [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);                          
+        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);
+
+               
+        
+                                                      
 
         ///////////////////////////////////////////////////
     }

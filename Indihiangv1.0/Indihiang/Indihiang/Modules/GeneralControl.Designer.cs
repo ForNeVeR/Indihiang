@@ -35,6 +35,8 @@
             this.listBoxIPAddress = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
             this.listBoxFileName = new System.Windows.Forms.ListBox();
+            this.lbTotalData = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,7 +54,7 @@
             // 
             this.lbTime.AutoSize = true;
             this.lbTime.BackColor = System.Drawing.Color.Gainsboro;
-            this.lbTime.Location = new System.Drawing.Point(91, 225);
+            this.lbTime.Location = new System.Drawing.Point(91, 243);
             this.lbTime.Name = "lbTime";
             this.lbTime.Size = new System.Drawing.Size(13, 13);
             this.lbTime.TabIndex = 5;
@@ -62,7 +64,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Gainsboro;
-            this.label5.Location = new System.Drawing.Point(28, 225);
+            this.label5.Location = new System.Drawing.Point(28, 243);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(33, 13);
             this.label5.TabIndex = 4;
@@ -72,6 +74,8 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Gainsboro;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.lbTotalData);
+            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.listBoxIPAddress);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.lbTime);
@@ -113,6 +117,26 @@
             this.listBoxFileName.Size = new System.Drawing.Size(320, 95);
             this.listBoxFileName.TabIndex = 0;
             // 
+            // lbTotalData
+            // 
+            this.lbTotalData.AutoSize = true;
+            this.lbTotalData.BackColor = System.Drawing.Color.Gainsboro;
+            this.lbTotalData.Location = new System.Drawing.Point(91, 224);
+            this.lbTotalData.Name = "lbTotalData";
+            this.lbTotalData.Size = new System.Drawing.Size(13, 13);
+            this.lbTotalData.TabIndex = 10;
+            this.lbTotalData.Text = "[]";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Gainsboro;
+            this.label4.Location = new System.Drawing.Point(28, 224);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 13);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "Total Data:";
+            // 
             // GeneralControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -137,5 +161,7 @@
         private System.Windows.Forms.ListBox listBoxIPAddress;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ListBox listBoxFileName;
+        private System.Windows.Forms.Label lbTotalData;
+        private System.Windows.Forms.Label label4;
     }
 }

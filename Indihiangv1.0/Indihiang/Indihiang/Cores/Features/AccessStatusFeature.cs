@@ -34,13 +34,19 @@ namespace Indihiang.Cores.Features
 
         private void RunW3cext(List<string> header, string[] item)
         {
-            if (header.Exists(FindStatus))
-            {
-                if (header.Exists(FindDate))
-                {
+            //if (header.Exists(FindStatus))
+            //{
+            //    if (header.Exists(FindDate))
+            //    {
                     int val = 0;
-                    int index = header.FindIndex(FindDate);
-                    int index2 = header.FindIndex(FindStatus);
+                    //int index = header.FindIndex(0,FindDate);
+                    //int index2 = header.FindIndex(0,FindStatus);
+                    int index = header.IndexOf("date");
+                    int index2 = header.IndexOf("sc-status");
+
+                    if (index == -1 || index2 == -1)
+                        return;
+
                     string key = item[index];
                     string dataKey = item[index2];
 
@@ -50,12 +56,12 @@ namespace Indihiang.Cores.Features
                         {
                             if (_logs["General"].Colls[key].Items.ContainsKey(dataKey))
                             {                                
-                                lock (this) 
-                                {
+                                //lock (this) 
+                                //{
                                     val = Convert.ToInt32(_logs["General"].Colls[key].Items[dataKey]);
                                     val++;
                                     _logs["General"].Colls[key].Items[dataKey] = val.ToString(); 
-                                }
+                                //}
                             }
                             else
                                 _logs["General"].Colls[key].Items.Add(dataKey, "1");
@@ -63,8 +69,8 @@ namespace Indihiang.Cores.Features
                         else
                             _logs["General"].Colls.Add(key, new WebLog(dataKey, "1"));
                     }
-                }
-            }
+            //    }
+            //}
         }
         private static bool FindStatus(string item)
         {
