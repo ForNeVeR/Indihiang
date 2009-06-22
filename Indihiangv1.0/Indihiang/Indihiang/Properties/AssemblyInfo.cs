@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Indhiang")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Agus Kurniawan")]
+[assembly: AssemblyCompany("Agus Kurniawan - http://indihiang.aguskurniawan.net")]
 [assembly: AssemblyProduct("Indihiang")]
 [assembly: AssemblyCopyright("Copyright © Agus Kurniawan 2009")]
 [assembly: AssemblyTrademark("")]

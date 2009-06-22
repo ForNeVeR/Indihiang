@@ -32,22 +32,22 @@ namespace Indihiang.Modules
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IPAddressControl));
             this.tabIPAddress = new System.Windows.Forms.TabControl();
             this.tabIPAccess = new System.Windows.Forms.TabPage();
-            this.tabIPPage = new System.Windows.Forms.TabPage();
             this.zedIPAccess1 = new ZedGraph.ZedGraphControl();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.cmbIPAddress = new System.Windows.Forms.ComboBox();
-            this.dataGridIPPage = new System.Windows.Forms.DataGridView();
             this.tabIPGrid = new System.Windows.Forms.TabPage();
             this.dataGridIP = new System.Windows.Forms.DataGridView();
+            this.tabIPPage = new System.Windows.Forms.TabPage();
+            this.dataGridIPPage = new System.Windows.Forms.DataGridView();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.cmbIPAddress = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.tabIPAddress.SuspendLayout();
             this.tabIPAccess.SuspendLayout();
-            this.tabIPPage.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridIPPage)).BeginInit();
             this.tabIPGrid.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridIP)).BeginInit();
+            this.tabIPPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridIPPage)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabIPAddress
@@ -76,19 +76,6 @@ namespace Indihiang.Modules
             this.tabIPAccess.Text = "IP Access";
             this.tabIPAccess.UseVisualStyleBackColor = true;
             // 
-            // tabIPPage
-            // 
-            this.tabIPPage.Controls.Add(this.dataGridIPPage);
-            this.tabIPPage.Controls.Add(this.panel1);
-            this.tabIPPage.ImageIndex = 0;
-            this.tabIPPage.Location = new System.Drawing.Point(4, 26);
-            this.tabIPPage.Name = "tabIPPage";
-            this.tabIPPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabIPPage.Size = new System.Drawing.Size(693, 392);
-            this.tabIPPage.TabIndex = 1;
-            this.tabIPPage.Text = "IP/Page Access";
-            this.tabIPPage.UseVisualStyleBackColor = true;
-            // 
             // zedIPAccess1
             // 
             this.zedIPAccess1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -103,54 +90,6 @@ namespace Indihiang.Modules
             this.zedIPAccess1.ScrollMinY2 = 0;
             this.zedIPAccess1.Size = new System.Drawing.Size(687, 386);
             this.zedIPAccess1.TabIndex = 0;
-            // 
-            // imageList1
-            // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "grafik.ico");
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.cmbIPAddress);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(3, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(687, 49);
-            this.panel1.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Choose IP Address:";
-            // 
-            // cmbIPAddress
-            // 
-            this.cmbIPAddress.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbIPAddress.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cmbIPAddress.FormattingEnabled = true;
-            this.cmbIPAddress.Location = new System.Drawing.Point(119, 13);
-            this.cmbIPAddress.Name = "cmbIPAddress";
-            this.cmbIPAddress.Size = new System.Drawing.Size(174, 21);
-            this.cmbIPAddress.TabIndex = 1;
-            this.cmbIPAddress.SelectedIndexChanged += new System.EventHandler(this.cmbIPAddress_SelectedIndexChanged);
-            // 
-            // dataGridIPPage
-            // 
-            this.dataGridIPPage.AllowUserToAddRows = false;
-            this.dataGridIPPage.AllowUserToDeleteRows = false;
-            this.dataGridIPPage.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridIPPage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridIPPage.Location = new System.Drawing.Point(3, 52);
-            this.dataGridIPPage.Name = "dataGridIPPage";
-            this.dataGridIPPage.ReadOnly = true;
-            this.dataGridIPPage.Size = new System.Drawing.Size(687, 337);
-            this.dataGridIPPage.TabIndex = 1;
             // 
             // tabIPGrid
             // 
@@ -175,6 +114,69 @@ namespace Indihiang.Modules
             this.dataGridIP.Size = new System.Drawing.Size(693, 392);
             this.dataGridIP.TabIndex = 0;
             // 
+            // tabIPPage
+            // 
+            this.tabIPPage.Controls.Add(this.dataGridIPPage);
+            this.tabIPPage.Controls.Add(this.panel1);
+            this.tabIPPage.ImageIndex = 0;
+            this.tabIPPage.Location = new System.Drawing.Point(4, 26);
+            this.tabIPPage.Name = "tabIPPage";
+            this.tabIPPage.Padding = new System.Windows.Forms.Padding(3);
+            this.tabIPPage.Size = new System.Drawing.Size(693, 392);
+            this.tabIPPage.TabIndex = 1;
+            this.tabIPPage.Text = "IP/Page Access";
+            this.tabIPPage.UseVisualStyleBackColor = true;
+            // 
+            // dataGridIPPage
+            // 
+            this.dataGridIPPage.AllowUserToAddRows = false;
+            this.dataGridIPPage.AllowUserToDeleteRows = false;
+            this.dataGridIPPage.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridIPPage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridIPPage.Location = new System.Drawing.Point(3, 52);
+            this.dataGridIPPage.Name = "dataGridIPPage";
+            this.dataGridIPPage.ReadOnly = true;
+            this.dataGridIPPage.Size = new System.Drawing.Size(687, 337);
+            this.dataGridIPPage.TabIndex = 1;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.Tan;
+            this.panel1.Controls.Add(this.cmbIPAddress);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(687, 49);
+            this.panel1.TabIndex = 0;
+            // 
+            // cmbIPAddress
+            // 
+            this.cmbIPAddress.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbIPAddress.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbIPAddress.FormattingEnabled = true;
+            this.cmbIPAddress.Location = new System.Drawing.Point(119, 13);
+            this.cmbIPAddress.Name = "cmbIPAddress";
+            this.cmbIPAddress.Size = new System.Drawing.Size(174, 21);
+            this.cmbIPAddress.TabIndex = 1;
+            this.cmbIPAddress.SelectedIndexChanged += new System.EventHandler(this.cmbIPAddress_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(10, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Choose IP Address:";
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "grafik.ico");
+            // 
             // IPAddressControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -185,12 +187,12 @@ namespace Indihiang.Modules
             this.Resize += new System.EventHandler(this.IPAddressControl_Resize);
             this.tabIPAddress.ResumeLayout(false);
             this.tabIPAccess.ResumeLayout(false);
-            this.tabIPPage.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridIPPage)).EndInit();
             this.tabIPGrid.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridIP)).EndInit();
+            this.tabIPPage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridIPPage)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }

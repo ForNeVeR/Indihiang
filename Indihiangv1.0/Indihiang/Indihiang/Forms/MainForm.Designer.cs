@@ -33,7 +33,10 @@ namespace Indihiang.Forms
             this.menuMain = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openLogFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openRemoteWebServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,9 +66,19 @@ namespace Indihiang.Forms
             this.ctxTab = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.closeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.closeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.openRemoteWebServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+            this.ctxTree1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.closeAllToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxTree3 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.closeToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxTree2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openLogFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openRemoteIISServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+            this.closeAllToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableParallelComputingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -76,12 +89,16 @@ namespace Indihiang.Forms
             this.tabWelcome.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.ctxTab.SuspendLayout();
+            this.ctxTree1.SuspendLayout();
+            this.ctxTree3.SuspendLayout();
+            this.ctxTree2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuMain
             // 
             this.menuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.optionsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuMain.Location = new System.Drawing.Point(0, 0);
             this.menuMain.Name = "menuMain";
@@ -110,12 +127,31 @@ namespace Indihiang.Forms
             this.openLogFileToolStripMenuItem.Text = "Open Log File";
             this.openLogFileToolStripMenuItem.Click += new System.EventHandler(this.openLogFileToolStripMenuItem_Click);
             // 
+            // openRemoteWebServerToolStripMenuItem
+            // 
+            this.openRemoteWebServerToolStripMenuItem.Name = "openRemoteWebServerToolStripMenuItem";
+            this.openRemoteWebServerToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.openRemoteWebServerToolStripMenuItem.Text = "Open Remote Web Server";
+            this.openRemoteWebServerToolStripMenuItem.Click += new System.EventHandler(this.openRemoteWebServerToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(206, 6);
+            // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+            // 
+            // closeAllToolStripMenuItem1
+            // 
+            this.closeAllToolStripMenuItem1.Name = "closeAllToolStripMenuItem1";
+            this.closeAllToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
+            this.closeAllToolStripMenuItem1.Text = "Close All";
+            this.closeAllToolStripMenuItem1.Click += new System.EventHandler(this.closeAllToolStripMenuItem1_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -274,6 +310,7 @@ namespace Indihiang.Forms
             this.treeMain.ShowRootLines = false;
             this.treeMain.Size = new System.Drawing.Size(238, 375);
             this.treeMain.TabIndex = 1;
+            this.treeMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeMain_MouseDown);
             // 
             // panel2
             // 
@@ -382,24 +419,99 @@ namespace Indihiang.Forms
             this.closeAllToolStripMenuItem.Text = "Close All";
             this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.closeAllToolStripMenuItem_Click);
             // 
-            // closeAllToolStripMenuItem1
+            // ctxTree1
             // 
-            this.closeAllToolStripMenuItem1.Name = "closeAllToolStripMenuItem1";
-            this.closeAllToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
-            this.closeAllToolStripMenuItem1.Text = "Close All";
-            this.closeAllToolStripMenuItem1.Click += new System.EventHandler(this.closeAllToolStripMenuItem1_Click);
+            this.ctxTree1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem,
+            this.toolStripMenuItem4,
+            this.closeAllToolStripMenuItem2});
+            this.ctxTree1.Name = "ctxTree1";
+            this.ctxTree1.Size = new System.Drawing.Size(161, 54);
             // 
-            // openRemoteWebServerToolStripMenuItem
+            // openToolStripMenuItem
             // 
-            this.openRemoteWebServerToolStripMenuItem.Name = "openRemoteWebServerToolStripMenuItem";
-            this.openRemoteWebServerToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.openRemoteWebServerToolStripMenuItem.Text = "Open Remote Web Server";
-            this.openRemoteWebServerToolStripMenuItem.Click += new System.EventHandler(this.openRemoteWebServerToolStripMenuItem_Click);
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.openToolStripMenuItem.Text = "Open Log File(s)";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
-            // toolStripMenuItem3
+            // toolStripMenuItem4
             // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(206, 6);
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(157, 6);
+            // 
+            // closeAllToolStripMenuItem2
+            // 
+            this.closeAllToolStripMenuItem2.Name = "closeAllToolStripMenuItem2";
+            this.closeAllToolStripMenuItem2.Size = new System.Drawing.Size(160, 22);
+            this.closeAllToolStripMenuItem2.Text = "Close All";
+            this.closeAllToolStripMenuItem2.Click += new System.EventHandler(this.closeAllToolStripMenuItem2_Click);
+            // 
+            // ctxTree3
+            // 
+            this.ctxTree3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.closeToolStripMenuItem2});
+            this.ctxTree3.Name = "contextMenuStrip1";
+            this.ctxTree3.Size = new System.Drawing.Size(104, 26);
+            // 
+            // closeToolStripMenuItem2
+            // 
+            this.closeToolStripMenuItem2.Name = "closeToolStripMenuItem2";
+            this.closeToolStripMenuItem2.Size = new System.Drawing.Size(103, 22);
+            this.closeToolStripMenuItem2.Text = "Close";
+            // 
+            // ctxTree2
+            // 
+            this.ctxTree2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openLogFilesToolStripMenuItem,
+            this.openRemoteIISServerToolStripMenuItem,
+            this.toolStripMenuItem5,
+            this.closeAllToolStripMenuItem3});
+            this.ctxTree2.Name = "ctxTree2";
+            this.ctxTree2.Size = new System.Drawing.Size(198, 76);
+            // 
+            // openLogFilesToolStripMenuItem
+            // 
+            this.openLogFilesToolStripMenuItem.Name = "openLogFilesToolStripMenuItem";
+            this.openLogFilesToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.openLogFilesToolStripMenuItem.Text = "Open Log File(s)";
+            this.openLogFilesToolStripMenuItem.Click += new System.EventHandler(this.openLogFilesToolStripMenuItem_Click);
+            // 
+            // openRemoteIISServerToolStripMenuItem
+            // 
+            this.openRemoteIISServerToolStripMenuItem.Name = "openRemoteIISServerToolStripMenuItem";
+            this.openRemoteIISServerToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.openRemoteIISServerToolStripMenuItem.Text = "Open Remote IIS Server";
+            this.openRemoteIISServerToolStripMenuItem.Click += new System.EventHandler(this.openRemoteIISServerToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(194, 6);
+            // 
+            // closeAllToolStripMenuItem3
+            // 
+            this.closeAllToolStripMenuItem3.Name = "closeAllToolStripMenuItem3";
+            this.closeAllToolStripMenuItem3.Size = new System.Drawing.Size(197, 22);
+            this.closeAllToolStripMenuItem3.Text = "Close All";
+            this.closeAllToolStripMenuItem3.Click += new System.EventHandler(this.closeAllToolStripMenuItem3_Click);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableParallelComputingToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // enableParallelComputingToolStripMenuItem
+            // 
+            this.enableParallelComputingToolStripMenuItem.Checked = true;
+            this.enableParallelComputingToolStripMenuItem.CheckOnClick = true;
+            this.enableParallelComputingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.enableParallelComputingToolStripMenuItem.Name = "enableParallelComputingToolStripMenuItem";
+            this.enableParallelComputingToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.enableParallelComputingToolStripMenuItem.Text = "Enable Parallel Computing";
             // 
             // MainForm
             // 
@@ -434,6 +546,9 @@ namespace Indihiang.Forms
             this.tabWelcome.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ctxTab.ResumeLayout(false);
+            this.ctxTree1.ResumeLayout(false);
+            this.ctxTree3.ResumeLayout(false);
+            this.ctxTree2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -477,6 +592,19 @@ namespace Indihiang.Forms
         private System.Windows.Forms.ToolStripMenuItem closeAllToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem openRemoteWebServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ContextMenuStrip ctxTree1;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem closeAllToolStripMenuItem2;
+        private System.Windows.Forms.ContextMenuStrip ctxTree3;
+        private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem2;
+        private System.Windows.Forms.ContextMenuStrip ctxTree2;
+        private System.Windows.Forms.ToolStripMenuItem openLogFilesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openRemoteIISServerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem closeAllToolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enableParallelComputingToolStripMenuItem;
 
     }
 }

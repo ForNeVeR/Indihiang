@@ -37,9 +37,17 @@ namespace Indihiang.Modules
                 txtLog.AppendText(newLog);                      
         }
         public void Populate(LogParser parser)
-        {            
+        {
+            if (parser.UseParallel)
+                PopulateParalel(parser);
+            else
+                PopulateNonParallel(parser);
+        }
+
+        private void PopulateNonParallel(LogParser parser)
+        {
             string id = "";
-            for (int i = 0; i < parser.Features.Count;i++ )
+            for (int i = 0; i < parser.Features.Count; i++)
             {
                 switch (parser.Features[i].FeatureName)
                 {
@@ -47,25 +55,25 @@ namespace Indihiang.Modules
                         id = LogFeature.GENERAL.ToString();
                         GeneralControl uc1 = new GeneralControl();
                         uc1.FileNames = IndihiangHelper.ParseFile(parser.FileName);
-                        Attach(uc1, id, "General", parser.Features[i].Items); 
+                        Attach(uc1, id, "General", parser.Features[i].Items);
 
                         break;
                     case LogFeature.USERAGENT:
                         id = LogFeature.USERAGENT.ToString();
                         UserAgentControl uc2 = new UserAgentControl();
-                        Attach(uc2, id, "User Agent", parser.Features[i].Items); 
-                       
+                        Attach(uc2, id, "User Agent", parser.Features[i].Items);
+
                         break;
                     case LogFeature.HITS:
                         id = LogFeature.HITS.ToString();
                         HitsControl uc3 = new HitsControl();
-                        Attach(uc3, id, "Hits", parser.Features[i].Items); 
+                        Attach(uc3, id, "Hits", parser.Features[i].Items);
 
                         break;
                     case LogFeature.ACCESS:
                         id = LogFeature.ACCESS.ToString();
                         AccessPageControl uc4 = new AccessPageControl();
-                        Attach(uc4, id, "Access Page", parser.Features[i].Items);                        
+                        Attach(uc4, id, "Access Page", parser.Features[i].Items);
 
                         break;
                     case LogFeature.IPADDRESS:
@@ -77,10 +85,60 @@ namespace Indihiang.Modules
                     case LogFeature.STATUS:
                         id = LogFeature.STATUS.ToString();
                         AccessStatusControl uc6 = new AccessStatusControl();
-                        Attach(uc6, id, "HTTP Status",parser.Features[i].Items);
+                        Attach(uc6, id, "HTTP Status", parser.Features[i].Items);
 
                         break;
-                }                
+                }
+            }
+            tabMainLog.SelectedTab = tabMainLog.TabPages[LogFeature.GENERAL.ToString()];
+        }
+
+        private void PopulateParalel(LogParser parser)
+        {
+            string id = "";
+            //foreach (var feature in parser.ParallelFeatures.GetConsumingEnumerable())
+            foreach (var feature in parser.ParallelFeatures)
+            {
+                switch (feature.FeatureName)
+                {
+                    case LogFeature.GENERAL:
+                        id = LogFeature.GENERAL.ToString();
+                        GeneralControl uc1 = new GeneralControl();
+                        uc1.FileNames = IndihiangHelper.ParseFile(parser.FileName);
+                        Attach(uc1, id, "General", feature.Items);
+
+                        break;
+                    case LogFeature.USERAGENT:
+                        id = LogFeature.USERAGENT.ToString();
+                        UserAgentControl uc2 = new UserAgentControl();
+                        Attach(uc2, id, "User Agent", feature.Items);
+
+                        break;
+                    case LogFeature.HITS:
+                        id = LogFeature.HITS.ToString();
+                        HitsControl uc3 = new HitsControl();
+                        Attach(uc3, id, "Hits", feature.Items);
+
+                        break;
+                    case LogFeature.ACCESS:
+                        id = LogFeature.ACCESS.ToString();
+                        AccessPageControl uc4 = new AccessPageControl();
+                        Attach(uc4, id, "Access Page", feature.Items);
+
+                        break;
+                    case LogFeature.IPADDRESS:
+                        id = LogFeature.IPADDRESS.ToString();
+                        IPAddressControl uc5 = new IPAddressControl();
+                        Attach(uc5, id, "IP Address", feature.Items);
+
+                        break;
+                    case LogFeature.STATUS:
+                        id = LogFeature.STATUS.ToString();
+                        AccessStatusControl uc6 = new AccessStatusControl();
+                        Attach(uc6, id, "HTTP Status", feature.Items);
+
+                        break;
+                }
             }
             tabMainLog.SelectedTab = tabMainLog.TabPages[LogFeature.GENERAL.ToString()];
         }

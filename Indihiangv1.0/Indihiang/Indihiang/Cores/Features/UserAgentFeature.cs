@@ -33,13 +33,20 @@ namespace Indihiang.Cores.Features
 
         private void RunW3cext(List<string> header, string[] item)
         {            
-            if (header.Exists(FindUserAgent))
-            {
-                if (header.Exists(FindDate))
-                {
+            //if (header.Exists(FindUserAgent))
+            //{
+            //    if (header.Exists(FindDate))
+            //    {
                     int val = 0;
-                    int index = header.FindIndex(FindDate);
-                    int index2 = header.FindIndex(FindUserAgent);
+                    //int index = header.FindIndex(FindDate);
+                    //int index2 = header.FindIndex(FindUserAgent);
+
+                    int index = header.IndexOf("date");
+                    int index2 = header.IndexOf("cs(User-Agent)");
+
+                    if (index == -1 || index2 == -1)
+                        return;
+
                     string key = item[index];
                     string data = item[index2];
 
@@ -47,8 +54,8 @@ namespace Indihiang.Cores.Features
                     {
                         string browser = CheckBrowser(data);
 
-                        lock (this)
-                        {
+                        //lock (this)
+                        //{
                             if (_logs["General"].Colls.ContainsKey(key))
                             {
                                 if (_logs["General"].Colls[key].Items.ContainsKey(browser))
@@ -62,10 +69,10 @@ namespace Indihiang.Cores.Features
                             }
                             else
                                 _logs["General"].Colls.Add(key, new WebLog(browser, "1"));
-                        }
+                        //}
                     }
-                }
-            }
+            //    }
+            //}
         }
         private string CheckBrowser(string line)
         {

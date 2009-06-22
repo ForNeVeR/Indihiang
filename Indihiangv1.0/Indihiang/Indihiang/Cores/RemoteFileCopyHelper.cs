@@ -7,9 +7,9 @@ using System.Security.Permissions;
 using Indihiang.DomainObject;
 namespace Indihiang.Cores
 {
-    public class RemoteFileCopyHelper
+    public sealed class RemoteFileCopyHelper
     {
-        public RemoteFileCopyHelper() { }
+        private RemoteFileCopyHelper() { }
 
 
         [DllImport("advapi32.DLL", SetLastError = true)]

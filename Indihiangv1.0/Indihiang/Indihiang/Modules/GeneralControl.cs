@@ -66,6 +66,14 @@ namespace Indihiang.Modules
                         list2.Add(item.Key);
                 }
 
+                if (DataSource["TotalData"].Colls.Count > 0)
+                {
+                    int total = Convert.ToInt32(DataSource["TotalData"].Colls["TotalData"].Items["TotalData"]);
+                    lbTotalData.Text = String.Format("{0} rows data", total);
+                }
+                else
+                    lbTotalData.Text = "No row data";
+
                 lbTime.Text = String.Format("{0:dd-MMM-yyyy} - {1:dd-MMM-yyyy}", startDate, endDate);
                 listBoxFileName.Items.AddRange(_listFiles.ToArray());
                 listBoxIPAddress.Items.AddRange(list2.ToArray());

@@ -30,24 +30,27 @@ namespace Indihiang.Cores.Features
         }
         private void RunW3cext(List<string> header, string[] item)
         {
-            if (header.Exists(FindDate))
-            {
+            //if (header.Exists(FindDate))
+            //{
                 int val = 0;
-                int index = header.FindIndex(FindDate);
+                int index = header.IndexOf("date");
+                //int index = header.FindIndex(FindDate);
                 string key = item[index];
 
                 if (_logs["General"].Colls.ContainsKey(key))
                 {
-                    lock (this)
-                    {
+                    //lock (this)
+                    //{
                         val = Convert.ToInt32(_logs["General"].Colls[key].Items[key]);
                         val++;
                         _logs["General"].Colls[key].Items[key] = val.ToString();
-                    }
+                    //}
                 }
                 else
-                    lock (this) { _logs["General"].Colls.Add(key, new WebLog(key, "1")); }
-            }
+                    //lock (this) { 
+                        _logs["General"].Colls.Add(key, new WebLog(key, "1")); 
+                    //}
+            //}
         }
         private static bool FindDate(string item)
         {

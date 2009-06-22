@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cores\BaseLogParser.cs" />
+    <Compile Include="Cores\CollectionHelper.cs" />
     <Compile Include="Cores\Features\AccessPageFeature.cs" />
     <Compile Include="Cores\Features\AccessStatusFeature.cs" />
     <Compile Include="Cores\Features\GeneralFeature.cs" />
@@ -178,7 +179,6 @@
     <Compile Include="Modules\UserAgentControl.Designer.cs">
       <DependentUpon>UserAgentControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Modules\UserControlUtil.cs" />
     <Compile Include="Modules\WebLogUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

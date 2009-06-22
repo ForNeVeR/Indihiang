@@ -42,6 +42,12 @@ namespace Indihiang.Cores.Features
             RunFeature(header, item);
         }
 
+        public void SynchData(Dictionary<string, LogCollection> newItem)
+        {
+            //RunSynchFeatureData(newItem);
+        }
+
         protected abstract bool RunFeature(List<string> header, string[] item);
+        //protected abstract bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem);
     }
 }

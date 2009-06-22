@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Indihiang.Cores;
 using Indihiang.Cores.Features;
 using ZedGraph;
 namespace Indihiang.Modules
@@ -76,7 +77,7 @@ namespace Indihiang.Modules
                         }
                     }
                 }
-                list = UserControlUtil.SortList(list);
+                list = CollectionHelper.SortList(list);
                 int iTotal = 0;
                 double another = 0d;
                 Color[] colors = new Color[] {Color.Blue,Color.Red,Color.Green,Color.Gainsboro};

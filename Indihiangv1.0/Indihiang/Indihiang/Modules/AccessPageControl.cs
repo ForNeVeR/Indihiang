@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Indihiang.Cores;
 using Indihiang.Cores.Features;
 using ZedGraph;
 namespace Indihiang.Modules
@@ -97,7 +98,7 @@ namespace Indihiang.Modules
                     List<Color> listColor = new List<Color>();
                     Random random = new Random();
 
-                    Dictionary<string, List<double>> newList = UserControlUtil.SortList(listBar);
+                    Dictionary<string, List<double>> newList = CollectionHelper.SortList(listBar);
                     foreach (KeyValuePair<string, List<double>> item in newList)
                     {
                         if (draw)
