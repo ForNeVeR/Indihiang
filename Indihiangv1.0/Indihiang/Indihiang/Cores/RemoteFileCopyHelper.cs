@@ -2,7 +2,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
-using System.Security.Permissions;
 
 using Indihiang.DomainObject;
 namespace Indihiang.Cores
