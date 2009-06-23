@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 
 namespace Indihiang.Cores
 {
@@ -18,7 +14,7 @@ namespace Indihiang.Cores
         {
             bool isHeader = false;
 
-            if (line == string.Empty || line==null)
+            if (string.IsNullOrEmpty(line))
                 return isHeader;
 
             if (line.StartsWith("#"))
@@ -26,12 +22,13 @@ namespace Indihiang.Cores
                 isHeader = true;
                 if (line.StartsWith("#Fields:"))
                 {
-
                     string temp = line.Substring(9);
                     string[] header = temp.Split(new char[] { ' ' });
 
                     _currentHeader.Clear();
-                    _currentHeader.AddRange(header);
+                    if (header!=null)
+                        if (header.Length>0)
+                            _currentHeader.AddRange(header);
                 }
             }
 

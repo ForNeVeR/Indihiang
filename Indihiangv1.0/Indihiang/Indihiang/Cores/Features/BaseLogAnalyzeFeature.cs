@@ -44,10 +44,10 @@ namespace Indihiang.Cores.Features
 
         public void SynchData(Dictionary<string, LogCollection> newItem)
         {
-            //RunSynchFeatureData(newItem);
+            RunSynchFeatureData(newItem);
         }
 
         protected abstract bool RunFeature(List<string> header, string[] item);
-        //protected abstract bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem);
+        protected abstract bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem);
     }
 }

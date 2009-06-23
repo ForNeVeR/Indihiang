@@ -90,16 +90,12 @@ namespace Indihiang.Cores
                                 features = ParseLogFile(features, files[i]);
 
                             _spinLock.Enter();
-                            foreach (var feature in features)
+                            features.ForEach(delegate(BaseLogAnalyzeFeature feature)
                             {
                                 for (int j = 0; j < _paralleFeatures.Count; j++)
-                                {
                                     if (_paralleFeatures[j].FeatureName == feature.FeatureName)
-                                    {
-                                        //CollectionHelper.Merge(_paralleFeatures[j].Items.
-                                    }
-                                }
-                            }
+                                        _paralleFeatures[j].SynchData(feature.Items);
+                            });
                             _spinLock.Exit();
                         }
                         catch (Exception err)
@@ -205,28 +201,33 @@ namespace Indihiang.Cores
                         Debug.WriteLine(String.Format("Read: {0}", line));
                         if (!ParseHeader(line))
                         {
-                            if (line != string.Empty && line != null)
+                            if (!string.IsNullOrEmpty(line))
                             {
-                                if (UseParallel)
+                                string[] rows = line.Split(new char[] { ' ' });
+                                if (rows != null)
                                 {
-                                    string[] rows = line.Split(new char[] { ' ' });
-                                    foreach (var feature in features)
+                                    if (rows.Length > 0)
                                     {
-                                        feature.Parse(_currentHeader, rows);
-                                    }
-                                }
-                                else
-                                {
-                                    string[] rows = line.Split(new char[] { ' ' });
-                                    for (int i = 0; i < _features.Count; i++)
-                                    {
-                                        _features[i].Parse(_currentHeader, rows);
+                                        if (UseParallel)
+                                        {
+                                            foreach (var feature in features)
+                                            {
+                                                feature.Parse(_currentHeader, rows);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            for (int i = 0; i < _features.Count; i++)
+                                            {
+                                                _features[i].Parse(_currentHeader, rows);
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                         line = sr.ReadLine();
-                        if (line != null)
+                        if (!string.IsNullOrEmpty(line))
                             line = line.TrimEnd('\0');
 
                     }                    
@@ -240,6 +241,13 @@ namespace Indihiang.Cores
                           LogProcessStatus.FAILED,
                           "ParseLogFile()",
                           String.Format("Internal Error on ParseLogFile: {0} is done", err.Message));
+                    _synContext.Post(OnParseLog, logInfo);
+                    logInfo = new LogInfoEventArgs(
+                          ParserID,
+                          EnumLogFile.UNKNOWN,
+                          LogProcessStatus.FAILED,
+                          "ParseLogFile()",
+                          String.Format("Detail: {0} is done", err.StackTrace));
                     _synContext.Post(OnParseLog, logInfo);
                     #endregion
                 }
@@ -259,13 +267,7 @@ namespace Indihiang.Cores
 
         }
 
-        private void SynchFeatureData(BaseLogAnalyzeFeature feature)
-        {            
-            //foreach (var item in _paralleFeatures.GetConsumingEnumerable())
-            //{
-                
-            //}
-        }
+        
 
         protected abstract bool ParseHeader(string line);
     }

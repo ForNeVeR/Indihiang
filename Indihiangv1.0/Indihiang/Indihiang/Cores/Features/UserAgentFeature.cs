@@ -108,5 +108,48 @@ namespace Indihiang.Cores.Features
 
             return false;
         }
+        protected override bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem)
+        {
+            bool success = false;
+
+            try
+            {
+                foreach (KeyValuePair<string, LogCollection> pair in newItem)
+                {
+                    if (pair.Key == "General")
+                    {
+                        foreach (KeyValuePair<string, WebLog> pair2 in pair.Value.Colls)
+                        {
+                            if (_logs["General"].Colls.ContainsKey(pair2.Key))
+                            {
+                                foreach (KeyValuePair<string, string> pair3 in pair2.Value.Items)
+                                {
+                                    if (_logs["General"].Colls[pair2.Key].Items.ContainsKey(pair3.Key))
+                                    {
+                                        int val1 = Convert.ToInt32(_logs["General"].Colls[pair2.Key].Items[pair3.Key]);
+                                        int val2 = Convert.ToInt32(pair3.Value);
+
+                                        _logs["General"].Colls[pair2.Key].Items[pair3.Key] = Convert.ToString(val1 + val2);
+                                    }
+                                    else
+                                        _logs["General"].Colls[pair2.Key].Items.Add(pair3.Key, pair3.Value);
+                                }
+                            }
+                            else
+                            {
+                                _logs["General"].Colls.Add(pair2.Key, pair2.Value);
+                            }
+                        }
+                    }
+                }
+                success = true;
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(String.Format("Error Synch: {0}", err.Message));
+            }
+
+            return success;
+        }
     }
 }
