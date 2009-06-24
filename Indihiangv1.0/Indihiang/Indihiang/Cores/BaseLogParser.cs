@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Threading;
-using System.Threading.Collections;
 
 using Indihiang.Cores.Features;
 namespace Indihiang.Cores
@@ -66,8 +62,8 @@ namespace Indihiang.Cores
 
         protected virtual void OnParseLog(LogInfoEventArgs e)
         {
-            if (this.ParseLogHandler != null)
-                this.ParseLogHandler(this, e);
+            if (ParseLogHandler != null)
+                ParseLogHandler(this, e);
 
             Debug.WriteLine(String.Format("OnParseLog:: {0}", e.Message));
         }
@@ -76,7 +72,7 @@ namespace Indihiang.Cores
         {
             if (LogFile.StartsWith("--"))
             {
-                string tmp = this.LogFile.Substring(2);
+                string tmp = LogFile.Substring(2);
                 string[] files = tmp.Split(new char[] { ';' });
 
                 if (UseParallel)
