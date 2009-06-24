@@ -33,46 +33,36 @@ namespace Indihiang.Cores.Features
 
         private void RunW3cext(List<string> header, string[] item)
         {            
-            //if (header.Exists(FindUserAgent))
-            //{
-            //    if (header.Exists(FindDate))
-            //    {
-                    int val = 0;
-                    //int index = header.FindIndex(FindDate);
-                    //int index2 = header.FindIndex(FindUserAgent);
+            int val = 0;
 
-                    int index = header.IndexOf("date");
-                    int index2 = header.IndexOf("cs(User-Agent)");
+            int index = header.IndexOf("date");
+            int index2 = header.IndexOf("cs(User-Agent)");
 
-                    if (index == -1 || index2 == -1)
-                        return;
+            if (index == -1 || index2 == -1)
+                return;
 
-                    string key = item[index];
-                    string data = item[index2];
+            string key = item[index];
+            string data = item[index2];
 
-                    if (!string.IsNullOrEmpty(data) && data != "-")
+            if (!string.IsNullOrEmpty(data) && data != "-")
+            {
+                string browser = CheckBrowser(data);
+
+                if (_logs["General"].Colls.ContainsKey(key))
+                {
+                    if (_logs["General"].Colls[key].Items.ContainsKey(browser))
                     {
-                        string browser = CheckBrowser(data);
-
-                        //lock (this)
-                        //{
-                            if (_logs["General"].Colls.ContainsKey(key))
-                            {
-                                if (_logs["General"].Colls[key].Items.ContainsKey(browser))
-                                {
-                                    val = Convert.ToInt32(_logs["General"].Colls[key].Items[browser]);
-                                    val++;
-                                    _logs["General"].Colls[key].Items[browser] = val.ToString();
-                                }
-                                else
-                                    _logs["General"].Colls[key].Items.Add(browser, "1");
-                            }
-                            else
-                                _logs["General"].Colls.Add(key, new WebLog(browser, "1"));
-                        //}
+                        val = Convert.ToInt32(_logs["General"].Colls[key].Items[browser]);
+                        val++;
+                        _logs["General"].Colls[key].Items[browser] = val.ToString();
                     }
-            //    }
-            //}
+                    else
+                        _logs["General"].Colls[key].Items.Add(browser, "1");
+                }
+                else
+                    _logs["General"].Colls.Add(key, new WebLog(browser, "1"));
+            }
+         
         }
         private string CheckBrowser(string line)
         {
@@ -94,20 +84,7 @@ namespace Indihiang.Cores.Features
             System.Diagnostics.Debug.WriteLine(line);
             return "Unknown";
         }
-        private static bool FindUserAgent(string item)
-        {
-            if (item == "cs(User-Agent)")
-                return true;
 
-            return false;
-        }
-        private static bool FindDate(string item)
-        {
-            if (item == "date")
-                return true;
-
-            return false;
-        }
         protected override bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem)
         {
             bool success = false;

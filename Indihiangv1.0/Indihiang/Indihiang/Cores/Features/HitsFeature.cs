@@ -30,42 +30,26 @@ namespace Indihiang.Cores.Features
         }
         private void RunW3cext(List<string> header, string[] item)
         {
-            //if (header.Exists(FindDate))
-            //{
-                int val = 0;
-                int index = header.IndexOf("date");
-                //int index = header.FindIndex(FindDate);
-                if (index == -1)
-                    return;
+            int val = 0;
+            int index = header.IndexOf("date");
+            if (index == -1)
+                return;
 
-                string key = item[index];
+            string key = item[index];
 
-                if (_logs["General"].Colls.ContainsKey(key))
+            if (_logs["General"].Colls.ContainsKey(key))
+            {
+                if (_logs["General"].Colls[key].Items.ContainsKey(key))
                 {
-                    //lock (this)
-                    //{
-                    if (_logs["General"].Colls[key].Items.ContainsKey(key))
-                    {
-                        val = Convert.ToInt32(_logs["General"].Colls[key].Items[key]);
-                        val++;
-                        _logs["General"].Colls[key].Items[key] = val.ToString();
-                    }
-                    else
-                        _logs["General"].Colls[key].Items.Add(key, "1");
-                    //}
+                    val = Convert.ToInt32(_logs["General"].Colls[key].Items[key]);
+                    val++;
+                    _logs["General"].Colls[key].Items[key] = val.ToString();
                 }
                 else
-                    //lock (this) { 
-                        _logs["General"].Colls.Add(key, new WebLog(key, "1")); 
-                    //}
-            //}
-        }
-        private static bool FindDate(string item)
-        {
-            if (item == "date")
-                return true;
-
-            return false;
+                    _logs["General"].Colls[key].Items.Add(key, "1");
+            }
+            else
+                _logs["General"].Colls.Add(key, new WebLog(key, "1"));             
         }
 
         protected override bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem)

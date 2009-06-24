@@ -86,6 +86,7 @@
     <Compile Include="Cores\CollectionHelper.cs" />
     <Compile Include="Cores\Features\AccessPageFeature.cs" />
     <Compile Include="Cores\Features\AccessStatusFeature.cs" />
+    <Compile Include="Cores\Features\BandwidthFeature.cs" />
     <Compile Include="Cores\Features\GeneralFeature.cs" />
     <Compile Include="Cores\Features\HitsFeature.cs" />
     <Compile Include="Cores\Features\IPAddressFeature.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Cores\EnumLogFile.cs" />
     <Compile Include="Cores\Features\BaseLogAnalyzeFeature.cs" />
     <Compile Include="Cores\Features\LogFeature.cs" />
+    <Compile Include="Cores\Features\RequestFeature.cs" />
     <Compile Include="Cores\Features\UserAgentFeature.cs" />
     <Compile Include="Cores\Features\WebLog.cs" />
     <Compile Include="Cores\IndihiangHelper.cs" />

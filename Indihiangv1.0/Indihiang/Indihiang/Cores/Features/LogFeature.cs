@@ -10,6 +10,8 @@ namespace Indihiang.Cores.Features
         STATUS,
         ACCESS,
         IPADDRESS,
-        METHODS
+        METHODS,
+        BANDWIDTH,
+        REQUEST
     }
 }

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Indihiang.Cores.Features
 {
@@ -87,28 +85,7 @@ namespace Indihiang.Cores.Features
                 }
 
             }                            
-        }
-        private static bool FindDate(string item)
-        {
-            if (item == "date")
-                return true;
-
-            return false;
-        }
-        private static bool FindIP(string item)
-        {
-            if (item == "c-ip")
-                return true;
-
-            return false;
-        }
-        private static bool FindPage(string item)
-        {
-            if (item == "cs-uri-stem")
-                return true;
-
-            return false;
-        }
+        }        
 
         protected override bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem)
         {

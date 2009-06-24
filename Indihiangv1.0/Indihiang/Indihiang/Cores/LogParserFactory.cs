@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using System.Reflection;
 using System.Configuration;
 
 namespace Indihiang.Cores
@@ -42,13 +40,10 @@ namespace Indihiang.Cores
                 logFormat = GetLogFormat(logFile);
 
             string asm = ConfigurationManager.AppSettings[logFormat.ToString()];
-            if(asm!=null && asm!="")
+            if(!string.IsNullOrEmpty(asm))
             {
-                //params pars = new 
                 object[] pars = new object[]{logFile,logFormat};
-                baseParser = (BaseLogParser)Activator.CreateInstance(Type.GetType(asm, true), pars);
-                
-                
+                baseParser = (BaseLogParser)Activator.CreateInstance(Type.GetType(asm, true), pars);                
             }
            
             return baseParser;
@@ -58,13 +53,10 @@ namespace Indihiang.Cores
         {
             BaseLogParser baseParser = null;
             string asm = ConfigurationManager.AppSettings[logFormat.ToString()];
-            if (asm != null && asm != "")
+            if (!string.IsNullOrEmpty(asm))
             {
-                //params pars = new 
                 object[] pars = new object[] { "", logFormat };
                 baseParser = (BaseLogParser)Activator.CreateInstance(Type.GetType(asm, true), pars);
-
-
             }
 
             return baseParser;

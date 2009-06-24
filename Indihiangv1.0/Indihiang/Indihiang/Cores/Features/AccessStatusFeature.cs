@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Indihiang.Cores.Features
 {
@@ -55,13 +53,10 @@ namespace Indihiang.Cores.Features
                 if (_logs["General"].Colls.ContainsKey(key))
                 {
                     if (_logs["General"].Colls[key].Items.ContainsKey(dataKey))
-                    {                                
-                        //lock (this) 
-                        //{
-                            val = Convert.ToInt32(_logs["General"].Colls[key].Items[dataKey]);
-                            val++;
-                            _logs["General"].Colls[key].Items[dataKey] = val.ToString(); 
-                        //}
+                    {
+                        val = Convert.ToInt32(_logs["General"].Colls[key].Items[dataKey]);
+                        val++;
+                        _logs["General"].Colls[key].Items[dataKey] = val.ToString(); 
                     }
                     else
                         _logs["General"].Colls[key].Items.Add(dataKey, "1");
@@ -70,20 +65,6 @@ namespace Indihiang.Cores.Features
                     _logs["General"].Colls.Add(key, new WebLog(dataKey, "1"));
             }
            
-        }
-        private static bool FindStatus(string item)
-        {
-            if (item == "sc-status")
-                return true;
-
-            return false;
-        }
-        private static bool FindDate(string item)
-        {
-            if (item == "date")
-                return true;
-
-            return false;
         }
 
         protected override bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem)
