@@ -150,6 +150,12 @@
     <Compile Include="Modules\AccessStatusControl.Designer.cs">
       <DependentUpon>AccessStatusControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\BandwidthControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\BandwidthControl.Designer.cs">
+      <DependentUpon>BandwidthControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\BaseControl.cs" />
     <Compile Include="Modules\GeneralControl.cs">
       <SubType>UserControl</SubType>
@@ -174,6 +180,12 @@
     </Compile>
     <Compile Include="Modules\LoadingControl.Designer.cs">
       <DependentUpon>LoadingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\RequestProcessingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\RequestProcessingControl.Designer.cs">
+      <DependentUpon>RequestProcessingControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\UserAgentControl.cs">
       <SubType>UserControl</SubType>
@@ -210,6 +222,9 @@
     <EmbeddedResource Include="Modules\AccessStatusControl.resx">
       <DependentUpon>AccessStatusControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Modules\BandwidthControl.resx">
+      <DependentUpon>BandwidthControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Modules\GeneralControl.resx">
       <DependentUpon>GeneralControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -221,6 +236,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\LoadingControl.resx">
       <DependentUpon>LoadingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\RequestProcessingControl.resx">
+      <DependentUpon>RequestProcessingControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\UserAgentControl.resx">
       <DependentUpon>UserAgentControl.cs</DependentUpon>
