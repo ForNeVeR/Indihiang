@@ -13,7 +13,8 @@ namespace Indihiang.Cores.Features
             _featureName = LogFeature.BANDWIDTH;
 
             LogCollection log = new LogCollection();
-            _logs.Add("General", log);
+            _logs.Add("BytesSent", log);
+            _logs.Add("ByteReceived", log);
         }
 
         protected override bool RunFeature(List<string> header, string[] item)
@@ -34,38 +35,149 @@ namespace Indihiang.Cores.Features
 
         private void RunW3cext(List<string> header, string[] item)
         {
-            //int val = 0;
-            //int index = header.IndexOf("date");
-            //int index2 = header.IndexOf("cs-uri-stem");
+            int val = 0;
+            int index = header.IndexOf("date");
+            int index2 = header.IndexOf("cs-uri-stem");
+            int index3 = header.IndexOf("sc-bytes");
+            int index4 = header.IndexOf("cs-bytes");
 
-            //if (index == -1 || index2 == -1)
-            //    return;
+            if (index == -1)
+                return;
 
-            //string key = item[index];
-            //string dataKey = item[index2];
+            string key = item[index];
 
-            //if (dataKey != "" && dataKey != null && dataKey != "-")
-            //{
-            //    if (_logs["General"].Colls.ContainsKey(key))
-            //    {
-            //        if (_logs["General"].Colls[key].Items.ContainsKey(dataKey))
-            //        {
-            //            val = Convert.ToInt32(_logs["General"].Colls[key].Items[dataKey]);
-            //            val++;
-            //            _logs["General"].Colls[key].Items[dataKey] = val.ToString();
-            //        }
-            //        else
-            //            _logs["General"].Colls[key].Items.Add(dataKey, "1");
-            //    }
-            //    else
-            //        _logs["General"].Colls.Add(key, new WebLog(dataKey, "1"));
-            //}
+            string data1;
+            if (index2 > 0)
+                data1 = item[index2];
+            else
+                data1 = string.Empty;
+            string data2;
+            if (index3 > 0)
+                data2 = item[index3];
+            else
+                data2 = string.Empty;
+            string data3;
+            if (index4 > 0)
+                data3 = item[index4];
+            else
+                data3 = string.Empty;
+
+
+            #region BytesSent
+            if (!string.IsNullOrEmpty(data1) && data1 != "-")
+            {
+                if (_logs["BytesSent"].Colls.ContainsKey(key))
+                {
+                    if (_logs["BytesSent"].Colls[key].Items.ContainsKey(data1))
+                    {
+                        if (!string.IsNullOrEmpty(data2))
+                        {
+                            val = Convert.ToInt32(_logs["BytesSent"].Colls[key].Items[data1]);
+                            val = val + Convert.ToInt32(data2);
+
+                            _logs["BytesSent"].Colls[key].Items[data1] = val.ToString();
+                        }                        
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(data2))
+                            val = Convert.ToInt32(data2);
+                        else
+                            val = 0;
+
+                        _logs["BytesSent"].Colls.Add(key, new WebLog(data1, val.ToString()));
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(data2))
+                        val = Convert.ToInt32(data2);
+                    else
+                        val = 0;
+
+                    _logs["BytesSent"].Colls.Add(key, new WebLog(data1, val.ToString()));
+                }
+            }
+            #endregion
+
+            #region ByteReceived
+            if (!string.IsNullOrEmpty(data1) && data1 != "-")
+            {
+                if (_logs["ByteReceived"].Colls.ContainsKey(key))
+                {
+                    if (_logs["ByteReceived"].Colls[key].Items.ContainsKey(data1))
+                    {
+                        if (!string.IsNullOrEmpty(data3))
+                        {
+                            val = Convert.ToInt32(_logs["ByteReceived"].Colls[key].Items[data1]);
+                            val = val + Convert.ToInt32(data3);
+
+                            _logs["ByteReceived"].Colls[key].Items[data1] = val.ToString();
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(data3))
+                            val = Convert.ToInt32(data3);
+                        else
+                            val = 0;
+
+                        _logs["ByteReceived"].Colls.Add(key, new WebLog(data1, val.ToString()));
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(data3))
+                        val = Convert.ToInt32(data3);
+                    else
+                        val = 0;
+
+                    _logs["ByteReceived"].Colls.Add(key, new WebLog(data1, val.ToString()));
+                }
+            }
+            #endregion
+
         }
 
         protected override bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem)
         {
             bool success = false;
+            try
+            {
+                foreach (KeyValuePair<string, LogCollection> pair in newItem)
+                {
+                    if (pair.Key == "BytesSent" || pair.Key == "ByteReceived")
+                    {
+                        foreach (KeyValuePair<string, WebLog> pair2 in pair.Value.Colls)
+                        {
+                            if (_logs[pair.Key].Colls.ContainsKey(pair2.Key))
+                            {
+                                foreach (KeyValuePair<string, string> pair3 in pair2.Value.Items)
+                                {
+                                    if (_logs[pair.Key].Colls[pair2.Key].Items.ContainsKey(pair3.Key))
+                                    {
+                                        int val1 = Convert.ToInt32(_logs[pair.Key].Colls[pair2.Key].Items[pair3.Key]);
+                                        int val2 = Convert.ToInt32(pair3.Value);
 
+                                        _logs[pair.Key].Colls[pair2.Key].Items[pair3.Key] = Convert.ToString(val1 + val2);
+                                    }
+                                    else
+                                        _logs[pair.Key].Colls[pair2.Key].Items.Add(pair3.Key, pair3.Value);
+                                }
+                            }
+                            else
+                            {
+                                _logs[pair.Key].Colls.Add(pair2.Key, pair2.Value);
+                            }
+                        }
+                    }
+                }
+                success = true;
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(String.Format("Error Synch: {0}", err.Message));
+            }
             return success;
         }
     }

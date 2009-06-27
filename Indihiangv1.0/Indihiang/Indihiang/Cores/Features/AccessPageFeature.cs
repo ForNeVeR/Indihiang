@@ -40,7 +40,7 @@ namespace Indihiang.Cores.Features
             string key = item[index];
             string dataKey = item[index2];
 
-            if (dataKey != "" && dataKey != null && dataKey != "-")
+            if (!string.IsNullOrEmpty(dataKey) && dataKey != "-")
             {
                 if (_logs["General"].Colls.ContainsKey(key))
                 {
