@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Indihiang.Cores
 {
@@ -10,7 +11,32 @@ namespace Indihiang.Cores
         { 
         }
 
-        protected override bool ParseHeader(string line)
+        protected override List<string> ParseHeader(string line)
+        {
+            List<string> list = null;
+
+            if (string.IsNullOrEmpty(line))
+                return list;
+
+            if (line.StartsWith("#Fields:"))
+            {
+                string temp = line.Substring(9);
+                temp = temp.Trim();
+                string[] header = temp.Split(new char[] { ' ' });
+
+                if (header != null)
+                    if (header.Length > 0)
+                    {
+                        list = new List<string>();
+                        list.AddRange(header);
+                    }
+            }
+
+            return list;
+        }
+
+
+        protected override bool IsLogHeader(string line)
         {
             bool isHeader = false;
 
@@ -18,22 +44,9 @@ namespace Indihiang.Cores
                 return isHeader;
 
             if (line.StartsWith("#"))
-            {
                 isHeader = true;
-                if (line.StartsWith("#Fields:"))
-                {
-                    string temp = line.Substring(9);
-                    string[] header = temp.Split(new char[] { ' ' });
-
-                    _currentHeader.Clear();
-                    if (header!=null)
-                        if (header.Length>0)
-                            _currentHeader.AddRange(header);
-                }
-            }
 
             return isHeader;
         }
-
     }
 }

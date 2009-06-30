@@ -41,6 +41,8 @@ namespace Indihiang.Cores
             features.Add(new AccessPageFeature(format));
             features.Add(new IPAddressFeature(format));
             features.Add(new AccessStatusFeature(format));
+            features.Add(new BandwidthFeature(format));
+            features.Add(new RequestFeature(format)); 
 
             return features;
         }
@@ -53,8 +55,55 @@ namespace Indihiang.Cores
             features.Add(new AccessPageFeature(format));
             features.Add(new IPAddressFeature(format));
             features.Add(new AccessStatusFeature(format));
+            features.Add(new BandwidthFeature(format));
+            features.Add(new RequestFeature(format));  
 
             return features;
         }
+
+        public static string DurationFormat(long time)
+        {
+            if (time == 0)
+                return "-";
+
+            double s = time;
+            string[] format = new string[] { "{0} miliseconds","{0} seconds", "{0} minutes", "{0} hours"};
+            int i = 0;
+            if (time >= 1000 && time < 60000)
+            {
+                i = 1;
+                s = s / 1000;
+            }
+            if (time >= 60000 && time < 3600000)
+            {
+                i = 2;
+                s = s / 60000;
+            }
+            if (time >= 3600000)
+            {
+                i = 3;
+                s = s / 3600000;
+            }
+             
+            return string.Format(format[i], s.ToString("#.##"));
+        }
+
+
+        /// Credits to
+        /// http://blogs.interakting.co.uk/brad/archive/2008/01/24/c-getting-a-user-friendly-file-size-as-a-string.aspx
+        public static string BytesFormat(long bytes)
+        {
+            double s = bytes;
+            string[] format = new string[] { "{0} bytes", "{0} KB", "{0} MB", "{0} GB", "{0} TB", "{0} PB", "{0} EB", "{0} ZB", "{0} YB" };
+            int i = 0;
+            while (i < format.Length - 1 && s >= 1024)
+            {
+                s = (100 * s / 1024) / 100.0;
+                i++;
+
+            }
+            return string.Format(format[i], s.ToString("###,###,##0.##"));
+        }
+
     }
 }

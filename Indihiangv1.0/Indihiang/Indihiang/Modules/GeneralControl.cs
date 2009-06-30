@@ -50,8 +50,14 @@ namespace Indihiang.Modules
                     if (!string.IsNullOrEmpty(item.Key) && item.Key != "-" )
                         list.Add(DateTime.ParseExact(item.Key, "yyyy-MM-dd", null));
                 }
-                DateTime startDate = list.Min();
-                DateTime endDate = list.Max();
+                if (list.Count > 0)
+                {
+                    DateTime startDate = list.Min();
+                    DateTime endDate = list.Max();
+                    lbTime.Text = String.Format("{0:dd-MMM-yyyy} - {1:dd-MMM-yyyy}", startDate, endDate);
+                }
+                else
+                    lbTime.Text = "-";
 
                 List<string> list2 = new List<string>();
                 foreach (KeyValuePair<string, WebLog> item in DataSource["IPServer"].Colls)
@@ -67,11 +73,10 @@ namespace Indihiang.Modules
                 }
                 else
                     lbTotalData.Text = "No row data";
-
-                lbTime.Text = String.Format("{0:dd-MMM-yyyy} - {1:dd-MMM-yyyy}", startDate, endDate);
+                
                 listBoxFileName.Items.AddRange(_listFiles.ToArray());
                 listBoxIPAddress.Items.AddRange(list2.ToArray());
-                
+                lbTotalFile.Text = String.Format("{0} files", _listFiles.Count);
             }
         }
 

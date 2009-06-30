@@ -61,7 +61,6 @@ namespace Indihiang.Modules
 
             pane.Title.Text = "The 3 Top of IP Access Access Page Graph";
             pane.Legend.Position = LegendPos.InsideTopLeft;
-            pane.Fill = new Fill(Color.Yellow,Color.White,Color.Yellow);
 
             if (_items.Count > 0)
             {
@@ -94,7 +93,7 @@ namespace Indihiang.Modules
 
                     Dictionary<string, int> newList = CollectionHelper.SortList(listBar);
                     foreach (KeyValuePair<string, int> item in newList)
-                    {                                               
+                    {
                         if (iTotal < 3)
                         {
                             pane.AddPieSlice(item.Value,
@@ -113,7 +112,7 @@ namespace Indihiang.Modules
                         List<object> data = new List<object>();
                         data.Add(item.Key);
                         data.Add((int)item.Value);
-                        this.dataGridIP.Rows.Add(data.ToArray());
+                        dataGridIP.Rows.Add(data.ToArray());
 
                     }
 
@@ -122,24 +121,23 @@ namespace Indihiang.Modules
                             Color.White, 45f, 0.2, "Others (" +
                             string.Format("{0:0.##}", (double)(another * 100 / total)) + " %)");
                 }
-                
-                pane.Chart.Fill = new Fill(Color.White, Color.Honeydew, 40F);
+
+                pane.Chart.Fill = new Fill(Color.White, Color.FromArgb(255, 209, 164), Color.White);
                 pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
 
-                this.cmbIPAddress.DataSource = listIP;
+                cmbIPAddress.DataSource = listIP;
                 if (listIP.Count > 0)
-                    this.cmbIPAddress.SelectedIndex = 0;
+                    cmbIPAddress.SelectedIndex = 0;
             }
 
             dataGridIP.Columns[0].DisplayIndex = 0;
             dataGridIP.Columns[1].DisplayIndex = 1;
-            dataGridIP.Columns[1].ValueType = typeof(System.Int32);
+            dataGridIP.Columns[1].ValueType = typeof(Int32);
 
             zedIPAccess1.IsShowPointValues = true;
             zedIPAccess1.AxisChange();
 
-           
         }
 
         private void SetSize()

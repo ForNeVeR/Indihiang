@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Indihiang.Cores.Features
 {
@@ -11,10 +9,10 @@ namespace Indihiang.Cores.Features
             : base(logFile)
         {
             _featureName = LogFeature.BANDWIDTH;
-
-            LogCollection log = new LogCollection();
-            _logs.Add("BytesSent", log);
-            _logs.Add("ByteReceived", log);
+            
+            _logs.Add("BytesSent", new LogCollection());
+            _logs.Add("ByteReceived", new LogCollection());
+            _logs.Add("ByteIPClient", new LogCollection());
         }
 
         protected override bool RunFeature(List<string> header, string[] item)
@@ -35,11 +33,15 @@ namespace Indihiang.Cores.Features
 
         private void RunW3cext(List<string> header, string[] item)
         {
-            int val = 0;
+            if (header == null)
+                return;
+
+            long val = 0;
             int index = header.IndexOf("date");
             int index2 = header.IndexOf("cs-uri-stem");
             int index3 = header.IndexOf("sc-bytes");
             int index4 = header.IndexOf("cs-bytes");
+            int index5 = header.IndexOf("c-ip");
 
             if (index == -1)
                 return;
@@ -47,20 +49,27 @@ namespace Indihiang.Cores.Features
             string key = item[index];
 
             string data1;
-            if (index2 > 0)
+            if (index2 > 0 && index2<=item.Length)
                 data1 = item[index2];
             else
                 data1 = string.Empty;
             string data2;
-            if (index3 > 0)
+            if (index3 > 0 && index3<=item.Length)
                 data2 = item[index3];
             else
                 data2 = string.Empty;
             string data3;
-            if (index4 > 0)
+            if (index4 > 0 && index4<=item.Length)
                 data3 = item[index4];
             else
                 data3 = string.Empty;
+
+            string data4;
+            if (index5 > 0 && index5 <= item.Length)
+                data4 = item[index5];
+            else
+                data4 = string.Empty;
+
 
 
             #region BytesSent
@@ -71,9 +80,10 @@ namespace Indihiang.Cores.Features
                     if (_logs["BytesSent"].Colls[key].Items.ContainsKey(data1))
                     {
                         if (!string.IsNullOrEmpty(data2))
-                        {
-                            val = Convert.ToInt32(_logs["BytesSent"].Colls[key].Items[data1]);
-                            val = val + Convert.ToInt32(data2);
+                        {                           
+                            
+                            val = Convert.ToInt64(_logs["BytesSent"].Colls[key].Items[data1]);
+                            val = val + Convert.ToInt64(data2);
 
                             _logs["BytesSent"].Colls[key].Items[data1] = val.ToString();
                         }                        
@@ -81,17 +91,17 @@ namespace Indihiang.Cores.Features
                     else
                     {
                         if (!string.IsNullOrEmpty(data2))
-                            val = Convert.ToInt32(data2);
+                            val = Convert.ToInt64(data2);
                         else
                             val = 0;
 
-                        _logs["BytesSent"].Colls.Add(key, new WebLog(data1, val.ToString()));
+                        _logs["BytesSent"].Colls[key].Items.Add(data1, val.ToString());
                     }
                 }
                 else
                 {
                     if (!string.IsNullOrEmpty(data2))
-                        val = Convert.ToInt32(data2);
+                        val = Convert.ToInt64(data2);
                     else
                         val = 0;
 
@@ -109,8 +119,8 @@ namespace Indihiang.Cores.Features
                     {
                         if (!string.IsNullOrEmpty(data3))
                         {
-                            val = Convert.ToInt32(_logs["ByteReceived"].Colls[key].Items[data1]);
-                            val = val + Convert.ToInt32(data3);
+                            val = Convert.ToInt64(_logs["ByteReceived"].Colls[key].Items[data1]);
+                            val = val + Convert.ToInt64(data3);
 
                             _logs["ByteReceived"].Colls[key].Items[data1] = val.ToString();
                         }
@@ -118,21 +128,67 @@ namespace Indihiang.Cores.Features
                     else
                     {
                         if (!string.IsNullOrEmpty(data3))
-                            val = Convert.ToInt32(data3);
+                            val = Convert.ToInt64(data3);
                         else
                             val = 0;
 
-                        _logs["ByteReceived"].Colls.Add(key, new WebLog(data1, val.ToString()));
+                        _logs["ByteReceived"].Colls[key].Items.Add(data1, val.ToString());
                     }
                 }
                 else
                 {
                     if (!string.IsNullOrEmpty(data3))
-                        val = Convert.ToInt32(data3);
+                        val = Convert.ToInt64(data3);
                     else
                         val = 0;
 
                     _logs["ByteReceived"].Colls.Add(key, new WebLog(data1, val.ToString()));
+                }
+            }
+            #endregion
+
+            #region ByteIPClient
+            if (!string.IsNullOrEmpty(data4) && data4 != "-")
+            {
+                if (_logs["ByteIPClient"].Colls.ContainsKey(data4))
+                {
+                    if (!string.IsNullOrEmpty(data2))
+                    {
+                        if (_logs["ByteIPClient"].Colls[data4].Items.ContainsKey("Sent"))
+                        {
+                            val = Convert.ToInt64(_logs["ByteIPClient"].Colls[data4].Items["Sent"]);
+                            val = val + Convert.ToInt64(data2);
+
+                            _logs["ByteIPClient"].Colls[data4].Items["Sent"] = val.ToString();
+                        }
+
+                    }
+                    if (!string.IsNullOrEmpty(data3))
+                    {
+                        if (_logs["ByteIPClient"].Colls[data4].Items.ContainsKey("Received"))
+                        {
+                            val = Convert.ToInt64(_logs["ByteIPClient"].Colls[data4].Items["Received"]);
+                            val = val + Convert.ToInt64(data3);
+
+                            _logs["ByteIPClient"].Colls[data4].Items["Received"] = val.ToString();
+                        }
+
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(data2))
+                        val = Convert.ToInt64(data2);
+                    else
+                        val = 0;
+                    _logs["ByteIPClient"].Colls.Add(data4, new WebLog("Sent", val.ToString()));
+
+                    if (!string.IsNullOrEmpty(data3))
+                        val = Convert.ToInt64(data3);
+                    else
+                        val = 0;
+                    _logs["ByteIPClient"].Colls[data4].Items.Add("Received", val.ToString());
+
                 }
             }
             #endregion
@@ -146,7 +202,7 @@ namespace Indihiang.Cores.Features
             {
                 foreach (KeyValuePair<string, LogCollection> pair in newItem)
                 {
-                    if (pair.Key == "BytesSent" || pair.Key == "ByteReceived")
+                    if (pair.Key == "BytesSent" || pair.Key == "ByteReceived" || pair.Key == "ByteIPClient")
                     {
                         foreach (KeyValuePair<string, WebLog> pair2 in pair.Value.Colls)
                         {
@@ -156,8 +212,8 @@ namespace Indihiang.Cores.Features
                                 {
                                     if (_logs[pair.Key].Colls[pair2.Key].Items.ContainsKey(pair3.Key))
                                     {
-                                        int val1 = Convert.ToInt32(_logs[pair.Key].Colls[pair2.Key].Items[pair3.Key]);
-                                        int val2 = Convert.ToInt32(pair3.Value);
+                                        long val1 = Convert.ToInt64(_logs[pair.Key].Colls[pair2.Key].Items[pair3.Key]);
+                                        long val2 = Convert.ToInt64(pair3.Value);
 
                                         _logs[pair.Key].Colls[pair2.Key].Items[pair3.Key] = Convert.ToString(val1 + val2);
                                     }
@@ -171,12 +227,14 @@ namespace Indihiang.Cores.Features
                             }
                         }
                     }
+                    
                 }
                 success = true;
             }
             catch (Exception err)
             {
                 System.Diagnostics.Debug.WriteLine(String.Format("Error Synch: {0}", err.Message));
+                System.Diagnostics.Debug.WriteLine(String.Format("Error Synch: {0}", err.StackTrace));
             }
             return success;
         }

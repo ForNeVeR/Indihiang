@@ -57,6 +57,7 @@ namespace Indihiang.Modules
             this.txtLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtLog.Location = new System.Drawing.Point(0, 21);
+            this.txtLog.MaxLength = 0;
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;

@@ -83,6 +83,18 @@ namespace Indihiang.Modules
                         Attach(uc6, id, "HTTP Status", parser.Features[i].Items);
 
                         break;
+                    case LogFeature.BANDWIDTH:
+                        id = LogFeature.BANDWIDTH.ToString();
+                        BandwidthControl uc7 = new BandwidthControl();
+                        Attach(uc7, id, "Bandwidth", parser.Features[i].Items);
+
+                        break;
+                    case LogFeature.REQUEST:
+                        id = LogFeature.REQUEST.ToString();
+                        RequestProcessingControl uc8 = new RequestProcessingControl();
+                        Attach(uc8, id, "Processing Request", parser.Features[i].Items);
+
+                        break;
                 }
             }
             tabMainLog.SelectedTab = tabMainLog.TabPages[LogFeature.GENERAL.ToString()];
@@ -131,6 +143,18 @@ namespace Indihiang.Modules
                         id = LogFeature.STATUS.ToString();
                         AccessStatusControl uc6 = new AccessStatusControl();
                         Attach(uc6, id, "HTTP Status", feature.Items);
+
+                        break;
+                    case LogFeature.BANDWIDTH:
+                        id = LogFeature.BANDWIDTH.ToString();
+                        BandwidthControl uc7 = new BandwidthControl();
+                        Attach(uc7, id, "Bandwidth", feature.Items);
+
+                        break;
+                    case LogFeature.REQUEST:
+                        id = LogFeature.REQUEST.ToString();
+                        RequestProcessingControl uc8 = new RequestProcessingControl();
+                        Attach(uc8, id, "Processing Request", feature.Items);
 
                         break;
                 }
