@@ -39,6 +39,8 @@
             this.closeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableParallelComputingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.howToUseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.visitToIndhiangWebsiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,8 +79,6 @@
             this.openRemoteIISServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.closeAllToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.enableParallelComputingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -164,6 +164,23 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableParallelComputingToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // enableParallelComputingToolStripMenuItem
+            // 
+            this.enableParallelComputingToolStripMenuItem.Checked = true;
+            this.enableParallelComputingToolStripMenuItem.CheckOnClick = true;
+            this.enableParallelComputingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.enableParallelComputingToolStripMenuItem.Name = "enableParallelComputingToolStripMenuItem";
+            this.enableParallelComputingToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.enableParallelComputingToolStripMenuItem.Text = "Enable Parallel Computing";
             // 
             // helpToolStripMenuItem
             // 
@@ -452,13 +469,14 @@
             this.ctxTree3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.closeToolStripMenuItem2});
             this.ctxTree3.Name = "contextMenuStrip1";
-            this.ctxTree3.Size = new System.Drawing.Size(104, 26);
+            this.ctxTree3.Size = new System.Drawing.Size(153, 48);
             // 
             // closeToolStripMenuItem2
             // 
             this.closeToolStripMenuItem2.Name = "closeToolStripMenuItem2";
-            this.closeToolStripMenuItem2.Size = new System.Drawing.Size(103, 22);
+            this.closeToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.closeToolStripMenuItem2.Text = "Close";
+            this.closeToolStripMenuItem2.Click += new System.EventHandler(this.closeToolStripMenuItem2_Click);
             // 
             // ctxTree2
             // 
@@ -495,23 +513,6 @@
             this.closeAllToolStripMenuItem3.Size = new System.Drawing.Size(197, 22);
             this.closeAllToolStripMenuItem3.Text = "Close All";
             this.closeAllToolStripMenuItem3.Click += new System.EventHandler(this.closeAllToolStripMenuItem3_Click);
-            // 
-            // optionsToolStripMenuItem
-            // 
-            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.enableParallelComputingToolStripMenuItem});
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.optionsToolStripMenuItem.Text = "Options";
-            // 
-            // enableParallelComputingToolStripMenuItem
-            // 
-            this.enableParallelComputingToolStripMenuItem.Checked = true;
-            this.enableParallelComputingToolStripMenuItem.CheckOnClick = true;
-            this.enableParallelComputingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.enableParallelComputingToolStripMenuItem.Name = "enableParallelComputingToolStripMenuItem";
-            this.enableParallelComputingToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-            this.enableParallelComputingToolStripMenuItem.Text = "Enable Parallel Computing";
             // 
             // MainForm
             // 

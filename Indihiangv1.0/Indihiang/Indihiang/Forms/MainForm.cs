@@ -80,7 +80,6 @@ namespace Indihiang.Forms
         private void MainForm_Load(object sender, EventArgs e)
         {
             InitTreeMenu();
-            //TestData();
             
         }
         private void InitTreeMenu()
@@ -99,20 +98,8 @@ namespace Indihiang.Forms
 
             treeMain.Nodes.Add(_rootNode);
             treeMain.ExpandAll();
-        }
-        private void TestData()
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                TreeNode item = _logFileaNode.Nodes.Add(String.Format("LogFiles{0}", i), String.Format("File {0}", i));
-                item.ImageIndex = 2;
-                item.SelectedImageIndex = 2;
-
-                //TreeNode item2 = _computersNode.Nodes.Add("Computers" + i.ToString(), "File " + i.ToString());
-                //item2.ImageIndex = 4;
-                //item2.SelectedImageIndex = 4;
-            }
-        }
+        }      
+  
         private void openLogFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (openLogFileDialog.ShowDialog() == DialogResult.OK)
@@ -152,9 +139,8 @@ namespace Indihiang.Forms
                             }
                         }
 
-                        for (int i = 0; i < logFiles.Length; i++)
-                            key = String.Format("{0}{1};", key, logFiles[i]);
-                        TreeNode item = CreateNewNode(key, name1, 7);
+                        Guid id = Guid.NewGuid();
+                        TreeNode item = CreateNewNode(id.ToString(), name1, 7);
 
                         key = "--";
                         for (int i = 0; i < logFiles.Length; i++)
@@ -165,30 +151,28 @@ namespace Indihiang.Forms
                             childItem.ImageIndex = 2;
                             childItem.SelectedImageIndex = 2;
                         }
-                        
 
-                        AttachUserControl(key, name1,7);
-                        AttachLogParser(key);                       
-                        tabMain.SelectedTab = tabMain.TabPages[key];
+                        
+                        //AttachUserControl(key, name1,7);
+                        AttachUserControl(id.ToString(), name1, 7);
+                        AttachLogParser(key,id);                       
+                        tabMain.SelectedTab = tabMain.TabPages[id.ToString()];
                         _logFileaNode.ExpandAll();
                     }
                     else
                     {
                         if (!string.IsNullOrEmpty(logFiles[0]))
                         {
-                            if (!_listParser.ContainsKey(logFiles[0]))
-                            {
-                                string name = Path.GetFileName(logFiles[0]);
+                            string name = Path.GetFileName(logFiles[0]);
 
-                                CreateNewNode(logFiles[0], name, 2);                                
-                                AttachUserControl(logFiles[0], name,2);
-                                AttachLogParser(logFiles[0]);                                
+                            Guid id = Guid.NewGuid();
+                            CreateNewNode(id.ToString(), name, 2);
+                            AttachUserControl(id.ToString(), name, 2);
+                            AttachLogParser(logFiles[0], id);
 
-                                tabMain.SelectedTab = tabMain.TabPages[logFiles[0]];
-                                _logFileaNode.ExpandAll();
-                            }
-                            else
-                                tabMain.SelectedTab = tabMain.TabPages[logFiles[0]];
+                            tabMain.SelectedTab = tabMain.TabPages[id.ToString()];
+                            _logFileaNode.ExpandAll();
+
                         }
                     }
                 }
@@ -205,20 +189,21 @@ namespace Indihiang.Forms
                 {
                     IISInfo iis = frm.IISSelected;
                     string key = string.Format("$${0}", iis.IISInfoDisplay);
+                    Guid guidKey = Guid.NewGuid();
                     string name = iis.IISInfoDisplay;
 
-                    if (!_listParser.ContainsKey(key))
+                    if (!_listParser.ContainsKey(guidKey.ToString()))
                     {
-                        CreateNewIISRemoteNode(key, name, 4);
+                        CreateNewIISRemoteNode(guidKey.ToString(), name, 4);
                         // $$--> Remote IIS node key
-                        AttachUserControl(key, name, 4);
-                        AttachIISRemoteLogParser(key, iis);
+                        AttachUserControl(guidKey.ToString(), name, 4);
+                        AttachIISRemoteLogParser(key, iis,guidKey);
 
-                        tabMain.SelectedTab = tabMain.TabPages[key];
+                        tabMain.SelectedTab = tabMain.TabPages[guidKey.ToString()];
                         _computersNode.ExpandAll();
                     }
                     else
-                        tabMain.SelectedTab = tabMain.TabPages[key];
+                        tabMain.SelectedTab = tabMain.TabPages[guidKey.ToString()];
                 }
             }
         }
@@ -328,6 +313,8 @@ namespace Indihiang.Forms
 
         private void closeToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            // close from tab 
+
             TabPage selectedTab = tabMain.SelectedTab;
             if (selectedTab != null)
             {
@@ -457,6 +444,54 @@ namespace Indihiang.Forms
 
             }
         }
+        private void closeToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            // close from tree menu
+
+            TreeNode selected = treeMain.SelectedNode;
+            if (selected != null)
+            {
+                string key = (string)selected.Tag;
+                if (!string.IsNullOrEmpty(key))
+                {
+                    if (_listParser.ContainsKey(key))
+                    {
+                        if (_listParser[key].IsBusy)
+                        {
+                            DialogResult result = MessageBox.Show("Log parser still is running in this form. Are you sure to close this?",
+                                "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                            if (result == DialogResult.No)
+                                return;
+
+                            UpdateInfoLogStatus(key, "Cancelling log parser...");
+                            _listParser[key].CancelAnalyze();
+                            UpdateInfoLogStatus(key, "Log parser is stopped by user");
+                        }
+                    }
+
+
+                    if (key.StartsWith("$$"))
+                    {
+                        tabMain.TabPages.RemoveByKey(key.Substring(2));
+                        _computersNode.Nodes.RemoveByKey(key);
+                    }
+                    else
+                    {
+                        tabMain.TabPages.RemoveByKey(key);
+                        _logFileaNode.Nodes.RemoveByKey(key);
+                    }
+
+                    _listParser.Remove(key);
+                }
+            }
+
+            TabPage selectedTab = tabMain.SelectedTab;
+            if (selectedTab != null)
+            {
+                
+            }
+        }
         private void openLogFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //open log file
@@ -495,14 +530,16 @@ namespace Indihiang.Forms
             TreeNode item = _logFileaNode.Nodes.Add(key, name);
             item.ImageIndex = imageIndex;
             item.SelectedImageIndex = imageIndex;
+            item.Tag = key;
 
             return item;
         }
         private TreeNode CreateNewIISRemoteNode(string key, string name, int imageIndex)
         {
-            TreeNode item = _computersNode.Nodes.Add(key, name);
+            TreeNode item = _computersNode.Nodes.Add(String.Format("$${0}", key), name);
             item.ImageIndex = imageIndex;
             item.SelectedImageIndex = imageIndex;
+            item.Tag = String.Format("$${0}", key); // $$ --> remote IIS
 
             return item;
         }
@@ -516,31 +553,32 @@ namespace Indihiang.Forms
             control.Dock = DockStyle.Fill;
             control.ShowLoadingControl();
         }
-        private void AttachLogParser(string fileNames)
+        private void AttachLogParser(string fileNames,Guid id)
         {
             LogParser parser = new LogParser { 
                 FileName = fileNames, 
-                UseParallel = enableParallelComputingToolStripMenuItem.Checked 
-            };
+                UseParallel = enableParallelComputingToolStripMenuItem.Checked, 
+                LogParserId = id };
 
             parser.AnalyzeLogHandler += OnAnalyzeLog;
             parser.EndAnalyzeHandler += OnEndAnalyze;
 
             parser.Analyze();
-            _listParser.Add(fileNames, parser);
+            _listParser.Add(id.ToString(), parser);
         }
-        private void AttachIISRemoteLogParser(string name,IISInfo info)
+        private void AttachIISRemoteLogParser(string name,IISInfo info,Guid id)
         {
             LogParser parser = new LogParser(info)
             {
                 FileName = name,
-                UseParallel = enableParallelComputingToolStripMenuItem.Checked
+                UseParallel = enableParallelComputingToolStripMenuItem.Checked,
+                LogParserId = id
             };
             parser.AnalyzeLogHandler += OnAnalyzeLog;
             parser.EndAnalyzeHandler += OnEndAnalyze;
 
             parser.Analyze();
-            _listParser.Add(name, parser);
+            _listParser.Add(id.ToString(), parser);
         }
 
         private void GenerateConsolidateName()
@@ -582,10 +620,7 @@ namespace Indihiang.Forms
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);
 
-               
         
-                                                      
-
         ///////////////////////////////////////////////////
     }
 }

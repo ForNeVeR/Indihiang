@@ -73,7 +73,7 @@ namespace Indihiang.Cores
                 return _parser.ParalleFeatures;
             }
         }
-        public Guid LogParserId { get; private set; }
+        public Guid LogParserId { get; set; }
         public string FileName
         {
             get
@@ -115,7 +115,7 @@ namespace Indihiang.Cores
             QueryPerformanceCounter(ref _startTime);
 
             LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                   _fileName,
+                   LogParserId.ToString(),
                    EnumLogFile.UNKNOWN,
                    LogProcessStatus.SUCCESS,
                    "Process()",
@@ -129,10 +129,9 @@ namespace Indihiang.Cores
             }
             else
             {
-                _parser = LogParserFactory.CreateParserByType(EnumLogFile.W3CEXT);
-                _parser.ParserID = _fileName;
+                _parser = LogParserFactory.CreateParserByType(EnumLogFile.W3CEXT);                
             }
-
+            _parser.ParserID = LogParserId.ToString();
             _parser.ParseLogHandler += ParseLogHandler;
             _parser.UseParallel = _useParallel;
 
@@ -191,7 +190,7 @@ namespace Indihiang.Cores
             {
                 #region Logging
                 logInfo = new LogInfoEventArgs(
-                    _fileName,
+                    LogParserId.ToString(),
                     EnumLogFile.UNKNOWN,
                     LogProcessStatus.SUCCESS,
                     "Process()",
@@ -221,14 +220,14 @@ namespace Indihiang.Cores
 
                 #region logging
                 logInfo = new LogInfoEventArgs(
-                    _fileName,
+                    LogParserId.ToString(),
                     EnumLogFile.UNKNOWN,
                     LogProcessStatus.SUCCESS,
                     "Process()",
                     "Copy remote web server log file into local is done");
                 _synContext.Post(OnAnalyzeLog, logInfo);
                 logInfo = new LogInfoEventArgs(
-                   _fileName,
+                   LogParserId.ToString(),
                    EnumLogFile.UNKNOWN,
                    LogProcessStatus.SUCCESS,
                    "Process()",
@@ -239,7 +238,7 @@ namespace Indihiang.Cores
                 if (total == 0)
                 {
                     logInfo = new LogInfoEventArgs(
-                    _fileName,
+                    LogParserId.ToString(),
                     EnumLogFile.UNKNOWN,
                     LogProcessStatus.SUCCESS,
                     "Process()",
@@ -254,7 +253,7 @@ namespace Indihiang.Cores
             PrepareFeatures();
 
             logInfo = new LogInfoEventArgs(
-                    _fileName,
+                    LogParserId.ToString(),
                     EnumLogFile.UNKNOWN,
                     LogProcessStatus.SUCCESS,
                     "Process()",
@@ -264,7 +263,7 @@ namespace Indihiang.Cores
 
             _parser.Parse();
             logInfo = new LogInfoEventArgs(
-                   _fileName,
+                   LogParserId.ToString(),
                    EnumLogFile.UNKNOWN,
                    LogProcessStatus.SUCCESS,
                    "Process()",
@@ -276,7 +275,7 @@ namespace Indihiang.Cores
         private void PrepareFeatures()
         {
             LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                    _fileName,
+                    LogParserId.ToString(),
                     EnumLogFile.UNKNOWN,
                     LogProcessStatus.SUCCESS,
                     "PrepareFeatures()",
@@ -289,7 +288,7 @@ namespace Indihiang.Cores
                 _parser.Features = IndihiangHelper.GenerateFeatures(_parser.LogFileFormat);
             
             logInfo = new LogInfoEventArgs(
-                   _fileName,
+                   LogParserId.ToString(),
                    EnumLogFile.UNKNOWN,
                    LogProcessStatus.SUCCESS,
                    "PrepareFeatures()",
@@ -309,7 +308,7 @@ namespace Indihiang.Cores
                         if (!File.Exists(files[i]))
                         {
                             logInfo = new LogInfoEventArgs(
-                                _fileName,
+                                LogParserId.ToString(),
                                 EnumLogFile.UNKNOWN,
                                 LogProcessStatus.FAILED,
                                 "LogParser.CheckFile()",
@@ -320,7 +319,7 @@ namespace Indihiang.Cores
                         }
 
                 logInfo = new LogInfoEventArgs(
-                   _fileName,
+                   LogParserId.ToString(),
                    EnumLogFile.UNKNOWN,
                    LogProcessStatus.SUCCESS,
                    "Process()",
@@ -333,7 +332,7 @@ namespace Indihiang.Cores
                 if (!File.Exists(_fileName))
                 {
                     LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                        _fileName,
+                        LogParserId.ToString(),
                         EnumLogFile.UNKNOWN,
                         LogProcessStatus.FAILED,
                         "LogParser.CheckFile()",
@@ -348,16 +347,17 @@ namespace Indihiang.Cores
         private bool CheckParser()
         {
             _parser = LogParserFactory.CreateParser(_fileName);
-            _parser.ParserID = _fileName;
+            _parser.LogFile = _fileName;
+            _parser.ParserID = LogParserId.ToString();
             if (_parser == null)
             {
                 LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                     _fileName,
+                     LogParserId.ToString(),
                      EnumLogFile.UNKNOWN,
                      LogProcessStatus.FAILED,
                      "LogParser.Verify()",
                      "Application cannot verify log file format or there are more than log file format");
-                this._synContext.Post(OnAnalyzeLog, logInfo);
+                _synContext.Post(OnAnalyzeLog, logInfo);
 
                 return false;
             }

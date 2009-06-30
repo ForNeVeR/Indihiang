@@ -13,7 +13,6 @@ namespace Indihiang.Cores
         protected SpinLock _spinLock;
         protected List<BaseLogAnalyzeFeature> _features;
         protected List<BaseLogAnalyzeFeature> _paralleFeatures;
-        protected List<string> _currentHeader;
         private SynchronizationContext _synContext;        
 
         public event EventHandler<LogInfoEventArgs> ParseLogHandler;
@@ -56,7 +55,6 @@ namespace Indihiang.Cores
             LogFileFormat = logFileFormat;
             _features = new List<BaseLogAnalyzeFeature>();
             _paralleFeatures = new List<BaseLogAnalyzeFeature>();
-            _currentHeader = new List<string>();
             _synContext = AsyncOperationManager.SynchronizationContext;
         }
 
@@ -77,6 +75,7 @@ namespace Indihiang.Cores
 
                 if (UseParallel)
                 {
+                    #region Parallel Processing
                     Parallel.For(0, files.Length, i =>
                     {
                         try
@@ -123,15 +122,19 @@ namespace Indihiang.Cores
 
                         }
                     });
+
+                    #endregion
+
                 }
                 else
                 {
+                    #region Non Parallel Processing
                     for (int i = 0; i < files.Length; i++)
                     {
                         try
                         {
                             if (!string.IsNullOrEmpty(files[i]))
-                                ParseLogFile(null,files[i]);
+                                ParseLogFile(_features, files[i]);
                         }
                         catch (Exception err)
                         {
@@ -161,18 +164,28 @@ namespace Indihiang.Cores
                             #endregion
                         }
                     }
+                    #endregion
+
                 }
 
-               
+
             }
             else
-                ParseLogFile(null,LogFile);
+            {
+                if (UseParallel)
+                    ParseLogFile(_paralleFeatures, LogFile);
+                else
+                    ParseLogFile(_features, LogFile);
+            }
             
             return true;
                      
         }
         protected List<BaseLogAnalyzeFeature> ParseLogFile(List<BaseLogAnalyzeFeature> features,string logFile)
-        {            
+        {
+            if (features == null)
+                return null;
+
             using (StreamReader sr = new StreamReader(logFile))
             {
                 string line = sr.ReadLine();
@@ -192,10 +205,17 @@ namespace Indihiang.Cores
 
                 try
                 {
+                    List<string> currentHeader = null;
                     while (!string.IsNullOrEmpty(line))
                     {
                         Debug.WriteLine(String.Format("Read: {0}", line));
-                        if (!ParseHeader(line))
+                        if (IsLogHeader(line))
+                        {
+                            List<string> list1 = ParseHeader(line);
+                            if (list1 != null)
+                                currentHeader = new List<string>(list1);
+                        }
+                        else
                         {
                             if (!string.IsNullOrEmpty(line))
                             {
@@ -208,20 +228,21 @@ namespace Indihiang.Cores
                                         {
                                             foreach (var feature in features)
                                             {
-                                                feature.Parse(_currentHeader, rows);
+                                                feature.Parse(currentHeader, rows);
                                             }
                                         }
                                         else
                                         {
                                             for (int i = 0; i < _features.Count; i++)
                                             {
-                                                _features[i].Parse(_currentHeader, rows);
+                                                _features[i].Parse(currentHeader, rows);
                                             }
                                         }
                                     }
                                 }
                             }
                         }
+
                         line = sr.ReadLine();
                         if (!string.IsNullOrEmpty(line))
                             line = line.TrimEnd('\0');
@@ -236,14 +257,14 @@ namespace Indihiang.Cores
                           EnumLogFile.UNKNOWN,
                           LogProcessStatus.FAILED,
                           "ParseLogFile()",
-                          String.Format("Internal Error on ParseLogFile: {0} is done", err.Message));
+                          String.Format("Internal Error on ParseLogFile: {0}", err.Message));
                     _synContext.Post(OnParseLog, logInfo);
                     logInfo = new LogInfoEventArgs(
                           ParserID,
                           EnumLogFile.UNKNOWN,
                           LogProcessStatus.FAILED,
                           "ParseLogFile()",
-                          String.Format("Detail: {0} is done", err.StackTrace));
+                          String.Format("Detail: {0} ", err.StackTrace));
                     _synContext.Post(OnParseLog, logInfo);
                     #endregion
                 }
@@ -263,8 +284,8 @@ namespace Indihiang.Cores
 
         }
 
-        
 
-        protected abstract bool ParseHeader(string line);
+        protected abstract bool IsLogHeader(string line);
+        protected abstract List<string> ParseHeader(string line);
     }
 }

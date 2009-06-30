@@ -53,7 +53,7 @@ namespace Indihiang.Modules
 
             pane.Title.Text = "The 3 Top of HTTP Status Graph";
             pane.Legend.Position = LegendPos.InsideTopRight;
-            pane.Chart.Fill = new Fill(Color.White, Color.BurlyWood, 90F);
+            pane.Chart.Fill = new Fill(Color.White, Color.BurlyWood, Color.White);
             pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
             if (_items.Count > 0)

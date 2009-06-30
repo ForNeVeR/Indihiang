@@ -79,7 +79,15 @@ namespace Indihiang.Cores.Features
             {
                 foreach (KeyValuePair<string, LogCollection> pair in newItem)
                 {
-                    if (pair.Key == "General" || pair.Key == "IPServer")
+                    if (pair.Key == "General")
+                    {
+                        foreach (KeyValuePair<string, WebLog> pair2 in pair.Value.Colls)
+                        {
+                            if (!_logs[pair.Key].Colls.ContainsKey(pair2.Key))
+                                _logs[pair.Key].Colls.Add(pair2.Key, new WebLog(pair2.Key, ""));
+                        }
+                    }
+                    if (pair.Key == "IPServer")
                     {
                         foreach (KeyValuePair<string, WebLog> pair2 in pair.Value.Colls)
                         {

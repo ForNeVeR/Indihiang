@@ -32,10 +32,10 @@ namespace Indihiang.Cores.Features
 
         private void RunW3cext(List<string> header, string[] item)
         {
-            if (header == null)
+            if (header == null || item==null)
                 return;
 
-            if (header.Count <= 0)
+            if (header.Count <= 0 || item.Length<=0)
                 return;
 
             int val = 0;
@@ -43,6 +43,8 @@ namespace Indihiang.Cores.Features
             int index2 = header.IndexOf("sc-status");
 
             if (index == -1 || index2 == -1)
+                return;
+            if (index2 > item.Length)
                 return;
 
             string key = item[index];                 

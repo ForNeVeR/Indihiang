@@ -30,7 +30,12 @@ namespace Indihiang.Cores.Features
             return true;
         }
         private void RunW3cext(List<string> header, string[] item)
-        {            
+        {
+            if (header == null)
+                return;
+            if (header.Count <= 0)
+                return;
+
             int index = header.IndexOf("date");
             string key;
             if (index != -1)

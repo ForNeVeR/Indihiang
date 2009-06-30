@@ -34,13 +34,12 @@ namespace Indihiang.Cores.Features
 
         private void RunW3cext(List<string> header, string[] item)
         {
-            int val = 0;
             int index = header.IndexOf("date");
             int index2 = header.IndexOf("time");
             int index3 = header.IndexOf("cs-uri-stem");
             int index4 = header.IndexOf("time-taken");
 
-            if (index == -1 || index2==-1)
+            if (index == -1 || index2== -1|| index3== -1|| index4==-1)
                 return;
 
             string key1 = item[index];
@@ -60,7 +59,14 @@ namespace Indihiang.Cores.Features
 
             if (!string.IsNullOrEmpty(data1) && data1 != "-" && !string.IsNullOrEmpty(data2) && data2 != "-")
             {
-                _logs["TimeTaken"].Colls.Add(key, new WebLog(data1, data2));
+                if (!_logs["TimeTaken"].Colls.ContainsKey(key))
+                {
+                    _logs["TimeTaken"].Colls.Add(key, new WebLog(String.Format("{0};{1}", data1, Guid.NewGuid().ToString()), data2));
+                }
+                else
+                {
+                    _logs["TimeTaken"].Colls[key].Items.Add(String.Format("{0};{1}", data1, Guid.NewGuid().ToString()), data2);
+                }
             }
 
         }
