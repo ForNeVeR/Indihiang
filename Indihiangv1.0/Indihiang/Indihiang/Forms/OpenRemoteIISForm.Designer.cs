@@ -62,7 +62,7 @@ namespace Indihiang.Forms
             this.txtComputerName.Name = "txtComputerName";
             this.txtComputerName.Size = new System.Drawing.Size(248, 20);
             this.txtComputerName.TabIndex = 0;
-            this.txtComputerName.Text = "kurniaagn1";
+            this.txtComputerName.Text = "localhost";
             // 
             // txtUserId
             // 
@@ -71,7 +71,7 @@ namespace Indihiang.Forms
             this.txtUserId.Name = "txtUserId";
             this.txtUserId.Size = new System.Drawing.Size(248, 20);
             this.txtUserId.TabIndex = 1;
-            this.txtUserId.Text = "asiapacific\\kurniaag";
+            this.txtUserId.Text = "administrator";
             // 
             // label2
             // 
@@ -90,7 +90,6 @@ namespace Indihiang.Forms
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(248, 20);
             this.txtPassword.TabIndex = 2;
-            this.txtPassword.Text = "!Alexander@123";
             // 
             // label3
             // 
