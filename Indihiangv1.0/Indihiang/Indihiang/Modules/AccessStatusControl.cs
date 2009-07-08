@@ -25,6 +25,10 @@ namespace Indihiang.Modules
             {
                 _items = value;
             }
+            get
+            {
+                return _items;
+            }
         }
 
         public void Populate()

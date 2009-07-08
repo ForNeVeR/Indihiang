@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 
@@ -127,6 +128,32 @@ namespace Indihiang.Cores.Features
             }
 
             return success;
+        }
+
+        protected override void DumpToFile(StreamWriter sw)
+        {
+            try
+            {
+                foreach (KeyValuePair<string, LogCollection> pair in _logs)
+                {
+                    if (pair.Key == "General")
+                    {
+                        foreach (KeyValuePair<string, WebLog> pair2 in pair.Value.Colls)
+                        {
+                            foreach (KeyValuePair<string, string> pair3 in pair2.Value.Items)
+                            {
+                                string data = String.Format("{0};{1};{2}", pair2.Key, pair3.Key, pair3.Value);
+                                sw.WriteLine(data);
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(String.Format("Error DumpToFile: {0}", err.Message));
+            }
         }
     }
 }

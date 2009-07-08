@@ -60,6 +60,11 @@ namespace Indihiang.Forms
                 {
                     ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).HideLoadingControl();
                     ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).Populate(parser);
+
+                    if (_listParser[e.FileName].UseParallel)
+                        _listParser[e.FileName].ParallelFeatures.Clear();
+                    else
+                        _listParser[e.FileName].Features.Clear();
                 }
                 UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing is done");
                 UpdateInfoLogStatus(e.FileName, string.Format("Total Analyzing Process Duration: {0:0.###} seconds", parser.ProcessDuration));

@@ -169,6 +169,7 @@ namespace Indihiang.Modules
             control.Dock = DockStyle.Fill;
             ((BaseControl)control).DataSource = dataSource;
             ((BaseControl)control).Populate();
+            ((BaseControl)control).DataSource.Clear();
         }
 
         public void ShowLoadingControl()

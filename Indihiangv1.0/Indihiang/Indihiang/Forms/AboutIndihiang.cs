@@ -9,11 +9,12 @@ namespace Indihiang.Forms
         public AboutIndihiang()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyTitle);
-            this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
-            this.labelCopyright.Text = AssemblyCopyright;
-            this.labelCompanyName.Text = AssemblyCompany;            
+            Text = String.Format("About {0}", AssemblyTitle);
+            labelProductName.Text = AssemblyProduct;
+            labelVersion.Text = String.Format("Version {0}", FileVersion);
+            labelAssemblyVersion.Text = String.Format("Assembly Version {0}", AssemblyVersion);
+            labelCopyright.Text = AssemblyCopyright;
+            labelCompanyName.Text = AssemblyCompany;            
         }
 
         #region Assembly Attribute Accessors
@@ -55,6 +56,19 @@ namespace Indihiang.Forms
                 return ((AssemblyDescriptionAttribute)attributes[0]).Description;
             }
         }
+        public string FileVersion
+        {
+            get
+            {
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false);
+                if (attributes.Length == 0)
+                {
+                    return "";
+                }
+                return ((AssemblyFileVersionAttribute)attributes[0]).Version;
+            }
+        }
+
 
         public string AssemblyProduct
         {

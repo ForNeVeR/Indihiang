@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace Indihiang.Cores.Features
@@ -44,8 +45,13 @@ namespace Indihiang.Cores.Features
         {
             RunSynchFeatureData(newItem);
         }
+        public void Dump(StreamWriter sw)
+        {
+            DumpToFile(sw);
+        }
 
         protected abstract bool RunFeature(List<string> header, string[] item);
         protected abstract bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem);
+        protected abstract void DumpToFile(StreamWriter sw);
     }
 }
