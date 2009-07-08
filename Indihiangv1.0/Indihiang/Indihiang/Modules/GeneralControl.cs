@@ -31,7 +31,8 @@ namespace Indihiang.Modules
 
         #region BaseControl Members
 
-        public Dictionary<string, Indihiang.Cores.Features.LogCollection> DataSource { private get; set; }
+        public Dictionary<string, Indihiang.Cores.Features.LogCollection> DataSource 
+        { get; set; }
 
         public void Populate()
         {

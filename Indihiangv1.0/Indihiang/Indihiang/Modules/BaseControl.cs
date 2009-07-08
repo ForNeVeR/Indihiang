@@ -6,7 +6,7 @@ namespace Indihiang.Modules
 {
     public interface BaseControl
     {
-        Dictionary<string, LogCollection> DataSource { set; }
+        Dictionary<string, LogCollection> DataSource { set; get; }
         void Populate();
     }
 }
