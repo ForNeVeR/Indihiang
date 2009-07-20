@@ -144,6 +144,10 @@ namespace Indihiang.Modules
             if (!_items.ContainsKey("ByteIPClient"))
                 return;
 
+
+            if (_items["ByteIPClient"].Colls.Count <= 0)
+                return;
+
             var items = from k in _items["ByteIPClient"].Colls
                         orderby k.Key ascending
                         select k;
@@ -187,6 +191,9 @@ namespace Indihiang.Modules
             Dictionary<string, List<double>> listData1 = new Dictionary<string, List<double>>();
 
             if (!_items.ContainsKey("BytesSent"))
+                return list1;
+
+            if (_items["BytesSent"].Colls.Count <= 0)
                 return list1;
 
             var items = from k in _items["BytesSent"].Colls
@@ -247,6 +254,9 @@ namespace Indihiang.Modules
             Dictionary<string, List<double>> listData1 = new Dictionary<string, List<double>>();
 
             if (!_items.ContainsKey("ByteReceived"))
+                return list1;
+
+            if (_items["ByteReceived"].Colls.Count <= 0)
                 return list1;
 
 
