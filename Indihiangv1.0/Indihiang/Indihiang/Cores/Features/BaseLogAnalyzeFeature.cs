@@ -5,11 +5,11 @@ using System.Collections.Generic;
 namespace Indihiang.Cores.Features
 {
     public abstract class BaseLogAnalyzeFeature
-    {
+    {        
         protected EnumLogFile _logFile = EnumLogFile.UNKNOWN;
         protected LogFeature _featureName;
-        protected Dictionary<string, LogCollection> _logs = new Dictionary<string, LogCollection>();  
-
+        protected Dictionary<string, LogCollection> _logs = new Dictionary<string, LogCollection>();
+                
         public LogFeature FeatureName
         {
             get

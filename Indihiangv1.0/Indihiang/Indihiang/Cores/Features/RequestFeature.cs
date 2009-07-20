@@ -6,6 +6,8 @@ namespace Indihiang.Cores.Features
 {
     public class RequestFeature : BaseLogAnalyzeFeature
     {
+        private Guid _parserId = Guid.NewGuid();
+
         public RequestFeature(EnumLogFile logFile)
             : base(logFile)
         {
@@ -14,6 +16,17 @@ namespace Indihiang.Cores.Features
             LogCollection log = new LogCollection();
             _logs.Add("TimeTaken", log);            
         }
+
+        public RequestFeature(EnumLogFile logFile,Guid parserId)
+            : base(logFile)
+        {
+            _parserId = parserId;
+            _featureName = LogFeature.REQUEST;
+
+            LogCollection log = new LogCollection();
+            _logs.Add("TimeTaken", log);
+        }
+
 
         protected override bool RunFeature(List<string> header, string[] item)
         {
@@ -86,6 +99,7 @@ namespace Indihiang.Cores.Features
                         }
                     }
                 }
+                IndihiangHelper.DumpToFile(_parserId.ToString(), String.Format("{0}.txt", _featureName), _logs["TimeTaken"].Colls);
                 success = true;
             }
             catch (Exception err)

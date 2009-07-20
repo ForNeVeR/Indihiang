@@ -120,7 +120,7 @@ namespace Indihiang.Cores
                    LogProcessStatus.SUCCESS,
                    "Process()",
                    "Starting..");
-            _synContext.Send(OnAnalyzeLog, logInfo);
+            _synContext.Post(OnAnalyzeLog, logInfo);
 
             if (_iisInfo == null)
             {
@@ -178,7 +178,7 @@ namespace Indihiang.Cores
 
         private void ParseLogHandler(object sender, LogInfoEventArgs e)
         {            
-            _synContext.Send(OnAnalyzeLog, e);
+            _synContext.Post(OnAnalyzeLog, e);
         }
 
         private void Process()
@@ -188,19 +188,32 @@ namespace Indihiang.Cores
 
             if (_iisInfo != null)
             {
+                string message = string.Empty;
+                if (_iisInfo.LocalComputer)
+                    message = "Checking log files...";
+                else
+                    message = "Copy remote web server log file into local...";
+
                 #region Logging
                 logInfo = new LogInfoEventArgs(
                     LogParserId.ToString(),
                     EnumLogFile.UNKNOWN,
                     LogProcessStatus.SUCCESS,
                     "Process()",
-                    "Copy remote web server log file into local...");
+                    message);
 
-                _synContext.Send(OnAnalyzeLog, logInfo);
+                _synContext.Post(OnAnalyzeLog, logInfo);
                 #endregion
 
-                RemoteFileCopyHelper.CopyRemoteFiles(_iisInfo);
-                string sourceFiles = String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, _iisInfo.RemoteServer, _iisInfo.Id);
+                string sourceFiles = string.Empty;
+
+                if (!_iisInfo.LocalComputer)
+                {
+                    RemoteFileCopyHelper.CopyRemoteFiles(_iisInfo);
+                    sourceFiles = String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, _iisInfo.RemoteServer, _iisInfo.Id);
+                }
+                else
+                    sourceFiles = String.Format("{0}\\W3SVC{1}\\", _iisInfo.LogPath, _iisInfo.Id);
 
                 int total = 0;
                 string[] files = Directory.GetFiles(sourceFiles);
@@ -218,21 +231,26 @@ namespace Indihiang.Cores
                 }
 
 
+                if (_iisInfo.LocalComputer)
+                    message = "Check log files was done";
+                else
+                    message = "Copy remote web server log files into local was done";
+
                 #region logging
                 logInfo = new LogInfoEventArgs(
                     LogParserId.ToString(),
                     EnumLogFile.UNKNOWN,
                     LogProcessStatus.SUCCESS,
                     "Process()",
-                    "Copy remote web server log file into local is done");
-                _synContext.Send(OnAnalyzeLog, logInfo);
+                    message);
+                _synContext.Post(OnAnalyzeLog, logInfo);
                 logInfo = new LogInfoEventArgs(
                    LogParserId.ToString(),
                    EnumLogFile.UNKNOWN,
                    LogProcessStatus.SUCCESS,
                    "Process()",
                    string.Format("Total remote log files are {0} files", total.ToString()));
-                _synContext.Send(OnAnalyzeLog, logInfo);
+                _synContext.Post(OnAnalyzeLog, logInfo);
                 #endregion
 
                 if (total == 0)
@@ -243,7 +261,7 @@ namespace Indihiang.Cores
                     LogProcessStatus.SUCCESS,
                     "Process()",
                     "No log file will be analyzed.");
-                    _synContext.Send(OnEndAnalyze, logInfo);
+                    _synContext.Post(OnEndAnalyze, logInfo);
                     Thread.Sleep(100);
 
                     return;
@@ -259,14 +277,14 @@ namespace Indihiang.Cores
                     "Process()",
                     "Running log parser...");
 
-            _synContext.Send(OnAnalyzeLog, logInfo);            
+            _synContext.Post(OnAnalyzeLog, logInfo);            
 
             _parser.Parse();
 
-            while (!_parser.isCompleted)
-            {
-                Thread.Sleep(100);
-            }
+            //while (!_parser.isCompleted)
+            //{
+            //    Thread.Sleep(100);
+            //}
             logInfo = new LogInfoEventArgs(
                    LogParserId.ToString(),
                    EnumLogFile.UNKNOWN,
@@ -274,7 +292,7 @@ namespace Indihiang.Cores
                    "Process()",
                    "Done");
             Thread.Sleep(100);
-            _synContext.Send(OnEndAnalyze, logInfo);
+            _synContext.Post(OnEndAnalyze, logInfo);
         }
 
         private void PrepareFeatures()
@@ -285,10 +303,10 @@ namespace Indihiang.Cores
                     LogProcessStatus.SUCCESS,
                     "PrepareFeatures()",
                     "Preparing log parser...");
-            _synContext.Send(OnAnalyzeLog, logInfo);
+            _synContext.Post(OnAnalyzeLog, logInfo);
 
             if (_useParallel)
-                _parser.ParalleFeatures = IndihiangHelper.GenerateParallelFeatures(_parser.LogFileFormat);
+                _parser.ParalleFeatures = IndihiangHelper.GenerateParallelFeatures(LogParserId,_parser.LogFileFormat);
             else
                 _parser.Features = IndihiangHelper.GenerateFeatures(_parser.LogFileFormat);
             
@@ -298,7 +316,7 @@ namespace Indihiang.Cores
                    LogProcessStatus.SUCCESS,
                    "PrepareFeatures()",
                    "Prepared parser features is done");
-            _synContext.Send(OnAnalyzeLog, logInfo);
+            _synContext.Post(OnAnalyzeLog, logInfo);
         }
         
         private bool CheckFile()
@@ -318,7 +336,7 @@ namespace Indihiang.Cores
                                 LogProcessStatus.FAILED,
                                 "LogParser.CheckFile()",
                                 String.Format("{0} isn't found", files[i]));
-                            _synContext.Send(OnAnalyzeLog, logInfo);
+                            _synContext.Post(OnAnalyzeLog, logInfo);
 
                             return false;
                         }
@@ -329,7 +347,7 @@ namespace Indihiang.Cores
                    LogProcessStatus.SUCCESS,
                    "Process()",
                    string.Format("Total log files are {0} files", files.Count.ToString()));
-                _synContext.Send(OnAnalyzeLog, logInfo);
+                _synContext.Post(OnAnalyzeLog, logInfo);
 
 
             }
@@ -342,7 +360,7 @@ namespace Indihiang.Cores
                         LogProcessStatus.FAILED,
                         "LogParser.CheckFile()",
                         String.Format("{0} isn't found", _fileName));
-                    _synContext.Send(OnAnalyzeLog, logInfo);
+                    _synContext.Post(OnAnalyzeLog, logInfo);
 
                     return false;
                 }
@@ -362,7 +380,7 @@ namespace Indihiang.Cores
                      LogProcessStatus.FAILED,
                      "LogParser.Verify()",
                      "Application cannot verify log file format or there are more than log file format");
-                _synContext.Send(OnAnalyzeLog, logInfo);
+                _synContext.Post(OnAnalyzeLog, logInfo);
 
                 return false;
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using Indihiang.Cores.Features;
 
@@ -32,7 +33,7 @@ namespace Indihiang.Cores
             return list;
         }
 
-        public static List<BaseLogAnalyzeFeature> GenerateParallelFeatures(EnumLogFile format)
+        public static List<BaseLogAnalyzeFeature> GenerateParallelFeatures(Guid parserId,EnumLogFile format)
         {
             List<BaseLogAnalyzeFeature> features = new List<BaseLogAnalyzeFeature>();
             features.Add(new GeneralFeature(format));
@@ -86,6 +87,26 @@ namespace Indihiang.Cores
             }
              
             return string.Format(format[i], s.ToString("#.##"));
+        }
+
+        public static void DumpToFile(string guid, string file, Dictionary<string, WebLog> logs)
+        {
+            string path = Environment.CurrentDirectory;
+            if(!Directory.Exists(String.Format("{0}\\{1}\\", path, guid)))
+                Directory.CreateDirectory(String.Format("{0}\\{1}\\", path, guid));
+
+            using(StreamWriter sw = new StreamWriter(String.Format("{0}\\{1}\\", path, guid),false))
+            {
+                foreach (KeyValuePair<string, WebLog> pair1 in logs)
+                {
+                    foreach (KeyValuePair<string, string> pair2 in pair1.Value.Items)
+                    {
+                        string data = String.Format("{0};{1};{2}", pair1.Key, pair2.Key, pair2.Value);
+                        sw.WriteLine(data);
+                    }
+                }
+            }
+
         }
 
 

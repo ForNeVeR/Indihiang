@@ -49,29 +49,36 @@ namespace Indihiang.Forms
         }
         internal void OnEndAnalyze(object sender, LogInfoEventArgs e)
         {
-            UpdateInfoLogStatus(e.FileName, "Analyzing is done");
-            UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing");
-
-            if (_listParser.ContainsKey(e.FileName))
+            try
             {
-                LogParser parser = (LogParser)_listParser[e.FileName];
+                UpdateInfoLogStatus(e.FileName, "Analyzing is done");
+                UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing");
 
-                if (tabMain.TabPages.ContainsKey(e.FileName))
+                if (_listParser.ContainsKey(e.FileName))
                 {
-                    ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).HideLoadingControl();
-                    ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).Populate(parser);
+                    LogParser parser = (LogParser)_listParser[e.FileName];
 
-                    if (_listParser[e.FileName].UseParallel)
-                        _listParser[e.FileName].ParallelFeatures.Clear();
-                    else
-                        _listParser[e.FileName].Features.Clear();
+                    if (tabMain.TabPages.ContainsKey(e.FileName))
+                    {
+                        ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).HideLoadingControl();                        
+                        ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).Populate(parser);
+
+                        if (_listParser[e.FileName].UseParallel)
+                            _listParser[e.FileName].ParallelFeatures.Clear();
+                        else
+                            _listParser[e.FileName].Features.Clear();
+                    }
+                    UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing is done");
+                    UpdateInfoLogStatus(e.FileName, string.Format("Total Analyzing Process Duration: {0:0.###} seconds", parser.ProcessDuration));
+                    UpdateInfoLogStatus(e.FileName, "Finish");
+
                 }
-                UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing is done");
-                UpdateInfoLogStatus(e.FileName, string.Format("Total Analyzing Process Duration: {0:0.###} seconds", parser.ProcessDuration));
-                UpdateInfoLogStatus(e.FileName, "Finish");                   
-
             }
-            
+            catch (Exception err)
+            {
+                UpdateInfoLogStatus(e.FileName, err.Message);
+                UpdateInfoLogStatus(e.FileName, err.StackTrace);
+            }
         }
 
         private void UpdateInfoLogStatus(string tabId,string msg)
@@ -159,10 +166,11 @@ namespace Indihiang.Forms
 
                         
                         //AttachUserControl(key, name1,7);
-                        AttachUserControl(id.ToString(), name1, 7);
-                        AttachLogParser(key,id);                       
+                        AttachUserControl(id.ToString(), name1, 7);                                           
                         tabMain.SelectedTab = tabMain.TabPages[id.ToString()];
                         _logFileaNode.ExpandAll();
+
+                        AttachLogParser(key, id);    
                     }
                     else
                     {
@@ -202,10 +210,10 @@ namespace Indihiang.Forms
                         CreateNewIISRemoteNode(guidKey.ToString(), name, 4);
                         // $$--> Remote IIS node key
                         AttachUserControl(guidKey.ToString(), name, 4);
-                        AttachIISRemoteLogParser(key, iis,guidKey);
-
                         tabMain.SelectedTab = tabMain.TabPages[guidKey.ToString()];
                         _computersNode.ExpandAll();
+
+                        AttachIISRemoteLogParser(key, iis,guidKey);                       
                     }
                     else
                         tabMain.SelectedTab = tabMain.TabPages[guidKey.ToString()];

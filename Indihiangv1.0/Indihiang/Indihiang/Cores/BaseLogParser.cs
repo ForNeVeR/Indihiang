@@ -11,12 +11,12 @@ namespace Indihiang.Cores
 {
     public abstract class BaseLogParser
     {
-        protected SpinLock _spinLock;
+        //protected SpinLock _spinLock;
         protected List<BaseLogAnalyzeFeature> _features;
         protected List<BaseLogAnalyzeFeature> _paralleFeatures;
         private SynchronizationContext _synContext;
         private LazyInit<TaskManager> _taskManager;
-        private Task _mainTask;
+        //private Task _mainTask;
 
         public event EventHandler<LogInfoEventArgs> ParseLogHandler;
 
@@ -37,16 +37,16 @@ namespace Indihiang.Cores
                 _features = value;
             }
         }
-        public bool isCompleted
-        {
-            get
-            {
-                if (_mainTask == null)
-                    return true;
+        //public bool isCompleted
+        //{
+        //    get
+        //    {
+        //        if (_mainTask == null)
+        //            return true;
 
-                return _mainTask.IsCompleted;
-            }           
-        }
+        //        return _mainTask.IsCompleted;
+        //    }           
+        //}
         public List<BaseLogAnalyzeFeature> ParalleFeatures
         {
             get
@@ -71,7 +71,7 @@ namespace Indihiang.Cores
 
         private void Initilaize()
         {
-            _spinLock = new SpinLock();
+            //_spinLock = new SpinLock();
             _features = new List<BaseLogAnalyzeFeature>();
             _paralleFeatures = new List<BaseLogAnalyzeFeature>();
             _synContext = AsyncOperationManager.SynchronizationContext;
@@ -91,6 +91,7 @@ namespace Indihiang.Cores
 
         public bool Parse()
         {
+            bool success = false;
             if (LogFile.StartsWith("--"))
             {
                 string tmp = LogFile.Substring(2);
@@ -99,48 +100,167 @@ namespace Indihiang.Cores
                 for (int i = 0; i < files.Length; i++)
                 {
                     if (!string.IsNullOrEmpty(files[i]))
-                        listFiles.Add(files[i]);
+                        if (!listFiles.Contains(files[i].ToLower().Trim()))
+                            listFiles.Add(files[i].ToLower().Trim());
                 }
 
+                Dictionary<string, List<BaseLogAnalyzeFeature>> resultData = new Dictionary<string, List<BaseLogAnalyzeFeature>>();
                 if (UseParallel)
                 {
                     #region Parallel Processing
 
                     try
                     {
-                        var resultData = new Future<List<BaseLogAnalyzeFeature>>[listFiles.Count];
-                        _mainTask = Task.Create(
-                                delegate
-                                {
-                                    Parallel.For(0, listFiles.Count, index =>
-                                        {
-                                            List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateParallelFeatures(LogFileFormat);
-                                            resultData[index] = Future.Create(
-                                                   () => ParseLogFile(features, listFiles[index])
-                                                );
-                                            resultData[index].Wait(-1);
-                                        });
-     
-                                },
-                                _taskManager.Value,
-                                TaskCreationOptions.None
-                             );
+                        List<ManualResetEventSlim> resets = new List<ManualResetEventSlim>();                        
 
-                        _mainTask.Wait(-1);
-                        for (int i = 0; i < resultData.Length; i++)
+                        int i = 0;
+                        Parallel.ForEach<string>(listFiles, file =>
                         {
-                            List<BaseLogAnalyzeFeature> items = resultData[i].Value;
-                            items.ForEach(delegate(BaseLogAnalyzeFeature item)
+                            if (!string.IsNullOrEmpty(file))
                             {
-                                for (int j = 0; j < _paralleFeatures.Count; j++)
-                                    if (_paralleFeatures[j].FeatureName == item.FeatureName)
-                                        _paralleFeatures[j].SynchData(item.Items);
-                            });
+                                ManualResetEventSlim obj = new ManualResetEventSlim(false);
+                                resets.Add(obj);
 
-                            items.Clear();
-                            resultData[i].Dispose();
+                                List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateParallelFeatures(new Guid(ParserID),LogFileFormat);
+                                resultData.Add(file, ParseLogFile(features, file));
+
+                                obj.Set();
+                                
+                            }
+                        });
+
+                        try
+                        {
+                            for (i = 0; i < resets.Count; i++)
+                            {
+                                if (!resets[i].IsSet)
+                                    resets[i].Wait();
+                            }
                         }
+                        catch
+                        {                           
+                        } 
+
+
+                        //WaitHandle.WaitAll(resets);
+                        //_mainTask = Task.Create(
+                        //        delegate
+                        //        {
+                        //            //for (int i = 0; i < listFiles.Count; i++)
+                        //            //{
+                        //            //    List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateParallelFeatures(LogFileFormat);
+                        //            //    resultData[i] = Future.Create(
+                        //            //                   () => ParseLogFile(features, listFiles[i])
+                        //            //                );
+                        //            //    //if (resultData[i] != null)
+                        //            //    //    resultData[i].Wait();
+
+                                        
+                        //            //}
+                        //            //Task.WaitAll(resultData);
+                        //            Parallel.ForEach(listFiles, file => 
+                        //            {
+                        //                List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateParallelFeatures(LogFileFormat);
+                        //                resultData.Add(file,ParseLogFile(features, file));
+                        //            });
+                        //            //Parallel.For(0, listFiles.Count, index =>
+                        //            //    {
+                        //            //        List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateParallelFeatures(LogFileFormat);
+                        //            //        resultData[index] = Future.Create(
+                        //            //                       () => ParseLogFile(features, listFiles[index])
+                        //            //                    );
+                        //            //        //if (resultData[index] != null)
+                        //            //        //    resultData[index].Wait();
+                        //            //    });
+     
+                        //        },
+                        //        _taskManager.Value,
+                        //        TaskCreationOptions.None
+                        //     );
+
+                        //try
+                        //{
+
+                        //    _mainTask.Wait();
+                        //}
+                        //catch (AggregateException err)
+                        //{
+                        //    #region Handle Exception
+                        //    LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                        //       ParserID,
+                        //       EnumLogFile.UNKNOWN,
+                        //       LogProcessStatus.SUCCESS,
+                        //       "Parse()",
+                        //       String.Format("Internal Error-inner: {0}", err.Message));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //           ParserID,
+                        //           EnumLogFile.UNKNOWN,
+                        //           LogProcessStatus.SUCCESS,
+                        //           "Parse()",
+                        //           String.Format("Source Internal Error-inner: {0}", err.Source));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //           ParserID,
+                        //           EnumLogFile.UNKNOWN,
+                        //           LogProcessStatus.SUCCESS,
+                        //           "Parse()",
+                        //           String.Format("Detail Internal Error-inner: {0}", err.StackTrace));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //           ParserID,
+                        //           EnumLogFile.UNKNOWN,
+                        //           LogProcessStatus.SUCCESS,
+                        //           "Parse()",
+                        //           String.Format("Internal Exception Error-inner: {0}", err.InnerException.Message));
+                        //    _synContext.Post(OnParseLog, logInfo);
+
+                        //    #endregion
+
+                        //}
+                        //catch (Exception err)
+                        //{
+                        //    #region Handle Exception
+                        //    LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                        //       ParserID,
+                        //       EnumLogFile.UNKNOWN,
+                        //       LogProcessStatus.SUCCESS,
+                        //       "Parse()",
+                        //       String.Format("Internal Error-inner: {0}", err.Message));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //           ParserID,
+                        //           EnumLogFile.UNKNOWN,
+                        //           LogProcessStatus.SUCCESS,
+                        //           "Parse()",
+                        //           String.Format("Source Internal Error-inner: {0}", err.Source));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //           ParserID,
+                        //           EnumLogFile.UNKNOWN,
+                        //           LogProcessStatus.SUCCESS,
+                        //           "Parse()",
+                        //           String.Format("Detail Internal Error-inner: {0}", err.StackTrace));
+                        //    _synContext.Post(OnParseLog, logInfo);
+
+                        //    #endregion
+
+                        //}                       
+                        //for (int i = 0; i < resultData.Count; i++)
+                        //{
+                        //    List<BaseLogAnalyzeFeature> items = resultData[i].Value;
+                        //    items.ForEach(delegate(BaseLogAnalyzeFeature item)
+                        //    {
+                        //        for (int j = 0; j < _paralleFeatures.Count; j++)
+                        //            if (_paralleFeatures[j].FeatureName == item.FeatureName)
+                        //                _paralleFeatures[j].SynchData(item.Items);
+                        //    });
+
+                        //    items.Clear();
+                        //    resultData[i].Dispose();
+                        //}
                         Thread.Sleep(100);
+                        success = true;
 
                     }
                     catch (AggregateException err)
@@ -152,21 +272,28 @@ namespace Indihiang.Cores
                            LogProcessStatus.SUCCESS,
                            "Parse()",
                            String.Format("Internal Error: {0}", err.Message));
-                        _synContext.Send(OnParseLog, logInfo);
+                        _synContext.Post(OnParseLog, logInfo);
                         logInfo = new LogInfoEventArgs(
                                ParserID,
                                EnumLogFile.UNKNOWN,
                                LogProcessStatus.SUCCESS,
                                "Parse()",
                                String.Format("Source Internal Error: {0}", err.Source));
-                        _synContext.Send(OnParseLog, logInfo);
+                        _synContext.Post(OnParseLog, logInfo);
                         logInfo = new LogInfoEventArgs(
                                ParserID,
                                EnumLogFile.UNKNOWN,
                                LogProcessStatus.SUCCESS,
                                "Parse()",
                                String.Format("Detail Internal Error: {0}", err.StackTrace));
-                        _synContext.Send(OnParseLog, logInfo);
+                        _synContext.Post(OnParseLog, logInfo);
+                        logInfo = new LogInfoEventArgs(
+                               ParserID,
+                               EnumLogFile.UNKNOWN,
+                               LogProcessStatus.SUCCESS,
+                               "Parse()",
+                               String.Format("Internal Exception Error: {0}", err.InnerException.Message));
+                        _synContext.Post(OnParseLog, logInfo);
 
                         #endregion
 
@@ -180,21 +307,21 @@ namespace Indihiang.Cores
                            LogProcessStatus.SUCCESS,
                            "Parse()",
                            String.Format("Internal Error: {0}", err.Message));
-                        _synContext.Send(OnParseLog, logInfo);
+                        _synContext.Post(OnParseLog, logInfo);
                         logInfo = new LogInfoEventArgs(
                                ParserID,
                                EnumLogFile.UNKNOWN,
                                LogProcessStatus.SUCCESS,
                                "Parse()",
                                String.Format("Source Internal Error: {0}", err.Source));
-                        _synContext.Send(OnParseLog, logInfo);
+                        _synContext.Post(OnParseLog, logInfo);
                         logInfo = new LogInfoEventArgs(
                                ParserID,
                                EnumLogFile.UNKNOWN,
                                LogProcessStatus.SUCCESS,
                                "Parse()",
                                String.Format("Detail Internal Error: {0}", err.StackTrace));
-                        _synContext.Send(OnParseLog, logInfo);
+                        _synContext.Post(OnParseLog, logInfo);
 
                         #endregion
 
@@ -206,12 +333,18 @@ namespace Indihiang.Cores
                 else
                 {
                     #region Non Parallel Processing
-                    for (int i = 0; i < files.Length; i++)
+                    for (int i = 0; i < listFiles.Count; i++)
                     {
                         try
                         {
-                            if (!string.IsNullOrEmpty(files[i]))
-                                ParseLogFile(_features, files[i]);
+
+
+                            if (!string.IsNullOrEmpty(listFiles[i]))
+                            {
+                                List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateFeatures(LogFileFormat);
+                                resultData.Add(listFiles[i], ParseLogFile(features, listFiles[i]));
+                                //resultData.Add(listFiles[i], ParseLogFile(_features, listFiles[i]));
+                            }
                         }
                         catch (Exception err)
                         {
@@ -222,25 +355,80 @@ namespace Indihiang.Cores
                                LogProcessStatus.SUCCESS,
                                "ParseLogFile()",
                                String.Format("Internal Error: {0}", err.Message));
-                            _synContext.Send(OnParseLog, logInfo);
+                            _synContext.Post(OnParseLog, logInfo);
                             logInfo = new LogInfoEventArgs(
                                    ParserID,
                                    EnumLogFile.UNKNOWN,
                                    LogProcessStatus.SUCCESS,
                                    "ParseLogFile()",
                                    String.Format("Source Internal Error: {0}", err.Source));
-                            _synContext.Send(OnParseLog, logInfo);
+                            _synContext.Post(OnParseLog, logInfo);
                             logInfo = new LogInfoEventArgs(
                                    ParserID,
                                    EnumLogFile.UNKNOWN,
                                    LogProcessStatus.SUCCESS,
                                    "ParseLogFile()",
                                    String.Format("Detail Internal Error: {0}", err.StackTrace));
-                            _synContext.Send(OnParseLog, logInfo);
+                            _synContext.Post(OnParseLog, logInfo);
 
                             #endregion
                         }
                     }
+                    success = true;
+                    #endregion
+
+                }
+
+                try
+                {
+                    //_spinLock.Enter();
+                    foreach (KeyValuePair<string, List<BaseLogAnalyzeFeature>> item in resultData)
+                    {
+                        //List<BaseLogAnalyzeFeature> items = resultData[i].Value;
+
+                        for (int i = 0; i < item.Value.Count; i++)
+                        {
+                            for (int j = 0; j < _paralleFeatures.Count; j++)
+                                if (_paralleFeatures[j].FeatureName == item.Value[i].FeatureName)
+                                    _paralleFeatures[j].SynchData(item.Value[i].Items);
+
+                            //item.Value.ForEach(delegate(BaseLogAnalyzeFeature f)
+                            //{
+                            //    for (int j = 0; j < _paralleFeatures.Count; j++)
+                            //        if (_paralleFeatures[j].FeatureName == f.FeatureName)
+                            //            _paralleFeatures[j].SynchData(f.Items);
+                            //});
+                        }
+                        //items.Clear();
+                        //resultData[i].Dispose();
+                    }
+                    //_spinLock.Exit();
+                }
+                catch (Exception err)
+                {
+                    #region Handle Exception
+                    LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                       ParserID,
+                       EnumLogFile.UNKNOWN,
+                       LogProcessStatus.SUCCESS,
+                       "Parse()",
+                       String.Format("Internal Error-Synch: {0}", err.Message));
+                    _synContext.Post(OnParseLog, logInfo);
+                    logInfo = new LogInfoEventArgs(
+                           ParserID,
+                           EnumLogFile.UNKNOWN,
+                           LogProcessStatus.SUCCESS,
+                           "Parse()",
+                           String.Format("Source Internal Error-Synch: {0}", err.Source));
+                    _synContext.Post(OnParseLog, logInfo);
+                    logInfo = new LogInfoEventArgs(
+                           ParserID,
+                           EnumLogFile.UNKNOWN,
+                           LogProcessStatus.SUCCESS,
+                           "Parse()",
+                           String.Format("Detail Internal Error-Synch: {0}", err.StackTrace));
+                    _synContext.Post(OnParseLog, logInfo);
+
                     #endregion
 
                 }
@@ -254,8 +442,8 @@ namespace Indihiang.Cores
                 else
                     ParseLogFile(_features, LogFile);
             }
-            
-            return true;
+
+            return success;
                      
         }
         protected List<BaseLogAnalyzeFeature> ParseLogFile(List<BaseLogAnalyzeFeature> features,string logFile)
@@ -263,8 +451,8 @@ namespace Indihiang.Cores
             if (features == null)
                 return null;
 
-            using (StreamReader sr = new StreamReader(logFile))
-            {
+            //if (UseParallel)
+            //{
                 #region Logging
                 LogInfoEventArgs logInfo = new LogInfoEventArgs(
                    ParserID,
@@ -272,100 +460,132 @@ namespace Indihiang.Cores
                    LogProcessStatus.SUCCESS,
                    "ParseLogFile()",
                    String.Format("Read File: {0}", logFile));
-                _synContext.Send(OnParseLog, logInfo);
+                _synContext.Post(OnParseLog, logInfo);
 
                 Debug.WriteLine(String.Format("Read File: {0}", logFile));
-                
                 #endregion
 
-                try
+                foreach (var feature in features)
                 {
-                    string line = sr.ReadLine();
-                    Debug.WriteLine(String.Format("Indihiang Read: {0}", line));
+                    using (StreamReader sr = new StreamReader(logFile))
+                    {                       
+                        //try
+                        //{
 
-                    List<string> currentHeader = new List<string>();
-                    while (!string.IsNullOrEmpty(line))
-                    {
-                        Debug.WriteLine(String.Format("Read: {0}", line));
-                        if (IsLogHeader(line))
-                        {
-                            List<string> list1 = ParseHeader(line);
-                            if (list1 != null)
-                                currentHeader = new List<string>(list1);
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(line))
+                            string line = sr.ReadLine();
+                            //Debug.WriteLine(String.Format("Indihiang Read: {0}", line));
+
+                            List<string> currentHeader = new List<string>();
+                            while (!string.IsNullOrEmpty(line))
                             {
-                                string[] rows = line.Split(new char[] { ' ' });
-                                if (rows != null)
+                                //Debug.WriteLine(String.Format("Read: {0}", line));
+                                if (IsLogHeader(line))
                                 {
-                                    if (rows.Length > 0)
+                                    List<string> list1 = ParseHeader(line);
+                                    if (list1 != null)
+                                        currentHeader = new List<string>(list1);
+                                }
+                                else
+                                {
+                                    if (!string.IsNullOrEmpty(line))
                                     {
-                                        if (UseParallel)
+                                        string[] rows = line.Split(new char[] { ' ' });
+                                        if (rows != null)
                                         {
-                                            foreach (var feature in features)
+                                            if (rows.Length > 0)
                                             {
                                                 feature.Parse(currentHeader, rows);
                                             }
                                         }
-                                        else
-                                        {
-                                            for (int i = 0; i < _features.Count; i++)
-                                            {
-                                                _features[i].Parse(currentHeader, rows);
-                                            }
-                                        }
                                     }
                                 }
+
+                                line = sr.ReadLine();
+                                if (!string.IsNullOrEmpty(line))
+                                    line = line.Trim();
+                                //if (!string.IsNullOrEmpty(line))
+                                //    line = line.TrimEnd('\0');
+
                             }
-                        }
 
-                        line = sr.ReadLine();
-                        if (!string.IsNullOrEmpty(line))
-                            line = line.TrimEnd('\0');
+                        //}
+                        //catch (AggregateException err)
+                        //{
+                        //    #region Handle Exception
+                        //    LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                        //       ParserID,
+                        //       EnumLogFile.UNKNOWN,
+                        //       LogProcessStatus.SUCCESS,
+                        //       "Parse()",
+                        //       String.Format("Internal Error: {0}", err.Message));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //           ParserID,
+                        //           EnumLogFile.UNKNOWN,
+                        //           LogProcessStatus.SUCCESS,
+                        //           "Parse()",
+                        //           String.Format("Source Internal Error: {0}", err.Source));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //           ParserID,
+                        //           EnumLogFile.UNKNOWN,
+                        //           LogProcessStatus.SUCCESS,
+                        //           "Parse()",
+                        //           String.Format("Detail Internal Error: {0}", err.StackTrace));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //           ParserID,
+                        //           EnumLogFile.UNKNOWN,
+                        //           LogProcessStatus.SUCCESS,
+                        //           "Parse()",
+                        //           String.Format("Internal Exception Error: {0}", err.InnerException.Message));
+                        //    _synContext.Post(OnParseLog, logInfo);
 
-                    }
-                }
-                catch (ArgumentOutOfRangeException err)
-                {
-                    #region Logging
-                    System.Diagnostics.Debug.WriteLine(err.Message);
-                    logInfo = new LogInfoEventArgs(
-                          ParserID,
-                          EnumLogFile.UNKNOWN,
-                          LogProcessStatus.FAILED,
-                          "ParseLogFile()",
-                          String.Format("Internal Error on ParseLogFile: {0}", err.Message));
-                    _synContext.Send(OnParseLog, logInfo);
-                    logInfo = new LogInfoEventArgs(
-                          ParserID,
-                          EnumLogFile.UNKNOWN,
-                          LogProcessStatus.FAILED,
-                          "ParseLogFile()",
-                          String.Format("Detail: {0} ", err.StackTrace));
-                    _synContext.Send(OnParseLog, logInfo);
-                    #endregion
-                }
-                catch (Exception err)
-                {
-                    #region Logging
-                    System.Diagnostics.Debug.WriteLine(err.Message);
-                    logInfo = new LogInfoEventArgs(
-                          ParserID,
-                          EnumLogFile.UNKNOWN,
-                          LogProcessStatus.FAILED,
-                          "ParseLogFile()",
-                          String.Format("Internal Error on ParseLogFile: {0}", err.Message));
-                    _synContext.Send(OnParseLog, logInfo);
-                    logInfo = new LogInfoEventArgs(
-                          ParserID,
-                          EnumLogFile.UNKNOWN,
-                          LogProcessStatus.FAILED,
-                          "ParseLogFile()",
-                          String.Format("Detail: {0} ", err.StackTrace));
-                    _synContext.Send(OnParseLog, logInfo);
-                    #endregion
+                        //    #endregion
+
+                        //}
+                        //catch (ArgumentOutOfRangeException err)
+                        //{
+                        //    #region Logging
+                        //    System.Diagnostics.Debug.WriteLine(err.Message);
+                        //    logInfo = new LogInfoEventArgs(
+                        //          ParserID,
+                        //          EnumLogFile.UNKNOWN,
+                        //          LogProcessStatus.FAILED,
+                        //          "ParseLogFile()",
+                        //          String.Format("Internal Error on ParseLogFile: {0}", err.Message));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //          ParserID,
+                        //          EnumLogFile.UNKNOWN,
+                        //          LogProcessStatus.FAILED,
+                        //          "ParseLogFile()",
+                        //          String.Format("Detail: {0} ", err.StackTrace));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    #endregion
+                        //}
+                        //catch (Exception err)
+                        //{
+                        //    #region Logging
+                        //    System.Diagnostics.Debug.WriteLine(err.Message);
+                        //    logInfo = new LogInfoEventArgs(
+                        //          ParserID,
+                        //          EnumLogFile.UNKNOWN,
+                        //          LogProcessStatus.FAILED,
+                        //          "ParseLogFile()",
+                        //          String.Format("Internal Error on ParseLogFile: {0}", err.Message));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    logInfo = new LogInfoEventArgs(
+                        //          ParserID,
+                        //          EnumLogFile.UNKNOWN,
+                        //          LogProcessStatus.FAILED,
+                        //          "ParseLogFile()",
+                        //          String.Format("Detail: {0} ", err.StackTrace));
+                        //    _synContext.Post(OnParseLog, logInfo);
+                        //    #endregion
+                        //}
+                       
+                    }                    
                 }
 
                 #region Logging
@@ -375,9 +595,9 @@ namespace Indihiang.Cores
                           LogProcessStatus.SUCCESS,
                           "ParseLogFile()",
                           String.Format("Read File: {0} is done", logFile));
-                _synContext.Send(OnParseLog, logInfo);
+                _synContext.Post(OnParseLog, logInfo);
                 #endregion
-            }
+            //}
 
             return features;
 

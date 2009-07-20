@@ -58,16 +58,29 @@ namespace Indihiang.Modules
 
         private void GenerateData()
         {
+            if (!_items.ContainsKey("TimeTaken"))
+                return;
+
+            if (_items["TimeTaken"].Colls.Count <= 0)
+                return;
+
             var items = from k in _items["TimeTaken"].Colls
-                        orderby k.Key ascending
+                        orderby k.Value ascending
                         select k;
 
+            if (items == null)
+                return;
+
+            int total = 0;
             foreach (KeyValuePair<string, WebLog> item in items)
             {
                 if (item.Value != null)
                 {
                     foreach (KeyValuePair<string, string> ilog in item.Value.Items)
                     {
+                        total++;
+                        if (total > 500)
+                            break;
                         List<object> list = new List<object>();
 
                         list.Add(item.Key);
@@ -76,14 +89,18 @@ namespace Indihiang.Modules
                             list.Add(tmp[0]);
                         else
                             list.Add("");
-                        list.Add(IndihiangHelper.DurationFormat(Convert.ToInt64(ilog.Value)));                        
+                        list.Add(IndihiangHelper.DurationFormat(Convert.ToInt64(ilog.Value)));
 
                         dataGridViewRequest.Rows.Add(list.ToArray());
                     }
 
-                    
+
                 }
+                if (total > 500)
+                    break;
             }
+            
+            //MessageBox.Show(total.ToString());
 
             dataGridViewRequest.Columns[0].DisplayIndex = 0;
             dataGridViewRequest.Columns[1].DisplayIndex = 1;

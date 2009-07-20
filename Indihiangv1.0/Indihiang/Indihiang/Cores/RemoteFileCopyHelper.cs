@@ -59,12 +59,14 @@ namespace Indihiang.Cores
                     wic = wid_admin.Impersonate();
 
                     string[] files = null;
-                    if (iisInfo.LocalComputer)
-                    {
-                        files = Directory.GetFiles(String.Format("{0}\\W3SVC{1}\\", iisInfo.LogPath, iisInfo.Id));
-                    }
-                    else
-                        files = Directory.GetFiles(String.Format("\\\\{0}\\{1}\\W3SVC{2}\\", iisInfo.RemoteServer, pathSource,iisInfo.Id));
+                    files = Directory.GetFiles(String.Format("\\\\{0}\\{1}\\W3SVC{2}\\", iisInfo.RemoteServer, pathSource, iisInfo.Id));
+
+                    //if (iisInfo.LocalComputer)
+                    //{
+                    //    files = Directory.GetFiles(String.Format("{0}\\W3SVC{1}\\", iisInfo.LogPath, iisInfo.Id));
+                    //}
+                    //else
+                    //    files = Directory.GetFiles(String.Format("\\\\{0}\\{1}\\W3SVC{2}\\", iisInfo.RemoteServer, pathSource,iisInfo.Id));
 
                     if (files != null)
                     {
