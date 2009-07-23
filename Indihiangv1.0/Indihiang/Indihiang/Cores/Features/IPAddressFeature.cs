@@ -30,6 +30,21 @@ namespace Indihiang.Cores.Features
 
             return true;
         }
+        protected override bool RunFeature(string id, List<string> header, string[] item)
+        {
+            switch (_logFile)
+            {
+                case EnumLogFile.NCSA:
+                    break;
+                case EnumLogFile.MSIISLOG:
+                    break;
+                case EnumLogFile.W3CEXT:
+                    RunW3cext( header, item);
+                    break;
+            }
+
+            return true;
+        }
         private void RunW3cext(List<string> header, string[] item)
         {
             if (header == null)
@@ -91,7 +106,58 @@ namespace Indihiang.Cores.Features
                 }
 
             }                            
-        }        
+        }
+
+        private void RunW3cext(string id,List<string> header, string[] item)
+        {
+            if (header == null)
+                return;
+            if (header.Count <= 0)
+                return;
+
+            int index = header.IndexOf("date");
+            string key;
+            if (index != -1)
+                key = item[index];
+            else
+                key = null;
+            int index2 = header.IndexOf("c-ip");
+            string key2;
+            if (index2 != -1)
+                key2 = item[index2];
+            else
+                key2 = null;
+            int index3 = header.IndexOf("cs-uri-stem");
+            string key3;
+            if (index3 != -1)
+                key3 = item[index3];
+            else
+                key3 = null;
+
+
+            string path = String.Format("{0}\\Temp\\{1}\\", Environment.CurrentDirectory, id);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            if (!string.IsNullOrEmpty(key) && key != "-")
+            {
+                if (!string.IsNullOrEmpty(key2) && key2 != "-")
+                {
+                    FeatureLogFile logFile = new FeatureLogFile();
+                    string generalFile = String.Format("{0}{1}-General.tmp", path, _featureName.ToString());
+                    logFile.LogFile = generalFile;
+                    logFile.UpdateCount("total", 1);                    
+
+                    if (!string.IsNullOrEmpty(key3))
+                    {
+                        string ipPageFile = String.Format("{0}{1}-IPPage.tmp", path, _featureName.ToString());
+                        logFile.LogFile = ipPageFile;
+                        logFile.UpdateCount(string.Format("{0}-{1}", key2, key3), 1);                        
+                    }
+                }
+
+            }
+        } 
 
         protected override bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem)
         {

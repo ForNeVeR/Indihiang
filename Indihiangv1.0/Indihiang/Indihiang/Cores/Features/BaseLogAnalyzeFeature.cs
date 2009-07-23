@@ -41,6 +41,11 @@ namespace Indihiang.Cores.Features
             RunFeature(header, item);
         }
 
+        public void Parse(string id, List<string> header, string[] item)
+        {
+            RunFeature(id,header, item);
+        }
+
         public void SynchData(Dictionary<string, LogCollection> newItem)
         {
             RunSynchFeatureData(newItem);
@@ -50,6 +55,7 @@ namespace Indihiang.Cores.Features
             DumpToFile(sw);
         }
 
+        protected abstract bool RunFeature(string id,List<string> header, string[] item);
         protected abstract bool RunFeature(List<string> header, string[] item);
         protected abstract bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem);
         protected abstract void DumpToFile(StreamWriter sw);

@@ -114,20 +114,52 @@ namespace Indihiang.Cores
                         List<ManualResetEventSlim> resets = new List<ManualResetEventSlim>();                        
 
                         int i = 0;
-                        Parallel.ForEach<string>(listFiles, file =>
+                        //List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateParallelFeatures(new Guid(ParserID), LogFileFormat);
+                        _paralleFeatures = IndihiangHelper.GenerateParallelFeatures(new Guid(ParserID), LogFileFormat);
+                        Parallel.ForEach<BaseLogAnalyzeFeature>(_paralleFeatures, feature =>
                         {
-                            if (!string.IsNullOrEmpty(file))
+                            LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                                           ParserID,
+                                           EnumLogFile.UNKNOWN,
+                                           LogProcessStatus.SUCCESS,
+                                           "Parse()",
+                                           String.Format("Run Parse : {0}", feature.FeatureName.ToString()));
+                            _synContext.Post(OnParseLog, logInfo);
+
+                            
+                            ManualResetEventSlim obj = new ManualResetEventSlim(false);
+                            resets.Add(obj);
+                            for (int j = 0; j < listFiles.Count; j++)
                             {
-                                ManualResetEventSlim obj = new ManualResetEventSlim(false);
-                                resets.Add(obj);
-
-                                List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateParallelFeatures(new Guid(ParserID),LogFileFormat);
-                                resultData.Add(file, ParseLogFile(features, file));
-
-                                obj.Set();
-                                
+                                RunParse(feature, listFiles[j]);                                
                             }
+                            obj.Set();
+
+                            logInfo = new LogInfoEventArgs(
+                                           ParserID,
+                                           EnumLogFile.UNKNOWN,
+                                           LogProcessStatus.SUCCESS,
+                                           "Parse()",
+                                           String.Format("Run Parse : {0} was done", feature.FeatureName.ToString()));
+                            _synContext.Post(OnParseLog, logInfo);
+
                         });
+                        
+
+                        //Parallel.ForEach<string>(listFiles, file =>
+                        //{
+                        //    if (!string.IsNullOrEmpty(file))
+                        //    {
+                        //        ManualResetEventSlim obj = new ManualResetEventSlim(false);
+                        //        resets.Add(obj);
+
+                        //        List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateParallelFeatures(new Guid(ParserID),LogFileFormat);
+                        //        resultData.Add(file, ParseLogFile(features, file));
+
+                        //        obj.Set();
+                                
+                        //    }
+                        //});
 
                         try
                         {
@@ -601,6 +633,48 @@ namespace Indihiang.Cores
 
             return features;
 
+        }
+
+        protected void RunParse(BaseLogAnalyzeFeature feature, string logFile)
+        {
+            if (feature == null)
+                return;
+
+            
+            
+            using (StreamReader sr = new StreamReader(File.Open(logFile,FileMode.Open,FileAccess.Read,FileShare.Read)))
+            {               
+                string line = sr.ReadLine();
+
+                List<string> currentHeader = new List<string>();
+                while (!string.IsNullOrEmpty(line))
+                {
+                    if (IsLogHeader(line))
+                    {
+                        List<string> list1 = ParseHeader(line);
+                        if (list1 != null)
+                            currentHeader = new List<string>(list1);
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(line))
+                        {
+                            string[] rows = line.Split(new char[] { ' ' });
+                            if (rows != null)
+                            {
+                                if (rows.Length > 0)
+                                {
+                                    feature.Parse(currentHeader, rows);
+                                }
+                            }
+                        }
+                    }
+
+                    line = sr.ReadLine();
+                    if (!string.IsNullOrEmpty(line))
+                        line = line.Trim();
+                }
+            }
         }
 
 
