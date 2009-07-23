@@ -32,6 +32,22 @@ namespace Indihiang.Cores.Features
             return true;
         }
 
+        protected override bool RunFeature(string id, List<string> header, string[] item)
+        {
+            switch (_logFile)
+            {
+                case EnumLogFile.NCSA:
+                    break;
+                case EnumLogFile.MSIISLOG:
+                    break;
+                case EnumLogFile.W3CEXT:
+                    RunW3cext(id, header, item);
+                    break;
+            }
+
+            return true;
+        }
+
         private void RunW3cext(List<string> header, string[] item)
         {
             if (header == null)
@@ -190,6 +206,103 @@ namespace Indihiang.Cores.Features
                         val = 0;
                     _logs["ByteIPClient"].Colls[data4].Items.Add("Received", val.ToString());
 
+                }
+            }
+            #endregion
+
+        }
+
+        private void RunW3cext(string id,List<string> header, string[] item)
+        {
+            if (header == null)
+                return;
+
+            long val = 0;
+            int index = header.IndexOf("date");
+            int index2 = header.IndexOf("cs-uri-stem");
+            int index3 = header.IndexOf("sc-bytes");
+            int index4 = header.IndexOf("cs-bytes");
+            int index5 = header.IndexOf("c-ip");
+
+            if (index == -1)
+                return;
+
+            string key = item[index];
+
+            string data1;
+            if (index2 > 0 && index2 <= item.Length)
+                data1 = item[index2];
+            else
+                data1 = string.Empty;
+            string data2;
+            if (index3 > 0 && index3 <= item.Length)
+                data2 = item[index3];
+            else
+                data2 = string.Empty;
+            string data3;
+            if (index4 > 0 && index4 <= item.Length)
+                data3 = item[index4];
+            else
+                data3 = string.Empty;
+
+            string data4;
+            if (index5 > 0 && index5 <= item.Length)
+                data4 = item[index5];
+            else
+                data4 = string.Empty;
+
+
+            string path = String.Format("{0}\\Temp\\{1}\\", Environment.CurrentDirectory, id);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+
+            #region BytesSent
+            if (!string.IsNullOrEmpty(data1) && data1 != "-")
+            {
+                FeatureLogFile logFile = new FeatureLogFile();
+                string bytesSentFile = String.Format("{0}{1}-BytesSent.tmp", path, _featureName.ToString());
+                logFile.LogFile = bytesSentFile;
+
+                if (!string.IsNullOrEmpty(data2) && data2 != "-")
+                {
+                    val = Convert.ToInt64(data2);
+                    logFile.UpdateCount(string.Format("{0}-{1}", key, data1), val);
+                }
+            }
+            #endregion
+
+            #region ByteReceived
+            if (!string.IsNullOrEmpty(data1) && data1 != "-")
+            {
+                FeatureLogFile logFile = new FeatureLogFile();
+                string byteReceived = String.Format("{0}{1}-ByteReceived.tmp", path, _featureName.ToString());
+                logFile.LogFile = byteReceived;
+
+                if (!string.IsNullOrEmpty(data3) && data3 != "-")
+                {
+                    val = Convert.ToInt64(data3);
+                    logFile.UpdateCount(string.Format("{0}-{1}", key, data1), val);
+                }
+            }
+            #endregion
+
+            #region ByteIPClient
+            if (!string.IsNullOrEmpty(data4) && data4 != "-")
+            {
+                FeatureLogFile logFile = new FeatureLogFile();
+                string byteIPClient = String.Format("{0}{1}-ByteIPClient.tmp", path, _featureName.ToString());
+                logFile.LogFile = byteIPClient;
+
+                if (!string.IsNullOrEmpty(data2) && data2 != "-")
+                {
+                    val = Convert.ToInt64(data2);
+                    logFile.UpdateCount(string.Format("{0}-{1}-Sent", key, data4), val);
+                }
+                if (!string.IsNullOrEmpty(data3) && data3 != "-")
+                {
+                    val = Convert.ToInt64(data3);
+                    logFile.UpdateCount(string.Format("{0}-{1}-Received", key, data4), val);
                 }
             }
             #endregion

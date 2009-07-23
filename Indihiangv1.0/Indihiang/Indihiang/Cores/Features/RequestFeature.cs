@@ -44,6 +44,23 @@ namespace Indihiang.Cores.Features
             return true;
         }
 
+        protected override bool RunFeature(string id,List<string> header, string[] item)
+        {
+            switch (_logFile)
+            {
+                case EnumLogFile.NCSA:
+                    break;
+                case EnumLogFile.MSIISLOG:
+                    break;
+                case EnumLogFile.W3CEXT:
+                    RunW3cext(id,header, item);
+                    break;
+            }
+
+            return true;
+        }
+
+
         private void RunW3cext(List<string> header, string[] item)
         {
             int index = header.IndexOf("date");
@@ -79,6 +96,39 @@ namespace Indihiang.Cores.Features
                 {
                     _logs["TimeTaken"].Colls[key].Items.Add(String.Format("{0};{1}", data1, Guid.NewGuid().ToString()), data2);
                 }
+            }
+
+        }
+
+        private void RunW3cext(string id,List<string> header, string[] item)
+        {            
+            int index1 = header.IndexOf("cs-uri-stem");
+            int index2 = header.IndexOf("time-taken");
+
+            if (index1 == -1 || index2 == -1 )
+                return;            
+
+            string data1;
+            if (index1 > 0)
+                data1 = item[index1];
+            else
+                data1 = string.Empty;
+            string data2;
+            if (index2 > 0)
+                data2 = item[index2];
+            else
+                data2 = string.Empty;
+
+            string path = String.Format("{0}\\Temp\\{1}\\", Environment.CurrentDirectory, id);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            if (!string.IsNullOrEmpty(data1) && data1 != "-" && !string.IsNullOrEmpty(data2) && data2 != "-")
+            {
+                FeatureLogFile logFile = new FeatureLogFile();
+                string timeTakenFile = String.Format("{0}{1}-TimeTaken.tmp", path, _featureName.ToString());
+                logFile.LogFile = timeTakenFile;
+                logFile.InsertData(data1, data2);                
             }
 
         }

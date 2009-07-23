@@ -87,6 +87,10 @@
     <Compile Include="Cores\Features\AccessPageFeature.cs" />
     <Compile Include="Cores\Features\AccessStatusFeature.cs" />
     <Compile Include="Cores\Features\BandwidthFeature.cs" />
+    <Compile Include="Cores\Features\FeatureLogFile.cs" />
+    <Compile Include="Cores\Features\FeatureLogHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Cores\Features\GeneralFeature.cs" />
     <Compile Include="Cores\Features\HitsFeature.cs" />
     <Compile Include="Cores\Features\IPAddressFeature.cs" />

@@ -30,6 +30,21 @@ namespace Indihiang.Cores.Features
 
             return true;
         }
+        protected override bool RunFeature(string id, List<string> header, string[] item)
+        {
+            switch (_logFile)
+            {
+                case EnumLogFile.NCSA:
+                    break;
+                case EnumLogFile.MSIISLOG:
+                    break;
+                case EnumLogFile.W3CEXT:
+                    RunW3cext(header, item);
+                    break;
+            }
+
+            return true;
+        }
        
 
         private void RunW3cext(List<string> header, string[] item)
@@ -64,6 +79,35 @@ namespace Indihiang.Cores.Features
                     _logs["General"].Colls.Add(key, new WebLog(browser, "1"));
             }
          
+        }
+        private void RunW3cext(string id,List<string> header, string[] item)
+        {
+            int val = 0;
+
+            int index = header.IndexOf("date");
+            int index2 = header.IndexOf("cs(User-Agent)");
+
+            if (index == -1 || index2 == -1)
+                return;
+
+            string key = item[index];
+            string data = item[index2];
+
+            string path = String.Format("{0}\\Temp\\{1}\\", Environment.CurrentDirectory, id);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            if (!string.IsNullOrEmpty(data) && data != "-")
+            {
+                string browser = CheckBrowser(data);
+
+                FeatureLogFile logFile = new FeatureLogFile();
+
+                string generalFile = String.Format("{0}{1}-General.tmp", path, _featureName.ToString());
+                logFile.LogFile = generalFile;
+                logFile.UpdateCount(string.Format("{0}-{1}", key, browser), 1);  
+            }
+
         }
         private string CheckBrowser(string line)
         {

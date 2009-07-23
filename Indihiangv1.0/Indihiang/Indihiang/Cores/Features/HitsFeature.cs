@@ -29,6 +29,21 @@ namespace Indihiang.Cores.Features
 
             return true;
         }
+        protected override bool RunFeature(string id, List<string> header, string[] item)
+        {
+            switch (_logFile)
+            {
+                case EnumLogFile.NCSA:
+                    break;
+                case EnumLogFile.MSIISLOG:
+                    break;
+                case EnumLogFile.W3CEXT:
+                    RunW3cext(header, item);
+                    break;
+            }
+
+            return true;
+        }
         private void RunW3cext(List<string> header, string[] item)
         {
             int val = 0;
@@ -51,6 +66,25 @@ namespace Indihiang.Cores.Features
             }
             else
                 _logs["General"].Colls.Add(key, new WebLog(key, "1"));             
+        }
+
+        private void RunW3cext(string id,List<string> header, string[] item)
+        {
+            int index = header.IndexOf("date");
+            if (index == -1)
+                return;
+
+            string key = item[index];
+
+            string path = String.Format("{0}\\Temp\\{1}\\", Environment.CurrentDirectory, id);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            FeatureLogFile logFile = new FeatureLogFile();
+            string generalFile = String.Format("{0}{1}-General.tmp", path, _featureName.ToString());
+
+            logFile.LogFile = generalFile;
+            logFile.UpdateCount(key, 1);           
         }
 
         protected override bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem)

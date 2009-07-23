@@ -31,6 +31,22 @@ namespace Indihiang.Cores.Features
 
             return true;
         }
+        protected override bool RunFeature(string id, List<string> header, string[] item)
+        {
+            switch (_logFile)
+            {
+                case EnumLogFile.NCSA:
+                    break;
+                case EnumLogFile.MSIISLOG:
+                    break;
+                case EnumLogFile.W3CEXT:
+                    RunW3cext(header, item);
+                    break;
+            }
+
+            return true;
+        }
+
         private void RunW3cext(List<string> header, string[] item)
         {
             int index = header.IndexOf("date");
@@ -70,6 +86,51 @@ namespace Indihiang.Cores.Features
             {
                 System.Diagnostics.Debug.WriteLine(String.Format("GeneralFeature Error: {0}", err.Message));
             }            
+        }
+        private void RunW3cext(string id,List<string> header, string[] item)
+        {
+            int index = header.IndexOf("date");
+            int index2 = header.IndexOf("s-ip");
+
+            if (index == -1 || index2 == -1)
+                return;
+
+            string key = item[index];
+            string key2 = item[index2];
+
+            try
+            {
+                string path = String.Format("{0}\\Temp\\{1}\\", Environment.CurrentDirectory,id);
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                if (!string.IsNullOrEmpty(key) && key != "-")
+                {
+                    FeatureLogFile logFile = new FeatureLogFile();
+
+                    string generalFile = String.Format("{0}{1}-General.tmp", path, _featureName.ToString());                    
+                    logFile.LogFile = generalFile;
+                    logFile.InsertUniqueData(key);
+
+
+                    string totalFile = String.Format("{0}{1}-TotalData.tmp", path, _featureName.ToString());
+                    logFile.LogFile = totalFile;
+                    logFile.UpdateCount("total", 1);
+
+                }
+                if (!string.IsNullOrEmpty(key2) && key2 != "-")
+                {
+                    FeatureLogFile logFile = new FeatureLogFile();
+                    string serverFile = String.Format("{0}{1}-IPServer.tmp", path, _featureName.ToString());
+
+                    logFile.LogFile = serverFile;
+                    logFile.InsertUniqueData(key2);              
+                }
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(String.Format("GeneralFeature Error: {0}", err.Message));
+            }
         }
 
         protected override bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem)
@@ -167,5 +228,7 @@ namespace Indihiang.Cores.Features
                 System.Diagnostics.Debug.WriteLine(String.Format("Error DumpToFile: {0}", err.Message));
             }
         }
+
+        
     }
 }
