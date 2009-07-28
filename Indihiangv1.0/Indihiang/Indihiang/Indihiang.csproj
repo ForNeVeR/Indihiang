@@ -61,6 +61,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.64.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Threading, Version=1.0.3058.34407, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -87,6 +88,7 @@
     <Compile Include="Cores\Features\AccessPageFeature.cs" />
     <Compile Include="Cores\Features\AccessStatusFeature.cs" />
     <Compile Include="Cores\Features\BandwidthFeature.cs" />
+    <Compile Include="Cores\Features\BaseFeature.cs" />
     <Compile Include="Cores\Features\FeatureLogFile.cs" />
     <Compile Include="Cores\Features\FeatureLogHelper.cs">
       <SubType>Code</SubType>
@@ -109,8 +111,13 @@
     <Compile Include="Cores\RemoteFileCopyHelper.cs" />
     <Compile Include="Cores\ThreadBarrierExtensions.cs" />
     <Compile Include="Cores\W3cExtendedLogParser.cs" />
+    <Compile Include="Data\DataHelper.cs" />
+    <Compile Include="DomainObject\Feature.cs" />
+    <Compile Include="DomainObject\FeatureData.cs" />
     <Compile Include="DomainObject\IISInfo.cs" />
+    <Compile Include="DomainObject\Indihiang.cs" />
     <Compile Include="DomainObject\NcsaLog.cs" />
+    <Compile Include="DomainObject\Shared.cs" />
     <Compile Include="DomainObject\W3cExtendedLog.cs" />
     <Compile Include="Forms\AboutIndihiang.cs">
       <SubType>Form</SubType>
@@ -279,7 +286,15 @@
   <ItemGroup>
     <Content Include="indhiang.ico" />
     <Content Include="ParallelExtLib\System.Threading.dll" />
+    <Content Include="ThirdParty\License-LGPL.txt" />
+    <Content Include="ThirdParty\System.Data.SQLite.DLL" />
+    <Content Include="ThirdParty\System.Data.SQLite.Linq.dll" />
+    <Content Include="ThirdParty\x64\System.Data.SQLite.DLL" />
+    <Content Include="ThirdParty\ZedGraph.dll" />
+    <None Include="Data\log.indihiang" />
     <None Include="Resources\main2.jpg" />
+    <None Include="ThirdParty\System.Data.SQLite.lib" />
+    <None Include="ThirdParty\x64\System.Data.SQLite.lib" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
