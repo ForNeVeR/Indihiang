@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
 using Indihiang.Cores.Features;
 
 namespace Indihiang.Cores
@@ -32,11 +33,34 @@ namespace Indihiang.Cores
 
             return list;
         }
+        public static string GetIndihiangFile(string dateData,string guid)
+        {
+            if (!string.IsNullOrEmpty(dateData))
+                return string.Empty;
 
+            string year = dateData.Substring(0, 4);            
+            string file = String.Format("{0}\\data\\{1}\\log{3}.indihiang", Environment.CurrentDirectory, guid,year);
+
+            return file;
+        }
+        public static List<BaseFeature> GenerateIndihiangFeatures(Guid parserId, EnumLogFile format)
+        {
+            List<BaseFeature> features = new List<BaseFeature>();
+            features.Add(new GeneralFeature(format));
+            //features.Add(new HitsFeature(format));
+            //features.Add(new UserAgentFeature(format));
+            //features.Add(new AccessPageFeature(format));
+            //features.Add(new IPAddressFeature(format));
+            //features.Add(new AccessStatusFeature(format));
+            //features.Add(new BandwidthFeature(format));
+            //features.Add(new RequestFeature(format));
+
+            return features;
+        }
         public static List<BaseLogAnalyzeFeature> GenerateParallelFeatures(Guid parserId,EnumLogFile format)
         {
             List<BaseLogAnalyzeFeature> features = new List<BaseLogAnalyzeFeature>();
-            features.Add(new GeneralFeature(format));
+            //features.Add(new GeneralFeature(format));
             features.Add(new HitsFeature(format));
             features.Add(new UserAgentFeature(format));
             features.Add(new AccessPageFeature(format));
@@ -50,7 +74,7 @@ namespace Indihiang.Cores
         public static List<BaseLogAnalyzeFeature> GenerateFeatures(EnumLogFile format)
         {
             List<BaseLogAnalyzeFeature> features = new List<BaseLogAnalyzeFeature>();
-            features.Add(new GeneralFeature(format));
+            //features.Add(new GeneralFeature(format));
             features.Add(new HitsFeature(format));
             features.Add(new UserAgentFeature(format));
             features.Add(new AccessPageFeature(format));

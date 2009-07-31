@@ -43,23 +43,11 @@ namespace Indihiang.Cores.Features
             _logFile = logFile;
         }
 
-        public void Parse(List<string> header,string[] item)
+        public void Parse(FeatureDataRow row)
         {
-            RunFeature(header, item);
-        }
+            RunFeature(row);
+        }  
 
-        public void Parse(string id, List<string> header, string[] item)
-        {
-            RunFeature(id,header, item);
-        }
-
-        public void SynchData(Dictionary<string, LogCollection> newItem)
-        {
-            RunSynchFeatureData(newItem);
-        }     
-
-        protected abstract bool RunFeature(string id,List<string> header, string[] item);
-        protected abstract bool RunFeature(List<string> header, string[] item);
-        protected abstract bool RunSynchFeatureData(Dictionary<string, LogCollection> newItem);
+        protected abstract bool RunFeature(FeatureDataRow row);
     }
 }
