@@ -5,20 +5,24 @@ using System.Threading;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading.Collections;
 
+using Indihiang.Data;
 using Indihiang.DomainObject;
 using Indihiang.Cores.Features;
 namespace Indihiang.Cores
 {
     public class LogParser
     {
+        private bool _finish = false;
         private bool _useParallel;
         private SynchronizationContext _synContext;
         private string _fileName;
         private IISInfo _iisInfo = null;
         private BaseLogParser _parser;        
-        private Thread _thread = null;
+        private Thread _thread = null;        
         private long _freq, _startTime, _endTime;
+        
 
         public bool UseParallel
         {
@@ -93,6 +97,7 @@ namespace Indihiang.Cores
             _endTime = 0;
             QueryPerformanceFrequency(ref _freq);
 
+            _featureQueue = new ConcurrentQueue<FeatureDataRow>();
             LogParserId = Guid.NewGuid();            
             _synContext = AsyncOperationManager.SynchronizationContext;           
         }
@@ -102,6 +107,7 @@ namespace Indihiang.Cores
             _endTime = 0;
             QueryPerformanceFrequency(ref _freq);
 
+            _featureQueue = new ConcurrentQueue<FeatureDataRow>();
             _iisInfo = info;
             LogParserId = Guid.NewGuid();
             _synContext = AsyncOperationManager.SynchronizationContext;
@@ -135,8 +141,12 @@ namespace Indihiang.Cores
             _parser.ParseLogHandler += ParseLogHandler;
             _parser.UseParallel = _useParallel;
 
+            _finish = false;
+            if (_dataQueue == null)
+                _dataQueue = new Thread(DumpData);
             if (_thread == null)
-                _thread = new Thread(Process);
+                //_thread = new Thread(Process);
+                _thread = new Thread(ParseLog);
 
             _thread.IsBackground = true;            
             _thread.Start();
@@ -144,6 +154,7 @@ namespace Indihiang.Cores
 
         public void CancelAnalyze()
         {
+            _finish = true;
             QueryPerformanceCounter(ref _endTime);
             if (_thread != null)
             {
@@ -158,6 +169,20 @@ namespace Indihiang.Cores
                     catch (Exception) { }
                 }
             }
+            if (_dataQueue != null)
+            {
+                if (_dataQueue.IsAlive)
+                {
+                    _dataQueue.Join(1000);
+                    try
+                    {
+                        if (_dataQueue.IsAlive)
+                            _dataQueue.Abort();
+                    }
+                    catch (Exception) { }
+                }
+            }
+                        
         }
         protected virtual void OnAnalyzeLog(LogInfoEventArgs e)
         {
@@ -181,6 +206,142 @@ namespace Indihiang.Cores
             _synContext.Post(OnAnalyzeLog, e);
         }
 
+        private void DumpData()
+        {
+            while (!_finish)
+            {
+                FeatureDataRow row;
+                try
+                {
+                    if (_featureQueue.TryDequeue(out row))
+                    {
+                        DataHelper helper = new DataHelper(IndihiangHelper.GetIndihiangFile(row.DateData, LogParserId.ToString()));
+                        foreach (KeyValuePair<string, string> item in row.Rows)
+                        {
+                            helper.InsertFeatureData(row.FeatureName, item.Key, item.Value);
+                        }
+                    }
+                    else
+                        Thread.Sleep(100);
+                }
+                catch (Exception) { }
+            }
+        }
+        private void ParseLog()
+        {
+            Thread.Sleep(100);
+            LogInfoEventArgs logInfo = null;
+
+            if (_iisInfo != null)
+            {
+                string message = string.Empty;
+                if (_iisInfo.LocalComputer)
+                    message = "Checking log files...";
+                else
+                    message = "Copy remote web server log file into local...";
+
+                #region Logging
+                logInfo = new LogInfoEventArgs(
+                    LogParserId.ToString(),
+                    EnumLogFile.UNKNOWN,
+                    LogProcessStatus.SUCCESS,
+                    "Process()",
+                    message);
+
+                _synContext.Post(OnAnalyzeLog, logInfo);
+                #endregion
+
+                string sourceFiles = string.Empty;
+
+                if (!_iisInfo.LocalComputer)
+                {
+                    RemoteFileCopyHelper.CopyRemoteFiles(_iisInfo);
+                    sourceFiles = String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, _iisInfo.RemoteServer, _iisInfo.Id);
+                }
+                else
+                    sourceFiles = String.Format("{0}\\W3SVC{1}\\", _iisInfo.LogPath, _iisInfo.Id);
+
+                int total = 0;
+                string[] files = Directory.GetFiles(sourceFiles);
+
+                if (files != null)
+                {
+                    total = files.Length;
+                    string file = "--";
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        file = String.Format("{0}{1};", file, files[i]);
+                    }
+
+                    _parser.LogFile = file;
+                }
+
+
+                if (_iisInfo.LocalComputer)
+                    message = "Check log files was done";
+                else
+                    message = "Copy remote web server log files into local was done";
+
+                #region logging
+                logInfo = new LogInfoEventArgs(
+                    LogParserId.ToString(),
+                    EnumLogFile.UNKNOWN,
+                    LogProcessStatus.SUCCESS,
+                    "Process()",
+                    message);
+                _synContext.Post(OnAnalyzeLog, logInfo);
+                logInfo = new LogInfoEventArgs(
+                   LogParserId.ToString(),
+                   EnumLogFile.UNKNOWN,
+                   LogProcessStatus.SUCCESS,
+                   "Process()",
+                   string.Format("Total remote log files are {0} files", total.ToString()));
+                _synContext.Post(OnAnalyzeLog, logInfo);
+                #endregion
+
+                if (total == 0)
+                {
+                    logInfo = new LogInfoEventArgs(
+                    LogParserId.ToString(),
+                    EnumLogFile.UNKNOWN,
+                    LogProcessStatus.SUCCESS,
+                    "Process()",
+                    "No log file will be analyzed.");
+                    _synContext.Post(OnEndAnalyze, logInfo);
+                    Thread.Sleep(100);
+
+                    return;
+                }
+            }
+
+            PrepareFeatures();
+
+            logInfo = new LogInfoEventArgs(
+                    LogParserId.ToString(),
+                    EnumLogFile.UNKNOWN,
+                    LogProcessStatus.SUCCESS,
+                    "Process()",
+                    "Running log parser...");
+
+            _synContext.Post(OnAnalyzeLog, logInfo);
+
+            _parser.Parse();
+
+            //while (!_parser.isCompleted)
+            //{
+            //    Thread.Sleep(100);
+            //}
+            _finish = true;
+            logInfo = new LogInfoEventArgs(
+                   LogParserId.ToString(),
+                   EnumLogFile.UNKNOWN,
+                   LogProcessStatus.SUCCESS,
+                   "Process()",
+                   "Done");
+            Thread.Sleep(100);
+            _synContext.Post(OnEndAnalyze, logInfo);
+            
+        }
         private void Process()
         {
             Thread.Sleep(100);
