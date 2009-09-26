@@ -8,10 +8,10 @@ Global
 		SccNumberOfProjects = 2
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs09.codeplex.com/
-		SccProjectUniqueName0 = Indihiang\\Indihiang.csproj
-		SccProjectName0 = ../../Indihiangv1.0/Indihiang/Indihiang
-		SccLocalPath0 = Indihiang
-		SccLocalPath1 = .
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Indihiang\\Indihiang.csproj
+		SccProjectName1 = Indihiang/Indihiang
+		SccLocalPath1 = Indihiang
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

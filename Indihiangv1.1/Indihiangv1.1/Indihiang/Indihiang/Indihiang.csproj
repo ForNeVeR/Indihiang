@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C0C487B2-AB24-474A-AAEB-AA09C632EAD9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Indihiang</RootNamespace>
+    <AssemblyName>Indihiang</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <ApplicationIcon>indhiang.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.64.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Threading, Version=1.0.3058.34407, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph, Version=5.1.5.28844, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ThirdParty\ZedGraph.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cores\BaseLogParser.cs" />
+    <Compile Include="Cores\CollectionHelper.cs" />
+    <Compile Include="Cores\Features\AccessPageFeature.cs" />
+    <Compile Include="Cores\Features\AccessStatusFeature.cs" />
+    <Compile Include="Cores\Features\BandwidthFeature.cs" />
+    <Compile Include="Cores\Features\BaseFeature.cs" />
+    <Compile Include="Cores\Features\DumpLogData.cs" />
+    <Compile Include="Cores\Features\FeatureDataRow.cs" />
+    <Compile Include="Cores\Features\FeatureLogFile.cs" />
+    <Compile Include="Cores\Features\FeatureLogHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cores\Features\GeneralFeature.cs" />
+    <Compile Include="Cores\Features\GeneralFeature1.cs" />
+    <Compile Include="Cores\Features\HitsFeature.cs" />
+    <Compile Include="Cores\Features\IPAddressFeature.cs" />
+    <Compile Include="Cores\Features\LogCollection.cs" />
+    <Compile Include="Cores\EnumLogFile.cs" />
+    <Compile Include="Cores\Features\BaseLogAnalyzeFeature.cs" />
+    <Compile Include="Cores\Features\LogFeature.cs" />
+    <Compile Include="Cores\Features\RequestFeature.cs" />
+    <Compile Include="Cores\Features\UserAgentFeature.cs" />
+    <Compile Include="Cores\Features\WebLog.cs" />
+    <Compile Include="Cores\IndihiangHelper.cs" />
+    <Compile Include="Cores\LogInfoEventArgs.cs" />
+    <Compile Include="Cores\LogParser.cs" />
+    <Compile Include="Cores\LogParserFactory.cs" />
+    <Compile Include="Cores\LogProcessStatus.cs" />
+    <Compile Include="Cores\RemoteFileCopyHelper.cs" />
+    <Compile Include="Cores\ThreadBarrierExtensions.cs" />
+    <Compile Include="Cores\W3cExtendedLogParser.cs" />
+    <Compile Include="Data\DataHelper.cs" />
+    <Compile Include="DomainObject\Feature.cs" />
+    <Compile Include="DomainObject\FeatureData.cs" />
+    <Compile Include="DomainObject\IISInfo.cs" />
+    <Compile Include="DomainObject\Indihiang.cs" />
+    <Compile Include="DomainObject\NcsaLog.cs" />
+    <Compile Include="DomainObject\Shared.cs" />
+    <Compile Include="DomainObject\W3cExtendedLog.cs" />
+    <Compile Include="Forms\AboutIndihiang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AboutIndihiang.Designer.cs">
+      <DependentUpon>AboutIndihiang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ConsolidateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConsolidateForm.Designer.cs">
+      <DependentUpon>ConsolidateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\LightIndihiangForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LightIndihiangForm.Designer.cs">
+      <DependentUpon>LightIndihiangForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OpenRemoteIISForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\OpenRemoteIISForm.Designer.cs">
+      <DependentUpon>OpenRemoteIISForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\AccessPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\AccessPageControl.Designer.cs">
+      <DependentUpon>AccessPageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\AccessStatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\AccessStatusControl.Designer.cs">
+      <DependentUpon>AccessStatusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\BandwidthControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\BandwidthControl.Designer.cs">
+      <DependentUpon>BandwidthControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\BaseControl.cs" />
+    <Compile Include="Modules\GeneralControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\GeneralControl.Designer.cs">
+      <DependentUpon>GeneralControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\HitsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\HitsControl.Designer.cs">
+      <DependentUpon>HitsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\IPAddressControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\IPAddressControl.Designer.cs">
+      <DependentUpon>IPAddressControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\LoadingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\LoadingControl.Designer.cs">
+      <DependentUpon>LoadingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\RequestProcessingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\RequestProcessingControl.Designer.cs">
+      <DependentUpon>RequestProcessingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\UserAgentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\UserAgentControl.Designer.cs">
+      <DependentUpon>UserAgentControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\WebLogUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\WebLogUserControl.Designer.cs">
+      <DependentUpon>WebLogUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\AboutIndihiang.resx">
+      <DependentUpon>AboutIndihiang.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConsolidateForm.resx">
+      <DependentUpon>ConsolidateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LightIndihiangForm.resx">
+      <DependentUpon>LightIndihiangForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OpenRemoteIISForm.resx">
+      <DependentUpon>OpenRemoteIISForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\AccessPageControl.resx">
+      <DependentUpon>AccessPageControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\AccessStatusControl.resx">
+      <DependentUpon>AccessStatusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\BandwidthControl.resx">
+      <DependentUpon>BandwidthControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\GeneralControl.resx">
+      <DependentUpon>GeneralControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\HitsControl.resx">
+      <DependentUpon>HitsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\IPAddressControl.resx">
+      <DependentUpon>IPAddressControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\LoadingControl.resx">
+      <DependentUpon>LoadingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\RequestProcessingControl.resx">
+      <DependentUpon>RequestProcessingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\UserAgentControl.resx">
+      <DependentUpon>UserAgentControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\WebLogUserControl.resx">
+      <DependentUpon>WebLogUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="App.config" />
+    <None Include="IndihiangClassDiagram.cd" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\DataSources\Indihiang.DomainObject.IISInfo1.datasource" />
+    <None Include="Resources\main.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="indhiang.ico" />
+    <Content Include="ParallelExtLib\System.Threading.dll" />
+    <Content Include="ThirdParty\License-LGPL.txt" />
+    <Content Include="ThirdParty\System.Data.SQLite.DLL" />
+    <Content Include="ThirdParty\System.Data.SQLite.Linq.dll" />
+    <Content Include="ThirdParty\x64\System.Data.SQLite.DLL" />
+    <Content Include="ThirdParty\ZedGraph.dll" />
+    <None Include="Data\log.indihiang" />
+    <None Include="Resources\main2.jpg" />
+    <None Include="ThirdParty\System.Data.SQLite.lib" />
+    <None Include="ThirdParty\x64\System.Data.SQLite.lib" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
