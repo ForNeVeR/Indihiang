@@ -119,6 +119,8 @@
     <Compile Include="DomainObject\FeatureData.cs" />
     <Compile Include="DomainObject\IISInfo.cs" />
     <Compile Include="DomainObject\Indihiang.cs" />
+    <Compile Include="DomainObject\LogData.cs" />
+    <Compile Include="DomainObject\LogItem.cs" />
     <Compile Include="DomainObject\NcsaLog.cs" />
     <Compile Include="DomainObject\Shared.cs" />
     <Compile Include="DomainObject\W3cExtendedLog.cs" />
@@ -295,6 +297,7 @@
     <Content Include="ThirdParty\x64\System.Data.SQLite.DLL" />
     <Content Include="ThirdParty\ZedGraph.dll" />
     <None Include="Data\log.indihiang" />
+    <None Include="Data\source.indihiang" />
     <None Include="Resources\main2.jpg" />
     <None Include="ThirdParty\System.Data.SQLite.lib" />
     <None Include="ThirdParty\x64\System.Data.SQLite.lib" />
