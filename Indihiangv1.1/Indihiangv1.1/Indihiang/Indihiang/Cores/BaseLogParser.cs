@@ -435,20 +435,20 @@ namespace Indihiang.Cores
 
                                 for (int i = 0; i < features.Count; i++)
                                 {
-                                    for (int j = 0; j < features[i].FeatureFields.Count; j++)
-                                        helper.InsertFeature(features[i].FeatureName.ToString(), features[i].FeatureFields[j]);                                    
+                                    //for (int j = 0; j < features[i].FeatureFields.Count; j++)
+                                        //helper.InsertFeature(features[i].FeatureName.ToString(), features[i].FeatureFields[j]);                                    
                                 }
                             }
 
                             if (helper!=null)
                                 helper = new DataHelper(file);
 
-                            int id = helper.GetSharedId("date", data);
-                            if (id <= 0)
-                            {
-                                helper.InsertShared("date", data);
-                                id = helper.GetSharedId("date", data);
-                            }
+                            //int id = helper.GetSharedId("date", data);
+                            //if (id <= 0)
+                            //{
+                            //    helper.InsertShared("date", data);
+                            //    id = helper.GetSharedId("date", data);
+                            //}
                             for (int i = 0; i < features.Count; i++)
                             {
                                 features[i].DBObject = helper;

@@ -43,7 +43,7 @@ namespace Indihiang.Cores.Features
                 if (index >= 0)
                 {
                     string data = rows[index];
-                    int id = _db.GetFeaturedDataId(_featureName.ToString(), sharedId, data);
+                    //int id = _db.GetFeaturedDataId(_featureName.ToString(), sharedId, data);
                     
 
                 }
