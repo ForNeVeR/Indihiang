@@ -48,7 +48,7 @@ namespace Indihiang.Cores
             if (!string.IsNullOrEmpty(file))
                 return;
             
-            string sourceFile = String.Format("{0}\\meida\\log.indihiang", Environment.CurrentDirectory);
+            string sourceFile = String.Format("{0}\\media\\source.indihiang", Environment.CurrentDirectory);
             try
             {
                 File.Copy(sourceFile, file);

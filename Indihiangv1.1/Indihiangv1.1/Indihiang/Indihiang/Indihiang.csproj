@@ -121,6 +121,7 @@
     <Compile Include="DomainObject\Indihiang.cs" />
     <Compile Include="DomainObject\LogData.cs" />
     <Compile Include="DomainObject\LogItem.cs" />
+    <Compile Include="DomainObject\LogSource.cs" />
     <Compile Include="DomainObject\NcsaLog.cs" />
     <Compile Include="DomainObject\Shared.cs" />
     <Compile Include="DomainObject\W3cExtendedLog.cs" />
