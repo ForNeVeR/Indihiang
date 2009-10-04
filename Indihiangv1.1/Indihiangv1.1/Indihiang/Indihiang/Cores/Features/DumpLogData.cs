@@ -5,9 +5,23 @@ namespace Indihiang.Cores.Features
 {
     public class DumpLogData
     {
+        private string _source;
         private List<string> _header;
         private Dictionary<string, List<string>> _rows;
 
+        public string Source
+        {
+            get
+            {
+                return _source;
+            }
+            set
+            {
+                if (_source == value)
+                    return;
+                _source = value;
+            }
+        }
         public List<string> Header
         {
             get
