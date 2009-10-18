@@ -586,7 +586,8 @@ namespace Indihiang.Forms
                 FileName = name,
                 UseParallel = enableParallelComputingToolStripMenuItem.Checked,
                 LogParserId = id
-            };
+                
+            };            
             parser.AnalyzeLogHandler += OnAnalyzeLog;
             parser.EndAnalyzeHandler += OnEndAnalyze;
 
