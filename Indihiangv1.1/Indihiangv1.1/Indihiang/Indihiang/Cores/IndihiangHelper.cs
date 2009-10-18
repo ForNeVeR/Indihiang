@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Reflection;
 using Indihiang.Cores.Features;
 
 namespace Indihiang.Cores
@@ -35,18 +34,21 @@ namespace Indihiang.Cores
         }
         public static string GetIndihiangFile(string dateData,string guid)
         {
-            if (!string.IsNullOrEmpty(dateData))
+            if (string.IsNullOrEmpty(dateData))
                 return string.Empty;
 
             string year = dateData.Substring(0, 4);            
-            string file = String.Format("{0}\\data\\{1}\\log{3}.indihiang", Environment.CurrentDirectory, guid,year);
+            string file = String.Format("{0}\\data\\{1}\\log{2}.indihiang", Environment.CurrentDirectory, guid,year);
 
             return file;
         }
         public static void CopyLogDB(string file)
         {
-            if (!string.IsNullOrEmpty(file))
+            if (string.IsNullOrEmpty(file))
                 return;
+
+            if (!Directory.Exists(Path.GetDirectoryName(file)))
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
             
             string sourceFile = String.Format("{0}\\media\\source.indihiang", Environment.CurrentDirectory);
             try

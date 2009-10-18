@@ -82,7 +82,7 @@ namespace Indihiang.Cores.Features
         }
         private void RunW3cext(string id,List<string> header, string[] item)
         {
-            int val = 0;
+            //int val = 0;
 
             int index = header.IndexOf("date");
             int index2 = header.IndexOf("cs(User-Agent)");

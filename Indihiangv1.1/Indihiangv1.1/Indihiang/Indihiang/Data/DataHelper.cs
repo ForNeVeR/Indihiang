@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Data.Common;
 
 namespace Indihiang.Data
 {
@@ -196,29 +197,33 @@ namespace Indihiang.Data
 
 
         #region Indihiang
-        public void InsertIndihiang(Indihiang.DomainObject.Indihiang obj)
+        public int InsertIndihiang(Indihiang.DomainObject.Indihiang obj)
         {
             SQLiteConnection con = null;
+            int id = -1;
             try
             {
                 con = new SQLiteConnection(GetConnectionStrng());
                 con.Open();
 
-                string query = String.Format("insert into indihiang(asm_version,file_version,updatedate) values('{0}','{1}','{2}')", obj.Asm_Version,obj.File_Version,obj.UpdateDate.ToString());
+                string query = String.Format("insert into indihiang(asm_version,file_version,updatedate) values('{0}','{1}','{2}');select last_insert_rowid();", obj.Asm_Version, obj.File_Version, obj.UpdateDate.ToString());
                 using (SQLiteCommand cmd = new SQLiteCommand(query, con))
                 {
-                    cmd.ExecuteNonQuery();
+                    id = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
             }
-            catch (Exception)
-            {                
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.StackTrace);
             }
             finally
             {
                 if (con != null)
                     con.Close();
             }
+
+            return id;
         }
         public List<Indihiang.DomainObject.Indihiang> GetAllIndihiang()
         {
@@ -253,8 +258,9 @@ namespace Indihiang.Data
                 }
 
             }
-            catch (Exception)
+            catch (Exception err)
             {
+                System.Diagnostics.Debug.WriteLine(err.StackTrace);
             }
             finally
             {
@@ -271,29 +277,33 @@ namespace Indihiang.Data
         #endregion
 
         #region LogData
-        public void InsertLogData(Indihiang.DomainObject.LogData obj)
+        public int InsertLogData(Indihiang.DomainObject.LogData obj)
         {
             SQLiteConnection con = null;
+            int id = -1;
             try
             {
                 con = new SQLiteConnection(GetConnectionStrng());
                 con.Open();
 
-                string query = String.Format("insert into logdata(logdate,logtime) values('{0}','{1}')", obj.LogDate,obj.LogTime);
+                string query = String.Format("insert into logdata(logdate,logtime) values('{0}','{1}');select last_insert_rowid();", obj.LogDate, obj.LogTime);
                 using (SQLiteCommand cmd = new SQLiteCommand(query, con))
                 {
-                    cmd.ExecuteNonQuery();
+                    id = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
             }
-            catch (Exception)
+            catch (Exception err)
             {
+                System.Diagnostics.Debug.WriteLine(err.StackTrace);
             }
             finally
             {
                 if (con != null)
                     con.Close();
             }
+
+            return id;
         }
         public List<Indihiang.DomainObject.LogData> GetLogDataByFilter(string filter)
         {
@@ -312,7 +322,7 @@ namespace Indihiang.Data
                 {
                     Indihiang.DomainObject.LogData obj = new Indihiang.DomainObject.LogData();
                     if (!rd.IsDBNull(rd.GetOrdinal("id")))
-                        obj.Id = (int)rd["id"];
+                        obj.Id = Convert.ToInt32(rd["id"].ToString());
                     else
                         obj.Id = -1;
                     if (!rd.IsDBNull(rd.GetOrdinal("logdate")))
@@ -325,8 +335,9 @@ namespace Indihiang.Data
                 }
 
             }
-            catch (Exception)
+            catch (Exception err)
             {
+                System.Diagnostics.Debug.WriteLine(err.StackTrace);
             }
             finally
             {
@@ -342,23 +353,49 @@ namespace Indihiang.Data
         #endregion
 
         #region LogItem
-        public void InsertLogItem(Indihiang.DomainObject.LogItem obj)
+        public void InsertLogItem(List<Indihiang.DomainObject.LogItem> list)
         {
             SQLiteConnection con = null;
+            SQLiteTransaction trans = null;
             try
             {
                 con = new SQLiteConnection(GetConnectionStrng());
                 con.Open();
 
-                string query = String.Format("insert into logitem(id,itemfield,itemvalue) values({0},'{1}','{2}')", obj.Id,obj.ItemField,obj.ItemValue);
-                using (SQLiteCommand cmd = new SQLiteCommand(query, con))
+                trans = con.BeginTransaction();
+                using (SQLiteCommand cmd = new SQLiteCommand(con))
                 {
-                    cmd.ExecuteNonQuery();
+                    SQLiteParameter par1 = new SQLiteParameter();
+                    SQLiteParameter par2 = new SQLiteParameter();
+                    SQLiteParameter par3 = new SQLiteParameter();
+
+                    cmd.CommandText = "insert into [logitem](id,itemfield,itemvalue) values(?,?,?)";
+                    cmd.Parameters.Add(par1);
+                    cmd.Parameters.Add(par2);
+                    cmd.Parameters.Add(par3);
+
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        par1.Value = list[i].Id;
+                        par2.Value = list[i].ItemField;
+                        par3.Value = list[i].ItemValue;
+
+                        cmd.ExecuteNonQuery();
+                    }
                 }
+                trans.Commit();
+                //string query = String.Format("insert into logitem(id,itemfield,itemvalue) values({0},'{1}','{2}')", obj.Id,obj.ItemField,obj.ItemValue);
+                //using (SQLiteCommand cmd = new SQLiteCommand(query, con))
+                //{
+                //    cmd.ExecuteNonQuery();
+                //}
 
             }
-            catch (Exception)
+            catch (Exception err)
             {
+                System.Diagnostics.Debug.WriteLine(err.StackTrace);
+                if (trans != null)
+                    trans.Rollback();
             }
             finally
             {
@@ -383,7 +420,7 @@ namespace Indihiang.Data
                 {
                     Indihiang.DomainObject.LogItem obj = new Indihiang.DomainObject.LogItem();
                     if (!rd.IsDBNull(rd.GetOrdinal("id")))
-                        obj.Id = (int)rd["id"];
+                        obj.Id = Convert.ToInt32(rd["id"].ToString());
                     else
                         obj.Id = -1;
                     if (!rd.IsDBNull(rd.GetOrdinal("itemfield")))
@@ -396,8 +433,9 @@ namespace Indihiang.Data
                 }
 
             }
-            catch (Exception)
+            catch (Exception err)
             {
+                System.Diagnostics.Debug.WriteLine(err.StackTrace);
             }
             finally
             {
@@ -413,6 +451,79 @@ namespace Indihiang.Data
 
         #endregion
 
+
+        #region DumpData
+        public bool InsertBulkDumpData(List<Indihiang.DomainObject.DumpData> dump)
+        {
+            bool success = false;
+            SQLiteConnection con = null;
+            DbTransaction trans = null;
+            try
+            {
+                con = new SQLiteConnection(GetConnectionStrng());
+                con.Open();
+
+                trans = con.BeginTransaction();
+                using (DbCommand cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"insert into log_data(fullfilename,a_day,a_month,server_ip,
+                        server_port,client_ip,page_access,query_page_access,access_username,
+                        user_agent,protocol_status,bytes_sent,bytes_received,referer) 
+                        values('?',?,?,'?','?','?','?','?','?','?','?','?','?','?')";
+
+
+                    DbParameter par1 = cmd.CreateParameter();
+                    DbParameter par2 = cmd.CreateParameter();
+                    DbParameter par3 = cmd.CreateParameter();
+                    DbParameter par4 = cmd.CreateParameter();
+                    DbParameter par5 = cmd.CreateParameter();
+                    DbParameter par6 = cmd.CreateParameter();
+                    DbParameter par7 = cmd.CreateParameter();
+                    DbParameter par8 = cmd.CreateParameter();
+                    DbParameter par9 = cmd.CreateParameter();
+                    DbParameter par10 = cmd.CreateParameter();
+                    DbParameter par11 = cmd.CreateParameter();
+                    DbParameter par12 = cmd.CreateParameter();
+                    DbParameter par13 = cmd.CreateParameter();
+                    DbParameter par14 = cmd.CreateParameter();
+
+                    for (int i = 0; i < dump.Count; i++)
+                    {
+                        par1.Value = dump[i].FullFileName;
+                        par2.Value = dump[i].Day;
+                        par3.Value = dump[i].Month;
+                        par4.Value = dump[i].Server_IP;
+                        par5.Value = dump[i].Server_Port;
+                        par6.Value = dump[i].Client_IP;
+                        par7.Value = dump[i].Page_Access;
+                        par8.Value = dump[i].Query_Page_Access;
+                        par9.Value = dump[i].Access_Username;
+                        par10.Value = dump[i].User_Agent;
+                        par11.Value = dump[i].Protocol_Status;
+                        par12.Value = dump[i].Bytes_Sent;
+                        par13.Value = dump[i].Bytes_Received;
+                        par14.Value = dump[i].Referer;
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                trans.Commit();
+                success = true;
+
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.StackTrace);
+            }
+            finally
+            {
+                if (con != null)
+                    con.Close();
+            }
+
+            return success;
+        }
+        #endregion
 
     }
 }

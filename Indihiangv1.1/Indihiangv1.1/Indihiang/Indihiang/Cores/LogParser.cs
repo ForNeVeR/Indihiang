@@ -140,6 +140,7 @@ namespace Indihiang.Cores
             _parser.ParserID = LogParserId.ToString();
             _parser.ParseLogHandler += ParseLogHandler;
             _parser.UseParallel = _useParallel;
+            
 
             _finish = false;
             //if (_dataQueue == null)
@@ -166,7 +167,7 @@ namespace Indihiang.Cores
                         if (_thread.IsAlive)
                             _thread.Abort();
                     }
-                    catch (Exception) { }
+                    catch { }
                 }
             }
             
@@ -315,25 +316,17 @@ namespace Indihiang.Cores
             LogInfoEventArgs logInfo = null;
 
             if (_iisInfo != null)
-            {
                 LogFileProcessing();
-                PrepareFeatures();
 
-                logInfo = new LogInfoEventArgs(
+            logInfo = new LogInfoEventArgs(
                         LogParserId.ToString(),
                         EnumLogFile.UNKNOWN,
                         LogProcessStatus.SUCCESS,
                         "Process()",
                         "Running log parser...");
 
-                _synContext.Post(OnAnalyzeLog, logInfo);
-
-                _parser.Parse();
-                //while (!_parser.isCompleted)
-                //{
-                //    Thread.Sleep(100);
-                //}
-            }
+            _synContext.Post(OnAnalyzeLog, logInfo);
+            _parser.Parse();
 
                        
             logInfo = new LogInfoEventArgs(

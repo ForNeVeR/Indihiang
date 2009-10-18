@@ -115,6 +115,7 @@
     <Compile Include="Cores\ThreadBarrierExtensions.cs" />
     <Compile Include="Cores\W3cExtendedLogParser.cs" />
     <Compile Include="Data\DataHelper.cs" />
+    <Compile Include="DomainObject\DumpData.cs" />
     <Compile Include="DomainObject\Feature.cs" />
     <Compile Include="DomainObject\FeatureData.cs" />
     <Compile Include="DomainObject\IISInfo.cs" />
@@ -297,6 +298,7 @@
     <Content Include="ThirdParty\System.Data.SQLite.Linq.dll" />
     <Content Include="ThirdParty\x64\System.Data.SQLite.DLL" />
     <Content Include="ThirdParty\ZedGraph.dll" />
+    <None Include="Data\dump_indihiang.dat" />
     <None Include="Data\log.indihiang" />
     <None Include="Data\source.indihiang" />
     <None Include="Resources\main2.jpg" />

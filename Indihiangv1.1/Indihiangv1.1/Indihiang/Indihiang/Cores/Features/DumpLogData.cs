@@ -6,6 +6,7 @@ namespace Indihiang.Cores.Features
     public class DumpLogData
     {
         private string _source;
+        private string _year;
         private List<string> _header;
         private Dictionary<string, List<string>> _rows;
 
@@ -20,6 +21,19 @@ namespace Indihiang.Cores.Features
                 if (_source == value)
                     return;
                 _source = value;
+            }
+        }
+        public string Year
+        {
+            get
+            {
+                return _year;
+            }
+            set
+            {
+                if (_year == value)
+                    return;
+                _year = value;
             }
         }
         public List<string> Header
