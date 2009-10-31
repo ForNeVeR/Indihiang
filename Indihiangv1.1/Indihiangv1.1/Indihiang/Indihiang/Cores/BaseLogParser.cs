@@ -13,7 +13,7 @@ namespace Indihiang.Cores
 {
     public abstract class BaseLogParser
     {
-        private static int TOTAL_PER_PROCESS = 100;
+        private static int TOTAL_PER_PROCESS = 500;
 
         //protected SpinLock _spinLock;
         protected List<BaseLogAnalyzeFeature> _features;
@@ -439,10 +439,10 @@ namespace Indihiang.Cores
                 {
                     if (_dumpLogQueue.TryDequeue(out row))
                     {
-                        //PerformDump(row);
+                        PerformDump(row);
                     }
                     else
-                        Thread.Sleep(100);
+                        Thread.Sleep(10);
                 }
                 catch(Exception err) 
                 {
@@ -457,7 +457,7 @@ namespace Indihiang.Cores
                 for (int i = 0; i < list.Length; i++)
                 {
                     Debug.WriteLine(string.Format("Dump data: {0}:{1}", i+1,_dumpLogQueue.Count));
-                    //PerformDump(list[i]);
+                    PerformDump(list[i]);
                 }
             }
             
@@ -1216,6 +1216,20 @@ namespace Indihiang.Cores
                     if (!string.IsNullOrEmpty(line))
                         line = line.Trim();
                 }
+                if (dictRows.Count>0)
+                {
+                    DumpLogData dumpLog = new DumpLogData
+                    {
+                        Source = logFile,
+                        Year = year,
+                        Header = currentHeader,
+                        Rows = new Dictionary<string, List<string>>(dictRows)
+                    };
+                    _dumpLogQueue.Enqueue(dumpLog);
+                    dictRows.Clear();
+                }
+
+
             }
         }
 
