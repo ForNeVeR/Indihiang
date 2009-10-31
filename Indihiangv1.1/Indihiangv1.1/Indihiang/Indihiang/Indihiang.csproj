@@ -115,6 +115,7 @@
     <Compile Include="Cores\ThreadBarrierExtensions.cs" />
     <Compile Include="Cores\W3cExtendedLogParser.cs" />
     <Compile Include="Data\DataHelper.cs" />
+    <Compile Include="Data\SQLiteBulkInsert.cs" />
     <Compile Include="DomainObject\DumpData.cs" />
     <Compile Include="DomainObject\Feature.cs" />
     <Compile Include="DomainObject\FeatureData.cs" />
