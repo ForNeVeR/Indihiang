@@ -7,7 +7,15 @@ namespace Indihiang.Cores
 {
     public sealed class IndihiangHelper
     {
+        public static string GetStringLogItem(string item)
+        {
+            if (string.IsNullOrEmpty(item))
+                return "";
+            if (item.Trim() == "-")
+                return "";
 
+            return item;
+        }
         public static List<string> ParseFile(string listFile)
         {
             List<string> list = new List<string>();
@@ -32,15 +40,12 @@ namespace Indihiang.Cores
 
             return list;
         }
-        public static string GetIndihiangFile(string dateData,string guid)
+        public static string GetIndihiangFile(string year,string guid)
         {
-            if (string.IsNullOrEmpty(dateData))
+            if (string.IsNullOrEmpty(year))
                 return string.Empty;
 
-            string year = dateData.Substring(0, 4);            
-            string file = String.Format("{0}\\data\\{1}\\log{2}.indihiang", Environment.CurrentDirectory, guid,year);
-
-            return file;
+            return String.Format("{0}\\data\\{1}\\log{2}.dat", Environment.CurrentDirectory, guid, year);
         }
         public static void CopyLogDB(string file)
         {
@@ -49,8 +54,8 @@ namespace Indihiang.Cores
 
             if (!Directory.Exists(Path.GetDirectoryName(file)))
                 Directory.CreateDirectory(Path.GetDirectoryName(file));
-            
-            string sourceFile = String.Format("{0}\\media\\source.indihiang", Environment.CurrentDirectory);
+
+            string sourceFile = String.Format("{0}\\media\\dump_indihiang.dat", Environment.CurrentDirectory);
             try
             {
                 File.Copy(sourceFile, file);
@@ -161,6 +166,27 @@ namespace Indihiang.Cores
                 }
             }
 
+        }
+
+        public static string CheckUserAgent(string line)
+        {
+            if (line.Contains("MSIE"))
+                return "MS Internet Explorer";
+            if (line.Contains("Firefox"))
+                return "Firefox";
+            if (line.Contains("Safari"))
+                return "Safari";
+            if (line.Contains("Chrome"))
+                return "Google Chrome";
+            if (line.Contains("Gecko"))
+                return "Mozilla";
+            if (line.Contains("Opera"))
+                return "Opera ";
+            if (line.Contains("Netscape") || line.Contains("Navigator"))
+                return "Netscape ";
+
+            System.Diagnostics.Debug.WriteLine(line);
+            return "Unknown";
         }
 
 
