@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Data.Common;
 using System.Data;
+using Indihiang.Cores;
 
 namespace Indihiang.Data
 {
@@ -377,7 +379,7 @@ namespace Indihiang.Data
 
                     for (int i = 0; i < list.Count; i++)
                     {
-                        par1.Value = list[i].Id;
+                        //par1.Value = list[i].Id;
                         par2.Value = list[i].ItemField;
                         par3.Value = list[i].ItemValue;
 
@@ -465,45 +467,62 @@ namespace Indihiang.Data
                 con.Open();
 
                 trans = con.BeginTransaction();
-                using (DbCommand cmd = con.CreateCommand())
+                using (SQLiteCommand cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = @"insert into log_data(fullfilename,a_day,a_month,server_ip,
-                        server_port,client_ip,page_access,query_page_access,access_username,
-                        user_agent,protocol_status,bytes_sent,bytes_received,referer) 
-                        values('?',?,?,'?','?','?','?','?','?','?','?','?','?','?')";
+                    StringBuilder builder = new StringBuilder();
+                    builder.Append("insert into [log_data](fullfilename,a_day,a_month,server_ip,");
+                    builder.Append("server_port,client_ip,page_access,query_page_access,access_username,");
+                    builder.Append("user_agent,protocol_status,bytes_sent,bytes_received,referer)");
+                    builder.Append(" values(@par1,@par2,@par3,@par4,@par5,@par6,@par7,@par8,@par9,@par10,@par11,@par12,@par13,@par14)");
 
+                    cmd.CommandText = builder.ToString();
 
-                    DbParameter par1 = cmd.CreateParameter();
-                    DbParameter par2 = cmd.CreateParameter();
-                    DbParameter par3 = cmd.CreateParameter();
-                    DbParameter par4 = cmd.CreateParameter();
-                    DbParameter par5 = cmd.CreateParameter();
-                    DbParameter par6 = cmd.CreateParameter();
-                    DbParameter par7 = cmd.CreateParameter();
-                    DbParameter par8 = cmd.CreateParameter();
-                    DbParameter par9 = cmd.CreateParameter();
-                    DbParameter par10 = cmd.CreateParameter();
-                    DbParameter par11 = cmd.CreateParameter();
-                    DbParameter par12 = cmd.CreateParameter();
-                    DbParameter par13 = cmd.CreateParameter();
-                    DbParameter par14 = cmd.CreateParameter();
+                    SQLiteParameter par1 = cmd.Parameters.Add("@par1", DbType.String);
+                    SQLiteParameter par2 = cmd.Parameters.Add("@par2", DbType.Int32);
+                    SQLiteParameter par3 = cmd.Parameters.Add("@par3", DbType.Int32);
+                    SQLiteParameter par4 = cmd.Parameters.Add("@par4", DbType.String);
+                    SQLiteParameter par5 = cmd.Parameters.Add("@par5", DbType.String);
+                    SQLiteParameter par6 = cmd.Parameters.Add("@par6", DbType.String);
+                    SQLiteParameter par7 = cmd.Parameters.Add("@par7", DbType.String);
+                    SQLiteParameter par8 = cmd.Parameters.Add("@par8", DbType.String);
+                    SQLiteParameter par9 = cmd.Parameters.Add("@par9", DbType.String);
+                    SQLiteParameter par10 = cmd.Parameters.Add("@par10", DbType.String);
+                    SQLiteParameter par11 = cmd.Parameters.Add("@par11", DbType.String);
+                    SQLiteParameter par12 = cmd.Parameters.Add("@par12", DbType.String);
+                    SQLiteParameter par13 = cmd.Parameters.Add("@par13", DbType.String);
+                    SQLiteParameter par14 = cmd.Parameters.Add("@par14", DbType.String);
+
+                    //SQLiteParameter par1 = cmd.Parameters.Add("@par1", DbType.String);
+                    //SQLiteParameter par2 = cmd.Parameters.Add("@par2", DbType.Int32);
+                    //SQLiteParameter par3 = cmd.Parameters.Add("@par3", DbType.Int32);
+                    //SQLiteParameter par4 = cmd.Parameters.Add("@par4", DbType.String);
+                    //SQLiteParameter par5 = cmd.Parameters.Add("@par5", DbType.String);
+                    //SQLiteParameter par6 = cmd.Parameters.Add("@par6", DbType.String);
+                    //SQLiteParameter par7 = cmd.Parameters.Add("@par7", DbType.String);
+                    //SQLiteParameter par8 = cmd.Parameters.Add("@par8", DbType.String);
+                    //SQLiteParameter par9 = cmd.Parameters.Add("@par9", DbType.String);
+                    //SQLiteParameter par10 = cmd.Parameters.Add("@par10", DbType.String);
+                    //SQLiteParameter par11 = cmd.Parameters.Add("@par11", DbType.String);
+                    //SQLiteParameter par12 = cmd.Parameters.Add("@par12", DbType.String);
+                    //SQLiteParameter par13 = cmd.Parameters.Add("@par13", DbType.String);
+                    //SQLiteParameter par14 = cmd.Parameters.Add("@par14", DbType.String);
 
                     for (int i = 0; i < dump.Count; i++)
-                    {
-                        par1.Value = dump[i].FullFileName;
+                    {                       
+                        par1.Value = dump[i].FullFileName;                        
                         par2.Value = dump[i].Day;
                         par3.Value = dump[i].Month;
-                        par4.Value = dump[i].Server_IP;
-                        par5.Value = dump[i].Server_Port;
-                        par6.Value = dump[i].Client_IP;
-                        par7.Value = dump[i].Page_Access;
-                        par8.Value = dump[i].Query_Page_Access;
-                        par9.Value = dump[i].Access_Username;
-                        par10.Value = dump[i].User_Agent;
-                        par11.Value = dump[i].Protocol_Status;
-                        par12.Value = dump[i].Bytes_Sent;
-                        par13.Value = dump[i].Bytes_Received;
-                        par14.Value = dump[i].Referer;
+                        par4.Value = IndihiangHelper.GetStringLogItem(dump[i].Server_IP);
+                        par5.Value = IndihiangHelper.GetStringLogItem(dump[i].Server_Port);
+                        par6.Value = IndihiangHelper.GetStringLogItem(dump[i].Client_IP);
+                        par7.Value = IndihiangHelper.GetStringLogItem(dump[i].Page_Access);
+                        par8.Value = IndihiangHelper.GetStringLogItem(dump[i].Query_Page_Access);
+                        par9.Value = IndihiangHelper.GetStringLogItem(dump[i].Access_Username);
+                        par10.Value = IndihiangHelper.GetStringLogItem(dump[i].User_Agent);
+                        par11.Value = IndihiangHelper.GetStringLogItem(dump[i].Protocol_Status);
+                        par12.Value = IndihiangHelper.GetStringLogItem(dump[i].Bytes_Sent);
+                        par13.Value = IndihiangHelper.GetStringLogItem(dump[i].Bytes_Received);
+                        par14.Value = IndihiangHelper.GetStringLogItem(dump[i].Referer);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -525,6 +544,7 @@ namespace Indihiang.Data
             return success;
         }
 
+        
 
         #endregion
 

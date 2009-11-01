@@ -5,9 +5,7 @@ using System.Threading;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading.Collections;
 
-using Indihiang.Data;
 using Indihiang.DomainObject;
 using Indihiang.Cores.Features;
 namespace Indihiang.Cores

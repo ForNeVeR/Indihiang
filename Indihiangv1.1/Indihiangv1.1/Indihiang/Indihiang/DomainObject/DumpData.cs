@@ -231,7 +231,25 @@ namespace Indihiang.DomainObject
             }
         }
 
-        public DumpData() { }
+        public DumpData() 
+        {
+            _a_day = -1;
+            _a_month = -1;
+            _a_year = -1;
+            _access_username = "";
+            _bytes_received = "";
+            _bytes_sent = "";
+            _client_ip = "";
+            _fullFileName = "";
+            _id = -1;
+            _page_access = "";
+            _protocol_status = "";
+            _query_page_access = "";
+            _referer = "";
+            _server_ip = "";
+            _server_port = "";
+            _user_agent = "";
+        }
        
     }
 }

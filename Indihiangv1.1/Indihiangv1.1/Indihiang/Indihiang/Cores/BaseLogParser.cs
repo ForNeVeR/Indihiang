@@ -22,7 +22,9 @@ namespace Indihiang.Cores
         private LazyInit<TaskManager> _taskManager;
         //private Task _mainTask;
         private ConcurrentQueue<FeatureDataRow> _featureQueue;
-        private ConcurrentQueue<DumpLogData> _dumpLogQueue;
+        //private ConcurrentQueue<DumpLogData> _dumpLogQueue;
+        private ConcurrentQueue<List<Indihiang.DomainObject.DumpData>> _dumpLogQueue;
+        //List<Indihiang.DomainObject.DumpData>
         private Thread _dataQueue;
         private bool _finish;
         private ManualResetEventSlim _exitDump;
@@ -91,7 +93,8 @@ namespace Indihiang.Cores
                               LazyInitMode.AllowMultipleExecution);
 
             _featureQueue = new ConcurrentQueue<FeatureDataRow>();
-            _dumpLogQueue = new ConcurrentQueue<DumpLogData>();
+            //_dumpLogQueue = new ConcurrentQueue<DumpLogData>();
+            _dumpLogQueue = new ConcurrentQueue<List<Indihiang.DomainObject.DumpData>>();
         }
 
         protected virtual void OnParseLog(LogInfoEventArgs e)
@@ -430,16 +433,16 @@ namespace Indihiang.Cores
             }
         }
         private void DumpData()
-        {            
-            DumpLogData row;
+        {
+            List<Indihiang.DomainObject.DumpData> listDump;
             while (!_finish)
-            {
-                row = null;
+            {                
                 try
                 {
-                    if (_dumpLogQueue.TryDequeue(out row))
+                    if (_dumpLogQueue.TryDequeue(out listDump))
                     {
-                        PerformDump(row);
+                        PerformDump(listDump);
+                        listDump.Clear();
                     }
                     else
                         Thread.Sleep(10);
@@ -449,102 +452,122 @@ namespace Indihiang.Cores
                     Debug.WriteLine(err.Message);
                 }
             }
-            row = null;
             if (!_dumpLogQueue.IsEmpty)
             {
                 Debug.WriteLine(string.Format("Total remain data: {0}",_dumpLogQueue.Count));
-                DumpLogData[] list = _dumpLogQueue.ToArray();
+                List<Indihiang.DomainObject.DumpData>[] list = _dumpLogQueue.ToArray();
                 for (int i = 0; i < list.Length; i++)
                 {
                     Debug.WriteLine(string.Format("Dump data: {0}:{1}", i+1,_dumpLogQueue.Count));
                     PerformDump(list[i]);
                 }
             }
-            
-            //while(_dumpLogQueue.IsEmpty())
-            //{                
-            //    try
-            //    {
-            //        if (row == null)
-            //            break;
-
-            //        PerformDump(row);
-            //        row = null;
-            //    }
-            //    catch (Exception err)
-            //    {
-            //        Debug.WriteLine(err.Message);
-            //    }
-            //}
             _exitDump.Set();
         }
 
-        private void PerformDump(DumpLogData row)
+        private void PerformDump(List<Indihiang.DomainObject.DumpData> listDump)
         {
-            int index = row.Header.IndexOf("date");
-            int index2 = row.Header.IndexOf("time");
-
-            if (index >= 0 && index2 >= 0)
+            if (listDump.Count>0)
             {
-                foreach (KeyValuePair<string, List<string>> item in row.Rows)
+                string file = string.Empty;
+                DataHelper helper = null;
+
+                file = IndihiangHelper.GetIndihiangFile(listDump[0].Year.ToString(), ParserID);
+                if (!File.Exists(file))
                 {
-                    string date = item.Value[index];
-                    string time = item.Value[index2];
-                    string file = IndihiangHelper.GetIndihiangFile(date, ParserID);
-
-                    if (string.IsNullOrEmpty(file))
-                        continue;
-
-                    DataHelper helper = null;
-                    if (!File.Exists(file))
-                    {
-                        IndihiangHelper.CopyLogDB(file);
-                        helper = new DataHelper(file);
-                    }
-                    else
-                        helper = new DataHelper(file);
-
-                    string filter = string.Format("logdate like '{0}' and logtime like '{1}'", date, time);
-                    List<Indihiang.DomainObject.LogData> listLogData = helper.GetLogDataByFilter(filter);
-                    int id = -1;
-                    if (listLogData.Count > 0)
-                    {
-                        id = listLogData[0].Id;
-                    }
-                    else
-                    {
-                        Indihiang.DomainObject.LogData obj = new Indihiang.DomainObject.LogData { LogDate = date, LogTime = time };
-
-                        id = helper.InsertLogData(obj);
-                    }
-
-                    List<Indihiang.DomainObject.LogItem> listLog = new List<Indihiang.DomainObject.LogItem>();
-                    for (int i = 0; i < row.Header.Count; i++)
-                    {
-                        if (row.Header[i].Equals("date"))
-                            continue;
-                        if (row.Header[i].Equals("time"))
-                            continue;
-
-                        int index3 = row.Header.IndexOf(row.Header[i]);
-
-                        if (index3 >= 0)
-                        {
-                            Indihiang.DomainObject.LogItem logItem = new Indihiang.DomainObject.LogItem
-                            {
-                                Id = id,
-                                ItemField = row.Header[i],
-                                ItemValue = item.Value[index3]
-                            };
-
-                            listLog.Add(logItem);                            
-                        }
-                    }
-                    helper.InsertLogItem(listLog);
-                    listLog.Clear();
+                    IndihiangHelper.CopyLogDB(file);
+                    helper = new DataHelper(file);
                 }
+                else
+                    helper = new DataHelper(file);
+
+                helper.InsertBulkDumpData(listDump);
             }
         }
+
+        //private void PerformDump(DumpLogData row)
+        //{
+        //    int index = row.Header.IndexOf("date");
+        //    int index2 = row.Header.IndexOf("time");
+
+        //    if (index >= 0 && index2 >= 0)
+        //    {
+        //        string file = string.Empty;
+        //        DataHelper helper = null;
+        //        List<Indihiang.DomainObject.DumpData> listDump = new List<Indihiang.DomainObject.DumpData>();
+
+        //        foreach (KeyValuePair<string, List<string>> item in row.Rows)
+        //        {
+        //            string date = item.Value[index];
+        //            if (string.IsNullOrEmpty(file))
+        //            {
+        //                file = IndihiangHelper.GetIndihiangFile(date, ParserID);
+        //                if (!File.Exists(file))
+        //                {
+        //                    IndihiangHelper.CopyLogDB(file);
+        //                    helper = new DataHelper(file);
+        //                }
+        //                else
+        //                    helper = new DataHelper(file);
+
+        //            }
+        //            string val = string.Empty;
+        //            Indihiang.DomainObject.DumpData dump = new Indihiang.DomainObject.DumpData();
+        //            dump.FullFileName = row.Source;
+        //            for (int i = 0; i < row.Header.Count; i++)
+        //            {
+        //                int index3 = row.Header.IndexOf(row.Header[i]);
+
+        //                if (row.Header[i].Equals("date"))
+        //                {
+        //                    val = item.Value[index3];
+        //                    DateTime datetime = DateTime.Parse(val);
+        //                    dump.Day = datetime.Day;
+        //                    dump.Month = datetime.Month;
+
+        //                }
+        //                if (row.Header[i].Equals("s-ip"))
+        //                    dump.Server_IP = item.Value[index3];
+        //                if (row.Header[i].Equals("s-port"))
+        //                    dump.Server_Port = item.Value[index3];
+        //                if (row.Header[i].Equals("cs-uri-stem"))
+        //                    dump.Page_Access = item.Value[index3];
+        //                if (row.Header[i].Equals("cs-uri-query"))
+        //                    dump.Query_Page_Access = item.Value[index3];
+        //                if (row.Header[i].Equals("cs-username"))
+        //                    dump.Access_Username = item.Value[index3];
+        //                if (row.Header[i].Equals("c-ip"))
+        //                    dump.Client_IP = item.Value[index3];
+        //                if (row.Header[i].Equals("cs(User-Agent)"))
+        //                    dump.User_Agent = IndihiangHelper.CheckUserAgent(item.Value[index3]);
+        //                if (row.Header[i].Equals("sc-status"))
+        //                {
+        //                    if (dump.Protocol_Status.Contains("."))                            
+        //                        dump.Protocol_Status = string.Format("{0}{1}",item.Value[index3],dump.Protocol_Status);                            
+        //                    else
+        //                        dump.Protocol_Status = item.Value[index3];
+        //                }
+        //                if (row.Header[i].Equals("sc-substatus"))
+        //                    dump.Protocol_Status = string.Format("{0}.{1}", dump.Protocol_Status, item.Value[index3]);
+
+        //                if (row.Header[i].Equals("cs(Referer)"))
+        //                    dump.Referer = item.Value[index3];
+        //                if (row.Header[i].Equals("sc-bytes"))
+        //                    dump.Bytes_Sent = item.Value[index3];
+        //                if (row.Header[i].Equals("cs-bytes"))
+        //                    dump.Bytes_Received = item.Value[index3];
+
+        //            }
+        //            listDump.Add(dump);
+        //        }
+        //        if (listDump.Count > 0)
+        //            helper.InsertBulkDumpData(listDump);
+        //        else
+        //            listDump.Clear();
+
+
+        //    }
+        //}
 
         #region backup parse()
         //public bool Parse()
@@ -1139,14 +1162,13 @@ namespace Indihiang.Cores
 
         protected void RunParse(string logFile)
         {
-            Dictionary<string, List<string>> dictRows = new Dictionary<string, List<string>>();
+            List<Indihiang.DomainObject.DumpData> listDump = new List<Indihiang.DomainObject.DumpData>();
+            //Dictionary<string, List<string>> dictRows = new Dictionary<string, List<string>>();
             using (StreamReader sr = new StreamReader(File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 string line = sr.ReadLine();
 
                 List<string> currentHeader = new List<string>();
-                string year = string.Empty;
-
                 while (!string.IsNullOrEmpty(line))
                 {
                     if (IsLogHeader(line))
@@ -1155,17 +1177,17 @@ namespace Indihiang.Cores
                         List<string> list1 = ParseHeader(line);
                         if (list1 != null)
                         {
-                            if (currentHeader.Count > 0)
-                            {
-                                DumpLogData dumpLog = new DumpLogData
-                                {
-                                    Source = logFile,
-                                    Header = currentHeader,
-                                    Rows = new Dictionary<string, List<string>>(dictRows)
-                                };
-                                _dumpLogQueue.Enqueue(dumpLog);
-                                dictRows.Clear();
-                            }
+                            //if (currentHeader.Count > 0)
+                            //{
+                            //    DumpLogData dumpLog = new DumpLogData
+                            //    {
+                            //        Source = logFile,
+                            //        Header = currentHeader,
+                            //        Rows = new Dictionary<string, List<string>>(dictRows)
+                            //    };
+                            //    //_dumpLogQueue.Enqueue(dumpLog);
+                            //    //dictRows.Clear();
+                            //}
                             currentHeader = new List<string>(list1);
                         }
                         #endregion
@@ -1180,32 +1202,77 @@ namespace Indihiang.Cores
                             {
                                 if (rows.Length > 0)
                                 {
-                                    bool isEqual = false;
-                                    if (string.IsNullOrEmpty(year))
+                                    string val = string.Empty;
+                                    Indihiang.DomainObject.DumpData dump = new Indihiang.DomainObject.DumpData();
+                                    for (int i = 0; i < currentHeader.Count; i++)
                                     {
-                                        year = rows[0];
-                                    }
-                                    else
-                                    {
-                                        if (year == rows[0])
-                                            isEqual = true;
-                                        else
-                                            dictRows.Add(Guid.NewGuid().ToString(), new List<string>(rows));
-                                    }
-                                    
-                                    if (dictRows.Keys.Count >= TOTAL_PER_PROCESS || isEqual)
-                                    {                                        
-                                        DumpLogData dumpLog = new DumpLogData {
-                                            Source = logFile,
-                                            Year = year,
-                                            Header = currentHeader, 
-                                            Rows = new Dictionary<string, List<string>>(dictRows) 
-                                        };
-                                        _dumpLogQueue.Enqueue(dumpLog);
+                                        if (currentHeader[i].Equals("date"))
+                                        {
+                                            val = rows[i];
+                                            DateTime datetime = DateTime.Parse(val);
+                                            dump.Day = datetime.Day;
+                                            dump.Month = datetime.Month;
+                                            dump.Year = datetime.Year;
+                                        }
+                                        if (currentHeader[i].Equals("s-ip"))
+                                            dump.Server_IP = rows[i];
+                                        if (currentHeader[i].Equals("s-port"))
+                                            dump.Server_Port = rows[i];
+                                        if (currentHeader[i].Equals("cs-uri-stem"))
+                                            dump.Page_Access = rows[i];
+                                        if (currentHeader[i].Equals("cs-uri-query"))
+                                            dump.Query_Page_Access = rows[i];
+                                        if (currentHeader[i].Equals("cs-username"))
+                                            dump.Access_Username = rows[i];
+                                        if (currentHeader[i].Equals("c-ip"))
+                                            dump.Client_IP = rows[i];
+                                        if (currentHeader[i].Equals("cs(User-Agent)"))
+                                            dump.User_Agent = IndihiangHelper.CheckUserAgent(rows[i]);
+                                        if (currentHeader[i].Equals("sc-status"))
+                                        {
+                                            if (dump.Protocol_Status.Contains("."))
+                                                dump.Protocol_Status = string.Format("{0}{1}", rows[i], dump.Protocol_Status);
+                                            else
+                                                dump.Protocol_Status = rows[i];
+                                        }
+                                        if (currentHeader[i].Equals("sc-substatus"))
+                                            dump.Protocol_Status = string.Format("{0}.{1}", dump.Protocol_Status, rows[i]);
 
-                                        dictRows.Clear();
-                                        dictRows.Add(Guid.NewGuid().ToString(), new List<string>(rows));
+                                        if (currentHeader[i].Equals("cs(Referer)"))
+                                            dump.Referer = rows[i];
+                                        if (currentHeader[i].Equals("sc-bytes"))
+                                            dump.Bytes_Sent = rows[i];
+                                        if (currentHeader[i].Equals("cs-bytes"))
+                                            dump.Bytes_Received = rows[i];
                                     }
+
+                                    listDump.Add(dump);
+                                    //bool isEqual = false;
+                                    //if (string.IsNullOrEmpty(year))
+                                    //{
+                                    //    year = rows[0];
+                                    //}
+                                    //else
+                                    //{
+                                    //    if (year == rows[0])
+                                    //        isEqual = true;
+                                    //    else
+                                    //        dictRows.Add(Guid.NewGuid().ToString(), new List<string>(rows));
+                                    //}
+                                    
+                                    //if (dictRows.Keys.Count >= TOTAL_PER_PROCESS || isEqual)
+                                    //{                                        
+                                    //    DumpLogData dumpLog = new DumpLogData {
+                                    //        Source = logFile,
+                                    //        Year = year,
+                                    //        Header = currentHeader, 
+                                    //        Rows = new Dictionary<string, List<string>>(dictRows) 
+                                    //    };
+                                    //    _dumpLogQueue.Enqueue(dumpLog);
+
+                                    //    dictRows.Clear();
+                                    //    dictRows.Add(Guid.NewGuid().ToString(), new List<string>(rows));
+                                    //}
                                 }
                             }
                         }
@@ -1216,17 +1283,18 @@ namespace Indihiang.Cores
                     if (!string.IsNullOrEmpty(line))
                         line = line.Trim();
                 }
-                if (dictRows.Count>0)
+                if (listDump.Count > 0)
                 {
-                    DumpLogData dumpLog = new DumpLogData
-                    {
-                        Source = logFile,
-                        Year = year,
-                        Header = currentHeader,
-                        Rows = new Dictionary<string, List<string>>(dictRows)
-                    };
-                    _dumpLogQueue.Enqueue(dumpLog);
-                    dictRows.Clear();
+                    _dumpLogQueue.Enqueue(listDump);
+                    //DumpLogData dumpLog = new DumpLogData
+                    //{
+                    //    Source = logFile,
+                    //    Year = year,
+                    //    Header = currentHeader,
+                    //    Rows = new Dictionary<string, List<string>>(dictRows)
+                    //};
+                    //_dumpLogQueue.Enqueue(listDump);
+                    //dictRows.Clear();
                 }
 
 
