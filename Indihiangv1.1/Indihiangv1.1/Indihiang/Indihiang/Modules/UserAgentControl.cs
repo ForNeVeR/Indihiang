@@ -3,20 +3,30 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.ComponentModel;
+using System.Threading;
 
+using Indihiang.Data;
 using Indihiang.Cores.Features;
+using Indihiang.Cores;
+using Indihiang.DomainObject;
 using ZedGraph;
 namespace Indihiang.Modules
 {
     public partial class UserAgentControl : UserControl,BaseControl
     {
+        private SynchronizationContext _synContext;
         private string _guid;
         private string _fileName;
-        private Dictionary<string, LogCollection> _items;
+        private List<string> _listYears = new List<string>();
+        private List<string> _listYearMonth = new List<string>();
+        private List<DumpData> _listAgentData = new List<DumpData>();
+        private Dictionary<string, long> _listPerAgent = new Dictionary<string, long>();
 
         public UserAgentControl()
         {
             InitializeComponent();
+            _synContext = AsyncOperationManager.SynchronizationContext;
         }
 
         #region BaseControl Members
@@ -47,111 +57,158 @@ namespace Indihiang.Modules
         }
         public void Populate()
         {
-            GenerateGraphUserAgent1();
-            GenerateGraphUserAgent2();
-            SetSize();
+            backgroundJob.RunWorkerAsync();            
         }
         #endregion
 
+        protected virtual void OnRenderHandler(RenderInfoEventArgs e)
+        {
+            if (RenderHandler != null)
+                RenderHandler(this, e);
+        }
+
         private void GenerateGraphUserAgent1()
         {
-            GraphPane pane = this.zedUserAgent1.GraphPane;
+            GraphPane pane = zedUserAgent1.GraphPane;
+            pane.CurveList.Clear();
 
-            pane.Title.Text = "Total Hist per Day by User Agent Graph";
-            pane.XAxis.Title.Text = "Date";
-            pane.XAxis.Type = AxisType.Date;
-            pane.XAxis.Scale.Format = "yyyy-MMM-dd";
+            if (cboReport.SelectedIndex == 0)
+            {
+                pane.Title.Text = String.Format("Total Hist/Month by User Agent for Year {0} Graph", cboParams.SelectedValue);
+                pane.XAxis.Type = AxisType.DateAsOrdinal;
+                pane.XAxis.Scale.Format = "MMM-yyyy";
+            }
+            else
+            {
+                pane.Title.Text = String.Format("Total Hist/Day by User Agent for {0} Graph", cboParams.SelectedValue);
+                pane.XAxis.Type = AxisType.DateAsOrdinal;
+                pane.XAxis.Scale.Format = "MMM-dd-yyyy";
+            }
+            
+            pane.XAxis.Title.Text = "Time";
             pane.YAxis.Title.Text = "Total Hits";
             pane.Legend.Position = LegendPos.Bottom;
             pane.Chart.Fill = new Fill(Color.White,Color.SkyBlue, 90F);
             pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
-            if (_items.Count > 0)
+            if (_listAgentData.Count > 0)
             {
                 double x;
                 Dictionary<string, PointPairList> list = new Dictionary<string, PointPairList>();
-                
-                var items = from k in _items["General"].Colls
-                            orderby k.Key ascending
-                            select k;
 
-                foreach (KeyValuePair<string, WebLog> item in items)               
-                //foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
+                if (cboReport.SelectedIndex == 0)
                 {
-                    if (item.Value != null)
+                    int year = Convert.ToInt32(cboParams.SelectedItem);
+                    for (int i = 0; i < _listAgentData.Count; i++)
                     {
-                        DateTime date = DateTime.ParseExact(item.Key, "yyyy-MM-dd", null);
+                        DateTime date = new DateTime(year, _listAgentData[i].Month, 1);
                         x = date.ToOADate();
 
-                        foreach (KeyValuePair<string, string> ilog in item.Value.Items)
+                        if (!list.ContainsKey(_listAgentData[i].User_Agent))
                         {
-                            if (list.ContainsKey(ilog.Key))
-                                list[ilog.Key].Add(x, Convert.ToDouble(ilog.Value));
-                            else
-                            {
-                                PointPairList tmp = new PointPairList();
-                                tmp.Add(x,Convert.ToDouble(ilog.Value));
-                                list.Add(ilog.Key, tmp);
-                            }
-                        }                       
+                            PointPairList tmp = new PointPairList();
+                            tmp.Add(x, Convert.ToDouble(_listAgentData[i].Total));
+                            list.Add(_listAgentData[i].User_Agent, tmp);
+                        }
+                        else
+                        {
+                            list[_listAgentData[i].User_Agent].Add(x, Convert.ToDouble(_listAgentData[i].Total));
+                        }
                     }
                 }
+                else
+                {
+                    string itm = cboParams.SelectedItem.ToString();
+                    string[] ls = itm.Split(new char[] { '-' });
+                    int year = Convert.ToInt32(ls[1]);
+                    for (int i = 0; i < _listAgentData.Count; i++)
+                    {
+                        DateTime date = new DateTime(year, _listAgentData[i].Month, _listAgentData[i].Day);
+                        x = date.ToOADate();
+
+                        if (!list.ContainsKey(_listAgentData[i].User_Agent))
+                        {
+                            PointPairList tmp = new PointPairList();
+                            tmp.Add(x, Convert.ToDouble(_listAgentData[i].Total));
+                            list.Add(_listAgentData[i].User_Agent, tmp);
+                        }
+                        else
+                        {
+                            list[_listAgentData[i].User_Agent].Add(x, Convert.ToDouble(_listAgentData[i].Total));
+                        }
+                    }
+                }
+           
                 foreach (KeyValuePair<string, PointPairList> item in list)
                 {
-                    if(item.Key=="MS Internet Explorer")
-                        pane.AddCurve(item.Key, item.Value, Color.Blue, SymbolType.Diamond);
+                    if (item.Key == "MS Internet Explorer")
+                    {
+                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Blue, SymbolType.Diamond);
+                        curve.Line.IsSmooth = true;
+                        curve.Line.SmoothTension = 0.5F;
+                    }
                     if (item.Key == "Firefox")
-                        pane.AddCurve(item.Key, item.Value, Color.Red, SymbolType.Diamond);
+                    {
+                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Red, SymbolType.Diamond);
+                        curve.Line.IsSmooth = true;
+                        curve.Line.SmoothTension = 0.5F;
+                    }
                     if (item.Key == "Safari")
-                        pane.AddCurve(item.Key, item.Value, Color.Green, SymbolType.Diamond);
+                    {
+                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Green, SymbolType.Diamond);
+                        curve.Line.IsSmooth = true;
+                        curve.Line.SmoothTension = 0.5F;
+                    }
                     if (item.Key == "Google Chrome")
-                        pane.AddCurve(item.Key, item.Value, Color.Cyan, SymbolType.Diamond);
+                    {
+                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Cyan, SymbolType.Diamond);
+                        curve.Line.IsSmooth = true;
+                        curve.Line.SmoothTension = 0.5F;
+                    }
                     if (item.Key == "Mozilla")
-                        pane.AddCurve(item.Key, item.Value, Color.Yellow, SymbolType.Diamond);
+                    {
+                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Yellow, SymbolType.Diamond);
+                        curve.Line.IsSmooth = true;
+                        curve.Line.SmoothTension = 0.5F;
+                    }
                     if (item.Key == "Opera")
-                        pane.AddCurve(item.Key, item.Value, Color.Purple, SymbolType.Diamond);
+                    {
+                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Purple, SymbolType.Diamond);
+                        curve.Line.IsSmooth = true;
+                        curve.Line.SmoothTension = 0.5F;
+                    }
                     if (item.Key == "Netscape")
-                        pane.AddCurve(item.Key, item.Value, Color.Brown, SymbolType.Diamond);
+                    {
+                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Brown, SymbolType.Diamond);
+                        curve.Line.IsSmooth = true;
+                        curve.Line.SmoothTension = 0.5F;
+                    }
                     if (item.Key == "Unknown")
-                        pane.AddCurve(item.Key, item.Value, Color.Black, SymbolType.Diamond);
+                    {
+                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Black, SymbolType.Diamond);
+                        curve.Line.IsSmooth = true;
+                        curve.Line.SmoothTension = 0.5F;
+                    }
                 }
              
             }
 
-            this.zedUserAgent1.IsShowPointValues = true;
-            this.zedUserAgent1.AxisChange();
+            zedUserAgent1.IsShowPointValues = true;
+            zedUserAgent1.AxisChange();
         }
         private void GenerateGraphUserAgent2()
         {
-            GraphPane pane = this.zedUserAgent2.GraphPane;
+            GraphPane pane = zedUserAgent2.GraphPane;
 
             pane.Title.Text = "User Agent Percent Graph";            
             pane.Legend.Position = LegendPos.InsideTopRight;
             pane.Chart.Fill = new Fill(Color.White, Color.SkyBlue, 90F);
             pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
-            if (_items.Count > 0)
+            if (_listPerAgent.Count > 0)
             {
-                Dictionary<string, int> list = new Dictionary<string, int>();
-                double total = 0.0;
-                foreach (KeyValuePair<string, WebLog> item in _items["General"].Colls)
-                {
-                    if (item.Value != null)
-                    {
-                        foreach (KeyValuePair<string, string> ilog in item.Value.Items)
-                        {
-                            if (list.ContainsKey(ilog.Key))
-                            {
-                                list[ilog.Key] = list[ilog.Key] + Convert.ToInt32(ilog.Value);
-                            }
-                            else
-                                list.Add(ilog.Key, Convert.ToInt32(ilog.Value));
-
-                            total = total + Convert.ToInt32(ilog.Value);
-                        }
-                    }
-                }
-                foreach (KeyValuePair<string, int> item in list)
+                double total = _listPerAgent.Values.Sum();                
+                foreach (KeyValuePair<string, long> item in _listPerAgent)
                 {                    
                     if (item.Key == "MS Internet Explorer")
                         pane.AddPieSlice(item.Value, 
@@ -199,7 +256,7 @@ namespace Indihiang.Modules
 
             }
 
-            this.zedUserAgent2.AxisChange();
+            zedUserAgent2.AxisChange();
         }
         private void SetSize()
         {
@@ -218,9 +275,115 @@ namespace Indihiang.Modules
         {
             PointPair pt = curve[iPt];
             DateTime date = DateTime.FromOADate(pt.X);
+            string sdate = date.ToString("MMM-dd-yyyy");
 
-            return String.Format("[{0:yyyy-MMM-dd} --> {1:f2} Hit(s)]", date, pt.Y);
+            return String.Format("{0}\r\nTime: {1}\r\nTotal: {2:f2} Hit(s)", curve.Label.Text,sdate, pt.Y);
 
+        }
+
+        private void backgroundJob_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                LogDataFacade facade = new LogDataFacade(_guid);
+                _listPerAgent = facade.GetTotalPerUserAgent();
+                _listYears = facade.GetListyearLogFile();
+
+                for (int i = 0; i < _listYears.Count; i++)
+                {
+                    List<string> list = facade.GetMonthLogFileListByYear(_listYears[i]);
+                    for (int j = 0; j < list.Count; j++)
+                    {
+                        string monthYear = string.Format("{0}-{1}", IndihiangHelper.GetMonth(Convert.ToInt32(list[j])), _listYears[i]);
+                        _listYearMonth.Add(monthYear);
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundJob_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            ShowData();
+        }
+
+        private void ShowData()
+        {
+            cboReport.SelectedIndex = 0;
+            GenerateGraphUserAgent2();
+            SetSize();
+
+            RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.USERAGENT, _fileName);
+            _synContext.Post(OnRenderHandler, info);
+        }
+
+        private void cboReport_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cboParams.Items.Clear();
+            if (cboReport.SelectedIndex == 0)
+            {
+                cboParams.Items.AddRange(_listYears.ToArray());
+                cboParams.SelectedIndex = 0;
+            }
+            if (cboReport.SelectedIndex == 1)
+            {
+                cboParams.Items.AddRange(_listYearMonth.ToArray());
+                cboParams.SelectedIndex = 0;
+            }
+        }
+
+        private void btnGenerate_Click(object sender, EventArgs e)
+        {
+            if (cboReport.SelectedIndex < 0 || cboParams.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please choose report type and its parameter", "Information");
+                return;
+            }
+            if (cboReport.SelectedIndex >=0)
+            {
+                btnGenerate.Enabled = false;
+                lbStatus.Visible = true;
+
+                backgroundReportJob.RunWorkerAsync(cboParams.SelectedItem);
+            }
+           
+
+        }
+
+        private void backgroundReportJob_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                string par = e.Argument.ToString();
+                LogDataFacade facade = new LogDataFacade(_guid);
+
+                if (par.Contains("-"))
+                {
+                    string[] items = par.Split(new char[] { '-' });
+                    int month = IndihiangHelper.GetMonth(items[0]);
+                    _listAgentData = facade.GetTotalPerUserAgentByParams(Convert.ToInt32(items[1]), month);
+                }
+                else
+                {
+                    _listAgentData = facade.GetTotalPerUserAgentByParams(Convert.ToInt32(par));
+                }
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundReportJob_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            btnGenerate.Enabled = true;
+            lbStatus.Visible = false;
+
+            GenerateGraphUserAgent1();
+            SetSize();
         }
     }
 }
