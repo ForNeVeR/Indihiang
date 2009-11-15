@@ -538,7 +538,10 @@ namespace Indihiang.Data
             finally
             {
                 if (con != null)
+                {
                     con.Close();
+                    con.Dispose();
+                }
             }
 
             return success;

@@ -171,6 +171,10 @@ namespace Indihiang.Cores
             
                         
         }
+        public void StopTickCounter()
+        {
+            QueryPerformanceCounter(ref _endTime);
+        }
         protected virtual void OnAnalyzeLog(LogInfoEventArgs e)
         {
             if (AnalyzeLogHandler != null)
@@ -179,8 +183,7 @@ namespace Indihiang.Cores
             Debug.WriteLine(String.Format("Indihiang:: {0}", e.Message));
         }
         protected virtual void OnEndAnalyze(LogInfoEventArgs logInfo)
-        {
-            QueryPerformanceCounter(ref _endTime);
+        {            
             Thread.Sleep(100);
             if (EndAnalyzeHandler != null)
                 EndAnalyzeHandler(this, logInfo);

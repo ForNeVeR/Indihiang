@@ -115,6 +115,7 @@
     <Compile Include="Cores\ThreadBarrierExtensions.cs" />
     <Compile Include="Cores\W3cExtendedLogParser.cs" />
     <Compile Include="Data\DataHelper.cs" />
+    <Compile Include="Data\LogDataFacade.cs" />
     <Compile Include="DomainObject\DumpData.cs" />
     <Compile Include="DomainObject\Feature.cs" />
     <Compile Include="DomainObject\FeatureData.cs" />
@@ -198,6 +199,9 @@
     </Compile>
     <Compile Include="Modules\LoadingControl.Designer.cs">
       <DependentUpon>LoadingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\RenderInfoEventArgs.cs">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Modules\RequestProcessingControl.cs">
       <SubType>UserControl</SubType>
