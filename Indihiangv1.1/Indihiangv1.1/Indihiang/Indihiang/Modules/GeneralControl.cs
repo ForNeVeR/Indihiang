@@ -13,8 +13,11 @@ namespace Indihiang.Modules
     public partial class GeneralControl : UserControl, BaseControl
     {
         private SynchronizationContext _synContext;
-        List<string> _listFiles = new List<string>();
-        List<string> _listServers = new List<string>();
+        private List<string> _listFiles = new List<string>();
+        private List<string> _listServers = new List<string>();
+        private long _totalData;
+        private List<DateTime> _listTime = new List<DateTime>();
+
         private string _guid;
         private string _fileName;
 
@@ -83,6 +86,20 @@ namespace Indihiang.Modules
             listBoxIPAddress.Items.AddRange(_listServers.ToArray());
             lbTotalFile.Text = String.Format("{0} files", _listFiles.Count);
 
+            if (_totalData > 0)
+                lbTotalData.Text = String.Format("{0} rows", _totalData);
+            else
+                lbTotalData.Text = "No data";
+
+            if (_listTime.Count > 0)
+            {
+                DateTime startDate = _listTime.Min();
+                DateTime endDate = _listTime.Max();
+                lbTime.Text = String.Format("{0:dd-MMM-yyyy} - {1:dd-MMM-yyyy}", startDate, endDate);
+            }
+            else
+                lbTime.Text = "-";
+
             RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.GENERAL, _fileName);
             _synContext.Post(OnRenderHandler, info);
 
@@ -129,9 +146,18 @@ namespace Indihiang.Modules
 
         private void backgroundJob_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            LogDataFacade facade = new LogDataFacade(_guid);
-            _listServers = facade.GetServerList();
-            _listFiles = facade.GetLogFileList();
+            try
+            {
+                LogDataFacade facade = new LogDataFacade(_guid);
+                _listServers = facade.GetServerList();
+                _listFiles = facade.GetLogFileList();
+                _totalData = facade.GetTotalData();
+                _listTime = facade.GetTimeLogFileList();
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
 
         }
 
