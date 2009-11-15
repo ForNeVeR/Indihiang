@@ -10,6 +10,8 @@ namespace Indihiang.Modules
 {
     public partial class UserAgentControl : UserControl,BaseControl
     {
+        private string _guid;
+        private string _fileName;
         private Dictionary<string, LogCollection> _items;
 
         public UserAgentControl()
@@ -18,15 +20,29 @@ namespace Indihiang.Modules
         }
 
         #region BaseControl Members
-        public Dictionary<string, LogCollection> DataSource
+        public event EventHandler<RenderInfoEventArgs> RenderHandler;
+
+        public string FeatureGuid
         {
-            set
-            {
-                _items = value;
-            }
             get
             {
-                return _items;
+                return _guid;
+            }
+            set
+            {
+                _guid = value;
+            }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                return _fileName;
+            }
+            set
+            {
+                _fileName = value;
             }
         }
         public void Populate()

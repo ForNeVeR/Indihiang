@@ -13,6 +13,8 @@ namespace Indihiang.Modules
 {
     public partial class RequestProcessingControl : UserControl, BaseControl
     {
+        private string _guid;
+        private string _fileName;
         private Dictionary<string, LogCollection> _items;
 
         public RequestProcessingControl()
@@ -21,19 +23,31 @@ namespace Indihiang.Modules
         }
 
         #region BaseControl Members
+        public event EventHandler<RenderInfoEventArgs> RenderHandler;
 
-        public Dictionary<string, Indihiang.Cores.Features.LogCollection> DataSource
+        public string FeatureGuid
         {
-            set
-            {
-                _items = value;
-            }
             get
             {
-                return _items;
+                return _guid;
+            }
+            set
+            {
+                _guid = value;
             }
         }
 
+        public string FileName
+        {
+            get
+            {
+                return _fileName;
+            }
+            set
+            {
+                _fileName = value;
+            }
+        }
         public void Populate()
         {
             SetGridLayout();

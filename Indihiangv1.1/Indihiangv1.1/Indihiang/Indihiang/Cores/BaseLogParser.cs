@@ -127,23 +127,7 @@ namespace Indihiang.Cores
                             listFiles.Add(files[i].ToLower().Trim());
                 }
 
-                //Dictionary<string, List<BaseLogAnalyzeFeature>> resultData = new Dictionary<string, List<BaseLogAnalyzeFeature>>();
-                if (UseParallel)
-                {
-                    #region Parallel Processing
-
-                    success = ParallelParse(success, listFiles);
-
-                    #endregion
-
-                }
-                else
-                {
-                    #region Non Parallel Processing
-                    //success = NonParallelParse(success, listFiles);
-                    #endregion
-
-                }
+                success = ParallelParse(success, listFiles);
 
                 //try
                 //{
@@ -203,10 +187,11 @@ namespace Indihiang.Cores
             }
             else
             {
-                if (UseParallel)
-                    ParseLogFile(_paralleFeatures, LogFile);
-                else
-                    ParseLogFile(_features, LogFile);
+                ParseLogFile(_paralleFeatures, LogFile);
+                //if (UseParallel)
+                //    ParseLogFile(_paralleFeatures, LogFile);
+                //else
+                //    ParseLogFile(_features, LogFile);
             }
             _finish = true;
             Thread.Sleep(100);
@@ -328,7 +313,7 @@ namespace Indihiang.Cores
                                    EnumLogFile.UNKNOWN,
                                    LogProcessStatus.SUCCESS,
                                    "Parse()",
-                                   "Finishing...");
+                                   "Consolidating log files...");
                 _synContext.Post(OnParseLog, logInfo2);
 
                 try
@@ -343,7 +328,7 @@ namespace Indihiang.Cores
                                    EnumLogFile.UNKNOWN,
                                    LogProcessStatus.SUCCESS,
                                    "Parse()",
-                                   "Finishing was done");
+                                   "Consolidated log file was done");
                 _synContext.Post(OnParseLog, logInfo2);
 
                 Thread.Sleep(100);
@@ -1204,6 +1189,7 @@ namespace Indihiang.Cores
                                 {
                                     string val = string.Empty;
                                     Indihiang.DomainObject.DumpData dump = new Indihiang.DomainObject.DumpData();
+                                    dump.FullFileName = logFile;
                                     for (int i = 0; i < currentHeader.Count; i++)
                                     {
                                         if (currentHeader[i].Equals("date"))

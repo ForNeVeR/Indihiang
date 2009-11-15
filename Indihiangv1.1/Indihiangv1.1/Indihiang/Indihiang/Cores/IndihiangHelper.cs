@@ -47,6 +47,13 @@ namespace Indihiang.Cores
 
             return String.Format("{0}\\data\\{1}\\log{2}.dat", Environment.CurrentDirectory, guid, year);
         }
+        public static List<string> GetIndihiangFileList(string guid)
+        {
+            string path = String.Format("{0}\\data\\{1}\\", Environment.CurrentDirectory, guid);
+            List<string> list = new List<string>(Directory.GetFiles(path,"*.dat"));
+
+            return list;
+        }
         public static void CopyLogDB(string file)
         {
             if (string.IsNullOrEmpty(file))

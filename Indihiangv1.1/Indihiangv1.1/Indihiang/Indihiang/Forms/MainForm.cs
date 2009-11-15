@@ -50,9 +50,8 @@ namespace Indihiang.Forms
         internal void OnEndAnalyze(object sender, LogInfoEventArgs e)
         {
             try
-            {
-                UpdateInfoLogStatus(e.FileName, "Analyzing is done");
-                UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing");
+            {                
+                UpdateInfoLogStatus(e.FileName, "Rendering reports...");
 
                 if (_listParser.ContainsKey(e.FileName))
                 {
@@ -62,15 +61,10 @@ namespace Indihiang.Forms
                     {
                         ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).HideLoadingControl();                        
                         ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).Populate(parser);
+                        ((WebLogUserControl)tabMain.TabPages[e.FileName].Controls[0]).EndRenderHandler += MainForm_EndRenderHandler;
 
-                        if (_listParser[e.FileName].UseParallel)
-                            _listParser[e.FileName].ParallelFeatures.Clear();
-                        else
-                            _listParser[e.FileName].Features.Clear();
                     }
-                    UpdateInfoLogStatus(e.FileName, "Rendering the result of analyzing is done");
-                    UpdateInfoLogStatus(e.FileName, string.Format("Total Analyzing Process Duration: {0:0.###} seconds", parser.ProcessDuration));
-                    UpdateInfoLogStatus(e.FileName, "Finish");
+                    
 
                 }
             }
@@ -80,6 +74,16 @@ namespace Indihiang.Forms
                 UpdateInfoLogStatus(e.FileName, err.StackTrace);
             }
         }
+
+        void MainForm_EndRenderHandler(object sender, RenderInfoEventArgs e)
+        {
+            LogParser parser = (LogParser)_listParser[e.Id];
+            parser.StopTickCounter();
+
+            UpdateInfoLogStatus(e.Id, "Rendering the result of analyzing is done");
+            UpdateInfoLogStatus(e.Id, string.Format("Total Analyzing Process Duration: {0:0.###} seconds", parser.ProcessDuration));
+            UpdateInfoLogStatus(e.Id, "Finish");
+        }      
 
         private void UpdateInfoLogStatus(string tabId,string msg)
         {
@@ -570,7 +574,7 @@ namespace Indihiang.Forms
         {
             LogParser parser = new LogParser { 
                 FileName = fileNames, 
-                UseParallel = enableParallelComputingToolStripMenuItem.Checked, 
+                UseParallel = true, 
                 LogParserId = id };
 
             parser.AnalyzeLogHandler += OnAnalyzeLog;
@@ -584,7 +588,7 @@ namespace Indihiang.Forms
             LogParser parser = new LogParser(info)
             {
                 FileName = name,
-                UseParallel = enableParallelComputingToolStripMenuItem.Checked,
+                UseParallel = true,
                 LogParserId = id
                 
             };            

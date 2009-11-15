@@ -39,6 +39,7 @@
             this.listBoxIPAddress = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
             this.listBoxFileName = new System.Windows.Forms.ListBox();
+            this.backgroundJob = new System.ComponentModel.BackgroundWorker();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -161,6 +162,11 @@
             this.listBoxFileName.Size = new System.Drawing.Size(320, 95);
             this.listBoxFileName.TabIndex = 0;
             // 
+            // backgroundJob
+            // 
+            this.backgroundJob.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundJob_DoWork);
+            this.backgroundJob.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundJob_RunWorkerCompleted);
+            // 
             // GeneralControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -189,5 +195,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lbTotalFile;
         private System.Windows.Forms.Label label6;
+        private System.ComponentModel.BackgroundWorker backgroundJob;
     }
 }
