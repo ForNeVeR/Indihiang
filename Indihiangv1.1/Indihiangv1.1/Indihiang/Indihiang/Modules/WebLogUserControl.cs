@@ -51,7 +51,7 @@ namespace Indihiang.Modules
             string id = "";
             string info = string.Empty;
 
-            _totalControls = 2;
+            _totalControls = 3;
             info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on GENERAL...");
             AddLogStatus(info);
             id = LogFeature.GENERAL.ToString();
@@ -70,7 +70,7 @@ namespace Indihiang.Modules
             uc2.FeatureGuid = parser.LogParserId.ToString();
             Attach(uc2, id, "User Agent");
 
-            /*
+           
             info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on HITS...");
             AddLogStatus(info);
             id = LogFeature.HITS.ToString();
@@ -79,6 +79,7 @@ namespace Indihiang.Modules
             uc3.FeatureGuid = parser.LogParserId.ToString();
             Attach(uc3, id, "Hits");
 
+            /*
             info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on ACCESS...");
             AddLogStatus(info);
             id = LogFeature.ACCESS.ToString();

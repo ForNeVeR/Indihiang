@@ -117,10 +117,6 @@ namespace Indihiang.Cores
                 }
 
                 success = ParallelParse(success, listFiles);
-
-              
-
-
             }
             else
             {
@@ -607,7 +603,6 @@ namespace Indihiang.Cores
         protected void RunParse(string logFile)
         {
             List<Indihiang.DomainObject.DumpData> listDump = new List<Indihiang.DomainObject.DumpData>();
-            //Dictionary<string, List<string>> dictRows = new Dictionary<string, List<string>>();
             using (StreamReader sr = new StreamReader(File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 string line = sr.ReadLine();
@@ -621,17 +616,6 @@ namespace Indihiang.Cores
                         List<string> list1 = ParseHeader(line);
                         if (list1 != null)
                         {
-                            //if (currentHeader.Count > 0)
-                            //{
-                            //    DumpLogData dumpLog = new DumpLogData
-                            //    {
-                            //        Source = logFile,
-                            //        Header = currentHeader,
-                            //        Rows = new Dictionary<string, List<string>>(dictRows)
-                            //    };
-                            //    //_dumpLogQueue.Enqueue(dumpLog);
-                            //    //dictRows.Clear();
-                            //}
                             currentHeader = new List<string>(list1);
                         }
                         #endregion
@@ -692,32 +676,6 @@ namespace Indihiang.Cores
                                     }
 
                                     listDump.Add(dump);
-                                    //bool isEqual = false;
-                                    //if (string.IsNullOrEmpty(year))
-                                    //{
-                                    //    year = rows[0];
-                                    //}
-                                    //else
-                                    //{
-                                    //    if (year == rows[0])
-                                    //        isEqual = true;
-                                    //    else
-                                    //        dictRows.Add(Guid.NewGuid().ToString(), new List<string>(rows));
-                                    //}
-                                    
-                                    //if (dictRows.Keys.Count >= TOTAL_PER_PROCESS || isEqual)
-                                    //{                                        
-                                    //    DumpLogData dumpLog = new DumpLogData {
-                                    //        Source = logFile,
-                                    //        Year = year,
-                                    //        Header = currentHeader, 
-                                    //        Rows = new Dictionary<string, List<string>>(dictRows) 
-                                    //    };
-                                    //    _dumpLogQueue.Enqueue(dumpLog);
-
-                                    //    dictRows.Clear();
-                                    //    dictRows.Add(Guid.NewGuid().ToString(), new List<string>(rows));
-                                    //}
                                 }
                             }
                         }
@@ -729,19 +687,7 @@ namespace Indihiang.Cores
                         line = line.Trim();
                 }
                 if (listDump.Count > 0)
-                {
                     _dumpLogQueue.Enqueue(listDump);
-                    //DumpLogData dumpLog = new DumpLogData
-                    //{
-                    //    Source = logFile,
-                    //    Year = year,
-                    //    Header = currentHeader,
-                    //    Rows = new Dictionary<string, List<string>>(dictRows)
-                    //};
-                    //_dumpLogQueue.Enqueue(listDump);
-                    //dictRows.Clear();
-                }
-
 
             }
         }

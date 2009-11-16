@@ -95,7 +95,7 @@ namespace Indihiang.Modules
             {
                 DateTime startDate = _listTime.Min();
                 DateTime endDate = _listTime.Max();
-                lbTime.Text = String.Format("{0:dd-MMM-yyyy} - {1:dd-MMM-yyyy}", startDate, endDate);
+                lbTime.Text = String.Format("{0:dd MMM yyyy} - {1:dd MMM yyyy}", startDate, endDate);
             }
             else
                 lbTime.Text = "-";
@@ -103,45 +103,6 @@ namespace Indihiang.Modules
             RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.GENERAL, _fileName);
             _synContext.Post(OnRenderHandler, info);
 
-            /*
-            if (DataSource.Count > 0)
-            {
-                List<DateTime> list = new List<DateTime>();
-                foreach (KeyValuePair<string, WebLog> item in DataSource["General"].Colls)
-                {
-                    if (!string.IsNullOrEmpty(item.Key) && item.Key != "-" )
-                        list.Add(DateTime.ParseExact(item.Key, "yyyy-MM-dd", null));
-                }
-                if (list.Count > 0)
-                {
-                    DateTime startDate = list.Min();
-                    DateTime endDate = list.Max();
-                    lbTime.Text = String.Format("{0:dd-MMM-yyyy} - {1:dd-MMM-yyyy}", startDate, endDate);
-                }
-                else
-                    lbTime.Text = "-";
-
-                List<string> list2 = new List<string>();
-                foreach (KeyValuePair<string, WebLog> item in DataSource["IPServer"].Colls)
-                {
-                    if (!string.IsNullOrEmpty(item.Key) && item.Key != "-")
-                        list2.Add(item.Key);
-                }
-
-                if (DataSource["TotalData"].Colls.Count > 0)
-                {
-                    int total = Convert.ToInt32(DataSource["TotalData"].Colls["TotalData"].Items["TotalData"]);
-                    lbTotalData.Text = String.Format("{0} rows data", total);
-                }
-                else
-                    lbTotalData.Text = "No row data";
-                
-                listBoxFileName.Items.AddRange(_listFiles.ToArray());
-                listBoxIPAddress.Items.AddRange(list2.ToArray());
-                lbTotalFile.Text = String.Format("{0} files", _listFiles.Count);
-            }
-
-            */
         }
 
         private void backgroundJob_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
