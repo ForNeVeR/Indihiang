@@ -3,13 +3,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.ComponentModel;
+using System.Threading;
 
+using Indihiang.Data;
+using Indihiang.DomainObject;
 using Indihiang.Cores.Features;
 using ZedGraph;
+using Indihiang.Cores;
 namespace Indihiang.Modules
 {
     public partial class HitsControl : UserControl,BaseControl
     {
+        private SynchronizationContext _synContext;
+        private List<string> _listYears = new List<string>();
+        private List<DumpData> _listHits1 = new List<DumpData>();
         private string _guid;
         private string _fileName;
         private Dictionary<string, LogCollection> _items;
@@ -17,6 +25,7 @@ namespace Indihiang.Modules
         public HitsControl()
         {
             InitializeComponent();
+            _synContext = AsyncOperationManager.SynchronizationContext;
         }
 
         #region BaseControl Members
@@ -48,9 +57,8 @@ namespace Indihiang.Modules
         public void Populate()
         {
             SetGridLayout();
-            GenerateGraphHitsPerDay();
-            GenerateGraphHitsPerMonth();
-            SetSize();
+            backgroundJob.RunWorkerAsync();
+            
         }
         #endregion
 
@@ -78,31 +86,24 @@ namespace Indihiang.Modules
             pane.Chart.Fill = new Fill(Color.White, Color.FromArgb(255, 255, 166), 90F);
             pane.Fill = new Fill(Color.FromArgb(250, 250, 255));            
 
-            if (_items.Count > 0)
+            if (_listHits1.Count>0)
             {
                 double x, y;
                 PointPairList list1 = new PointPairList();
 
-                var items = from k in _items["General"].Colls
-                            orderby k.Key ascending
-                            select k;
-
-                foreach (KeyValuePair<string, WebLog> item in items)
+                string year = cboYear1.SelectedItem.ToString();
+                for (int i = 0; i < _listHits1.Count; i++)
                 {
-                    if (item.Value != null)
-                    {
-                        DateTime date = DateTime.ParseExact(item.Key, "yyyy-MM-dd", null);
-                        x = date.ToOADate();
+                    DateTime date = new DateTime(Convert.ToInt32(year), _listHits1[i].Month, _listHits1[i].Day);
+                    x = date.ToOADate();
 
-                        if (item.Value.Items[item.Key] != "" && item.Value.Items[item.Key] != "-")
-                        {
-                            y = Convert.ToDouble(item.Value.Items[item.Key]);
-                            list1.Add(x, y);
-                        }
-                    }
-                }                
+                    y = Convert.ToDouble(_listHits1[i].Total);
+                    list1.Add(x, y);
+                }
+        
 
-                LineItem line = pane.AddCurve("Hits per Day",list1, Color.Red, SymbolType.Diamond);
+                LineItem line = pane.AddCurve("Hits per Day",list1, Color.Red, SymbolType.None);
+                line.Line.IsSmooth = true;
             }
 
             zedHits1.IsShowPointValues = true;
@@ -183,7 +184,7 @@ namespace Indihiang.Modules
             PointPair pt = curve[iPt];
             DateTime date = DateTime.FromOADate(pt.X);
 
-            return String.Format("[{0:yyyy-MMM-dd} --> {1:f2} Hit(s)]", date, pt.Y);
+            return String.Format("{0}\r\nTime: {1:yyyy-MMM-dd}\r\nHits: {2:f2}", curve.Label.Text,date, pt.Y);
         }
 
         private string zedHits2_PointValueEvent(ZedGraphControl sender, GraphPane pane, CurveItem curve, int iPt)
@@ -252,6 +253,69 @@ namespace Indihiang.Modules
                     }
                 }
             }
+        }
+
+        private void backgroundJob_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            try
+            {
+                LogDataFacade facade = new LogDataFacade(_guid);
+                _listYears = facade.GetListyearLogFile();
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundJob_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            cboYear1.Items.AddRange(_listYears.ToArray());
+            cboYear2.Items.AddRange(_listYears.ToArray());
+
+            //GenerateGraphHitsPerMonth();
+            //SetSize();
+        }
+
+        private void btnGenerate1_Click(object sender, EventArgs e)
+        {
+            if (cboYear1.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please choose report year", "Information");
+                return;
+            }
+            btnGenerate1.Enabled = false;
+            backgroundJobHitsDay.RunWorkerAsync(cboYear1.SelectedItem);
+        }
+
+        private void btnGenerate2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void backgroundJobHitsDay_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                string par = e.Argument.ToString();
+                LogDataFacade facade = new LogDataFacade(_guid);
+
+                _listHits1 = new List<DumpData>(facade.GetHitsByParams(Convert.ToInt32(par)));
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundJobHitsDay_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (_listHits1.Count > 0)
+            {
+                GenerateGraphHitsPerDay();
+                SetSize();
+            }
+            btnGenerate1.Enabled = true;
         }
     }
 }

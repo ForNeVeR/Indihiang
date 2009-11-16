@@ -391,5 +391,59 @@ namespace Indihiang.Data
         }
         #endregion
 
+        #region Hits
+        public List<DumpData> GetHitsByParams(int year)
+        {
+            List<DumpData> list = new List<DumpData>();
+            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                int currentYear = Convert.ToInt32(fileName.Substring(3));
+
+                if (currentYear != year)
+                    continue;
+
+                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
+                using (SQLiteConnection conn = new SQLiteConnection(strCon))
+                {
+                    conn.Open();
+                    string sqlQuery = "select a_month, a_day, COUNT(id) AS total from log_data GROUP BY a_month,a_day";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        SQLiteDataReader rd = cmd.ExecuteReader();
+                        while (rd.Read())
+                        {
+                            DumpData obj = new DumpData();
+                            if (!rd.IsDBNull(rd.GetOrdinal("a_day")))
+                                obj.Day = Convert.ToInt32(rd["a_day"].ToString());
+                            else
+                                obj.Day = 0;
+                            if (!rd.IsDBNull(rd.GetOrdinal("a_month")))
+                                obj.Month = Convert.ToInt32(rd["a_month"].ToString());
+                            else
+                                obj.Month = 0;
+                            if (!rd.IsDBNull(rd.GetOrdinal("total")))
+                                obj.Total = long.Parse(rd["total"].ToString());
+                            else
+                                obj.Total = 0;
+
+
+                            list.Add(obj);
+                        }
+                        rd.Close();
+                    }
+
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return list;
+        }
+        #endregion
+
     }
 }
