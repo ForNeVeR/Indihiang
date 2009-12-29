@@ -443,6 +443,204 @@ namespace Indihiang.Data
 
             return list;
         }
+        public List<DumpData> GetMonthHitsByParams(int year)
+        {
+            List<DumpData> list = new List<DumpData>();
+            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                int currentYear = Convert.ToInt32(fileName.Substring(3));
+
+                if (currentYear != year)
+                    continue;
+
+                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
+                using (SQLiteConnection conn = new SQLiteConnection(strCon))
+                {
+                    conn.Open();
+                    string sqlQuery = "select a_month,COUNT(id) AS total from log_data GROUP BY a_month";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        SQLiteDataReader rd = cmd.ExecuteReader();
+                        while (rd.Read())
+                        {
+                            DumpData obj = new DumpData();
+                            if (!rd.IsDBNull(rd.GetOrdinal("a_month")))
+                                obj.Month = Convert.ToInt32(rd["a_month"].ToString());
+                            else
+                                obj.Month = 0;
+                            if (!rd.IsDBNull(rd.GetOrdinal("total")))
+                                obj.Total = long.Parse(rd["total"].ToString());
+                            else
+                                obj.Total = 0;
+
+
+                            list.Add(obj);
+                        }
+                        rd.Close();
+                    }
+
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return list;
+        }
+        #endregion
+
+        #region Access
+
+        public List<DumpData> GetTop5OfAccessPageByYear(int year)
+        {
+            List<DumpData> list = new List<DumpData>();
+            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                int currentYear = Convert.ToInt32(fileName.Substring(3));
+
+                if (currentYear != year)
+                    continue;
+
+                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
+                using (SQLiteConnection conn = new SQLiteConnection(strCon))
+                {
+                    conn.Open();
+                    string sqlQuery = "SELECT page_access, a_month, COUNT(id) AS total FROM log_data GROUP BY page_access ORDER BY total DESC";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        SQLiteDataReader rd = cmd.ExecuteReader();
+                        int total = 0;
+                        while (rd.Read())
+                        {
+                            DumpData obj = new DumpData();
+                            if (!rd.IsDBNull(rd.GetOrdinal("page_access")))
+                                obj.Page_Access = rd["page_access"].ToString();
+                            else
+                                obj.Page_Access = "";
+                            if (!rd.IsDBNull(rd.GetOrdinal("a_month")))
+                                obj.Month = Convert.ToInt32(rd["a_month"].ToString());
+                            else
+                                obj.Month = 0;
+                            if (!rd.IsDBNull(rd.GetOrdinal("total")))
+                                obj.Total = long.Parse(rd["total"].ToString());
+                            else
+                                obj.Total = 0;
+
+
+                            list.Add(obj);
+                            total++;
+
+                            if (total > 5)
+                                break;
+                        }
+                        rd.Close();
+                    }
+
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return list;
+        }
+
+        public long GetTotalHitsccessPageByYear(int year)
+        {
+            long total = 0;
+            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                int currentYear = Convert.ToInt32(fileName.Substring(3));
+
+                if (currentYear != year)
+                    continue;
+
+                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
+                using (SQLiteConnection conn = new SQLiteConnection(strCon))
+                {
+                    conn.Open();
+                    string sqlQuery = "SELECT COUNT(id) AS total FROM log_data";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        SQLiteDataReader rd = cmd.ExecuteReader();
+                        if (rd.Read())
+                        {
+                            if (!rd.IsDBNull(rd.GetOrdinal("total")))
+                                total = long.Parse(rd["total"].ToString());
+                        }
+                        rd.Close();
+                    }
+
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return total;
+        }
+
+        public List<DumpData> GetAccessPageByYearMonth(int year,int month)
+        {
+            List<DumpData> list = new List<DumpData>();
+            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                int currentYear = Convert.ToInt32(fileName.Substring(3));
+
+                if (currentYear != year)
+                    continue;
+
+                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
+                using (SQLiteConnection conn = new SQLiteConnection(strCon))
+                {
+                    conn.Open();
+                    string sqlQuery = string.Format("SELECT page_access,a_day, COUNT(id) AS total FROM log_data WHERE (a_month = {0}) GROUP BY page_access ORDER BY total DESC",month);
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        SQLiteDataReader rd = cmd.ExecuteReader();
+                        while (rd.Read())
+                        {
+                            DumpData obj = new DumpData();
+                            if (!rd.IsDBNull(rd.GetOrdinal("page_access")))
+                                obj.Page_Access = rd["page_access"].ToString();
+                            else
+                                obj.Page_Access = "";
+                            if (!rd.IsDBNull(rd.GetOrdinal("a_day")))
+                                obj.Day = Convert.ToInt32(rd["a_day"]);
+                            else
+                                obj.Day = -1;
+                            if (!rd.IsDBNull(rd.GetOrdinal("total")))
+                                obj.Total = long.Parse(rd["total"].ToString());
+                            else
+                                obj.Total = 0;
+
+
+                            list.Add(obj);
+                        }
+                        rd.Close();
+                    }
+
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return list;
+        }
+
         #endregion
 
     }

@@ -51,7 +51,7 @@ namespace Indihiang.Modules
             string id = "";
             string info = string.Empty;
 
-            _totalControls = 3;
+            _totalControls = 4;
             info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on GENERAL...");
             AddLogStatus(info);
             id = LogFeature.GENERAL.ToString();
@@ -79,7 +79,7 @@ namespace Indihiang.Modules
             uc3.FeatureGuid = parser.LogParserId.ToString();
             Attach(uc3, id, "Hits");
 
-            /*
+           
             info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on ACCESS...");
             AddLogStatus(info);
             id = LogFeature.ACCESS.ToString();
@@ -88,39 +88,40 @@ namespace Indihiang.Modules
             uc4.FeatureGuid = parser.LogParserId.ToString();
             Attach(uc4, id, "Access Page");
 
-            info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on IPADDRESS...");
-            AddLogStatus(info);
-            id = LogFeature.IPADDRESS.ToString();
-            IPAddressControl uc5 = new IPAddressControl();
-            uc5.FileName = parser.FileName;
-            uc5.FeatureGuid = parser.LogParserId.ToString();
-            Attach(uc5, id, "IP Address");
+            /*
+           info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on IPADDRESS...");
+           AddLogStatus(info);
+           id = LogFeature.IPADDRESS.ToString();
+           IPAddressControl uc5 = new IPAddressControl();
+           uc5.FileName = parser.FileName;
+           uc5.FeatureGuid = parser.LogParserId.ToString();
+           Attach(uc5, id, "IP Address");
 
-            info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on STATUS...");
-            AddLogStatus(info);
-            id = LogFeature.STATUS.ToString();
-            AccessStatusControl uc6 = new AccessStatusControl();
-            uc6.FileName = parser.FileName;
-            uc6.FeatureGuid = parser.LogParserId.ToString();
-            Attach(uc6, id, "HTTP Status");
+           info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on STATUS...");
+           AddLogStatus(info);
+           id = LogFeature.STATUS.ToString();
+           AccessStatusControl uc6 = new AccessStatusControl();
+           uc6.FileName = parser.FileName;
+           uc6.FeatureGuid = parser.LogParserId.ToString();
+           Attach(uc6, id, "HTTP Status");
 
-            info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on BANDWIDTH...");
-            AddLogStatus(info);
-            id = LogFeature.BANDWIDTH.ToString();
-            BandwidthControl uc7 = new BandwidthControl();
-            uc7.FileName = parser.FileName;
-            uc7.FeatureGuid = parser.LogParserId.ToString();
-            Attach(uc7, id, "Bandwidth");
+           info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on BANDWIDTH...");
+           AddLogStatus(info);
+           id = LogFeature.BANDWIDTH.ToString();
+           BandwidthControl uc7 = new BandwidthControl();
+           uc7.FileName = parser.FileName;
+           uc7.FeatureGuid = parser.LogParserId.ToString();
+           Attach(uc7, id, "Bandwidth");
 
-            info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on REQUEST...");
-            AddLogStatus(info);
-            id = LogFeature.REQUEST.ToString();
-            RequestProcessingControl uc8 = new RequestProcessingControl();
-            uc8.FileName = parser.FileName;
-            uc8.FeatureGuid = parser.LogParserId.ToString();
-            Attach(uc8, id, "Processing Request");
+           info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on REQUEST...");
+           AddLogStatus(info);
+           id = LogFeature.REQUEST.ToString();
+           RequestProcessingControl uc8 = new RequestProcessingControl();
+           uc8.FileName = parser.FileName;
+           uc8.FeatureGuid = parser.LogParserId.ToString();
+           Attach(uc8, id, "Processing Request");
 
-            */
+           */
             tabMainLog.SelectedTab = tabMainLog.TabPages[LogFeature.GENERAL.ToString()];
         }
 

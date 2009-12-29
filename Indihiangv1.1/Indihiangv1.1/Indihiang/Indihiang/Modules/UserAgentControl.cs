@@ -141,54 +141,35 @@ namespace Indihiang.Modules
            
                 foreach (KeyValuePair<string, PointPairList> item in list)
                 {
+                    LineItem curve = null;
                     if (item.Key == "MS Internet Explorer")
-                    {
-                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Blue, SymbolType.Diamond);
-                        curve.Line.IsSmooth = true;
-                        curve.Line.SmoothTension = 0.5F;
-                    }
+                        curve = pane.AddCurve(item.Key, item.Value, Color.Blue, SymbolType.Diamond);
                     if (item.Key == "Firefox")
-                    {
-                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Red, SymbolType.Diamond);
-                        curve.Line.IsSmooth = true;
-                        curve.Line.SmoothTension = 0.5F;
-                    }
+                        curve = pane.AddCurve(item.Key, item.Value, Color.Red, SymbolType.Diamond);
+
                     if (item.Key == "Safari")
-                    {
-                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Green, SymbolType.Diamond);
-                        curve.Line.IsSmooth = true;
-                        curve.Line.SmoothTension = 0.5F;
-                    }
+                        curve = pane.AddCurve(item.Key, item.Value, Color.Green, SymbolType.Diamond);
+
                     if (item.Key == "Google Chrome")
-                    {
-                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Cyan, SymbolType.Diamond);
-                        curve.Line.IsSmooth = true;
-                        curve.Line.SmoothTension = 0.5F;
-                    }
+                        curve = pane.AddCurve(item.Key, item.Value, Color.Cyan, SymbolType.Diamond);
+
                     if (item.Key == "Mozilla")
-                    {
-                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Yellow, SymbolType.Diamond);
-                        curve.Line.IsSmooth = true;
-                        curve.Line.SmoothTension = 0.5F;
-                    }
-                    if (item.Key == "Opera")
-                    {
-                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Purple, SymbolType.Diamond);
-                        curve.Line.IsSmooth = true;
-                        curve.Line.SmoothTension = 0.5F;
-                    }
+                        curve = pane.AddCurve(item.Key, item.Value, Color.Yellow, SymbolType.Diamond);
+
                     if (item.Key == "Netscape")
-                    {
-                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Brown, SymbolType.Diamond);
-                        curve.Line.IsSmooth = true;
-                        curve.Line.SmoothTension = 0.5F;
-                    }
+                        curve = pane.AddCurve(item.Key, item.Value, Color.Brown, SymbolType.Diamond);
+
+                    if (item.Key == "Mobile Browser")
+                        curve = pane.AddCurve(item.Key, item.Value, Color.Magenta, SymbolType.Diamond);
+
                     if (item.Key == "Unknown")
+                        curve = pane.AddCurve(item.Key, item.Value, Color.Black, SymbolType.Diamond);
+                    if (curve != null)
                     {
-                        LineItem curve = pane.AddCurve(item.Key, item.Value, Color.Black, SymbolType.Diamond);
                         curve.Line.IsSmooth = true;
                         curve.Line.SmoothTension = 0.5F;
                     }
+                    
                 }
              
             }
@@ -233,11 +214,6 @@ namespace Indihiang.Modules
                             Color.Cyan,
                             Color.White, 45f, 0, item.Key + " (" +
                             string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
-                    if (item.Key == "Mozilla")
-                        pane.AddPieSlice(item.Value, 
-                            Color.Yellow,
-                            Color.White, 45f, 0, item.Key + " (" +
-                            string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
                     if (item.Key == "Opera")
                         pane.AddPieSlice(item.Value, 
                             Color.Purple, 
@@ -246,6 +222,11 @@ namespace Indihiang.Modules
                     if (item.Key == "Netscape")
                         pane.AddPieSlice(item.Value, 
                             Color.Brown, 
+                            Color.White, 45f, 0, item.Key + " (" +
+                            string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
+                    if (item.Key == "Mobile Browser")
+                        pane.AddPieSlice(item.Value,
+                            Color.Magenta,
                             Color.White, 45f, 0, item.Key + " (" +
                             string.Format("{0:0.##}", (double)(item.Value * 100 / total)) + " %)");
                     if (item.Key == "Unknown")
