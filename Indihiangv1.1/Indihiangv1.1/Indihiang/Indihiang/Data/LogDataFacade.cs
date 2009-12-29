@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 using Indihiang.Cores;
 using Indihiang.DomainObject;
@@ -124,6 +125,43 @@ namespace Indihiang.Data
                         object obj = cmd.ExecuteScalar();
                         if (obj != null)
                             total = total + long.Parse(obj.ToString());
+                    }
+
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return total;
+        }
+        public long GetTotalData(int year)
+        {
+            long total = 0;
+            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(files[i]);
+                int currentYear = Convert.ToInt32(fileName.Substring(3));
+
+                if (currentYear != year)
+                    continue;
+
+                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
+                using (SQLiteConnection conn = new SQLiteConnection(strCon))
+                {
+                    conn.Open();
+                    string sqlQuery = "SELECT COUNT(id) AS total FROM log_data";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        SQLiteDataReader rd = cmd.ExecuteReader();
+                        if (rd.Read())
+                        {
+                            if (!rd.IsDBNull(rd.GetOrdinal("total")))
+                                total = long.Parse(rd["total"].ToString());
+                        }
+                        rd.Close();
                     }
 
                     conn.Close();
@@ -550,45 +588,6 @@ namespace Indihiang.Data
 
             return list;
         }
-
-        public long GetTotalHitsccessPageByYear(int year)
-        {
-            long total = 0;
-            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
-
-            for (int i = 0; i < files.Count; i++)
-            {
-                string fileName = System.IO.Path.GetFileNameWithoutExtension(files[i]);
-                int currentYear = Convert.ToInt32(fileName.Substring(3));
-
-                if (currentYear != year)
-                    continue;
-
-                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
-                using (SQLiteConnection conn = new SQLiteConnection(strCon))
-                {
-                    conn.Open();
-                    string sqlQuery = "SELECT COUNT(id) AS total FROM log_data";
-                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        SQLiteDataReader rd = cmd.ExecuteReader();
-                        if (rd.Read())
-                        {
-                            if (!rd.IsDBNull(rd.GetOrdinal("total")))
-                                total = long.Parse(rd["total"].ToString());
-                        }
-                        rd.Close();
-                    }
-
-                    conn.Close();
-                    conn.Dispose();
-                }
-            }
-
-            return total;
-        }
-
         public List<DumpData> GetAccessPageByYearMonth(int year,int month)
         {
             List<DumpData> list = new List<DumpData>();
@@ -640,7 +639,147 @@ namespace Indihiang.Data
 
             return list;
         }
+        #endregion
 
+        #region IP Address
+        public List<DumpData> GetIPaddressAccessByYear(int year, long limit)
+        {
+            List<DumpData> list = new List<DumpData>();
+            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(files[i]);
+                int currentYear = Convert.ToInt32(fileName.Substring(3));
+
+                if (currentYear != year)
+                    continue;
+
+                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
+                using (SQLiteConnection conn = new SQLiteConnection(strCon))
+                {
+                    conn.Open();
+                    string sqlQuery = "SELECT client_ip, COUNT(id) AS total FROM log_data GROUP BY client_ip ORDER BY total DESC";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        SQLiteDataReader rd = cmd.ExecuteReader();
+                        int total = 0;
+                        while (rd.Read())
+                        {
+                            DumpData obj = new DumpData();
+                            if (!rd.IsDBNull(rd.GetOrdinal("client_ip")))
+                                obj.Client_IP = rd["client_ip"].ToString();
+                            else
+                                obj.Client_IP = "";
+                            if (!rd.IsDBNull(rd.GetOrdinal("total")))
+                                obj.Total = long.Parse(rd["total"].ToString());
+                            else
+                                obj.Total = 0;
+
+                            list.Add(obj);
+                            total++;
+
+                            if (limit > 0)
+                            {
+                                if (total > (limit - 1))
+                                    break;
+                            }
+                        }
+                        rd.Close();
+                    }
+
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return list;
+        }
+        public List<string> GetListIPaddressByYear(int year)
+        {
+            List<string> list = new List<string>();
+            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(files[i]);
+                int currentYear = Convert.ToInt32(fileName.Substring(3));
+
+                if (currentYear != year)
+                    continue;
+
+                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
+                using (SQLiteConnection conn = new SQLiteConnection(strCon))
+                {
+                    conn.Open();
+                    string sqlQuery = "SELECT DISTINCT client_ip FROM log_data";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        SQLiteDataReader rd = cmd.ExecuteReader();
+                        while (rd.Read())
+                        {
+                            string ip = rd["client_ip"].ToString();
+
+                            list.Add(ip);
+                        }
+                        rd.Close();
+                    }
+
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return list;
+        }
+        public List<DumpData> GetIPaddressAccessByYear(int year, string clientIp)
+        {
+            List<DumpData> list = new List<DumpData>();
+            List<string> files = IndihiangHelper.GetIndihiangFileList(_guid);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(files[i]);
+                int currentYear = Convert.ToInt32(fileName.Substring(3));
+
+                if (currentYear != year)
+                    continue;
+
+                string strCon = string.Format("Data Source={0};ReadOnly=true", files[i]);
+                using (SQLiteConnection conn = new SQLiteConnection(strCon))
+                {
+                    conn.Open();
+                    string sqlQuery = string.Format("SELECT page_access, COUNT(id) AS total FROM log_data WHERE (client_ip = '{0}') GROUP BY page_access ORDER BY total DESC", clientIp);
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        SQLiteDataReader rd = cmd.ExecuteReader();
+                        while (rd.Read())
+                        {
+                            DumpData obj = new DumpData();
+                            if (!rd.IsDBNull(rd.GetOrdinal("page_access")))
+                                obj.Page_Access = rd["page_access"].ToString();
+                            else
+                                obj.Page_Access = "";
+                            if (!rd.IsDBNull(rd.GetOrdinal("total")))
+                                obj.Total = long.Parse(rd["total"].ToString());
+                            else
+                                obj.Total = 0;
+
+                            list.Add(obj);
+                        }
+                        rd.Close();
+                    }
+
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return list;
+        }
         #endregion
 
     }

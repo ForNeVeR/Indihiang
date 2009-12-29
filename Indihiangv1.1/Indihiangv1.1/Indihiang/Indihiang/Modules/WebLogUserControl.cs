@@ -12,7 +12,7 @@ namespace Indihiang.Modules
         public const int EM_SETMODIFY = 0xb9;
 
         private Guid _loadingId = Guid.NewGuid();
-        private int _totalControls = 0;
+        private int _totalControls;
 
         public event EventHandler<RenderInfoEventArgs> EndRenderHandler;
 
@@ -25,7 +25,6 @@ namespace Indihiang.Modules
         {
             if (EndRenderHandler != null)
                 EndRenderHandler(this,e);
-
         }
 
 
@@ -51,7 +50,7 @@ namespace Indihiang.Modules
             string id = "";
             string info = string.Empty;
 
-            _totalControls = 4;
+            _totalControls = 5;
             info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on GENERAL...");
             AddLogStatus(info);
             id = LogFeature.GENERAL.ToString();
@@ -88,15 +87,15 @@ namespace Indihiang.Modules
             uc4.FeatureGuid = parser.LogParserId.ToString();
             Attach(uc4, id, "Access Page");
 
-            /*
-           info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on IPADDRESS...");
-           AddLogStatus(info);
-           id = LogFeature.IPADDRESS.ToString();
-           IPAddressControl uc5 = new IPAddressControl();
-           uc5.FileName = parser.FileName;
-           uc5.FeatureGuid = parser.LogParserId.ToString();
-           Attach(uc5, id, "IP Address");
-
+            
+            info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on IPADDRESS...");
+            AddLogStatus(info);
+            id = LogFeature.IPADDRESS.ToString();
+            IPAddressControl uc5 = new IPAddressControl();
+            uc5.FileName = parser.FileName;
+            uc5.FeatureGuid = parser.LogParserId.ToString();
+            Attach(uc5, id, "IP Address");
+/*
            info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on STATUS...");
            AddLogStatus(info);
            id = LogFeature.STATUS.ToString();
