@@ -266,20 +266,33 @@ namespace Indihiang.Cores
 
         public static string CheckUserAgent(string line)
         {
+            if (string.IsNullOrEmpty(line) || line == "-")
+                return "";
+
+            if (line.Contains("MIDP") || line.Contains("Blackberry") || line.Contains("Nokia") || line.Contains("SonyEricsson"))
+                return "Mobile Browser";
+            if (line.Contains("Chrome") && line.Contains("Safari") && line.Contains("AppleWebKit"))
+            {
+                if (line.Contains("Mobile"))
+                    return "Mobile Browser";
+
+                return "Google Chrome";
+            }
             if (line.Contains("MSIE"))
                 return "MS Internet Explorer";
             if (line.Contains("Firefox"))
                 return "Firefox";
-            if (line.Contains("Safari"))
+            if (line.Contains("Safari") && line.Contains("AppleWebKit"))
+            {
+                if (line.Contains("iPhone"))
+                    return "Mobile Browser";
+
                 return "Safari";
-            if (line.Contains("Chrome"))
-                return "Google Chrome";
-            if (line.Contains("Gecko"))
-                return "Mozilla";
+            }
             if (line.Contains("Opera"))
                 return "Opera ";
             if (line.Contains("Netscape") || line.Contains("Navigator"))
-                return "Netscape ";
+                return "Netscape ";            
 
             System.Diagnostics.Debug.WriteLine(line);
             return "Unknown";

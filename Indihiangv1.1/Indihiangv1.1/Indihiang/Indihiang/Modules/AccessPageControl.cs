@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
+using System.ComponentModel;
+using System.Threading;
 
+using Indihiang.Data;
+using Indihiang.DomainObject;
 using Indihiang.Cores;
 using Indihiang.Cores.Features;
 using ZedGraph;
@@ -11,13 +14,19 @@ namespace Indihiang.Modules
 {
     public partial class AccessPageControl : UserControl, BaseControl
     {
+        private SynchronizationContext _synContext;
         private string _guid;
         private string _fileName;
-        private Dictionary<string, LogCollection> _items;
+        private List<string> _listYears = new List<string>();
+        private List<string> _listYearMonth = new List<string>();
+        private List<DumpData> _listTopOf5 = new List<DumpData>();
+        private List<DumpData> _listAccessPage = new List<DumpData>();
+        private long _totalAccessYear;
 
         public AccessPageControl()
         {
             InitializeComponent();
+            _synContext = AsyncOperationManager.SynchronizationContext;
         }
         #region BaseControl Members
         public event EventHandler<RenderInfoEventArgs> RenderHandler;
@@ -47,117 +56,119 @@ namespace Indihiang.Modules
         }
         public void Populate()
         {
-            SetGridLayout();
-            GenerateGraph();
-            SetSize();
+            backgroundJob.RunWorkerAsync();            
         }
         #endregion
-
-        private void SetGridLayout()
+        protected virtual void OnRenderHandler(RenderInfoEventArgs e)
         {
-            dataGridAccess.ColumnCount = 2;
+            if (RenderHandler != null)
+                RenderHandler(this, e);
+        }
+
+        private void SetIntialLayout()
+        {
+            dataGridAccess.ColumnCount = 3;
             dataGridAccess.Columns[0].Name = "Page Name";
             dataGridAccess.Columns[0].Width = 450;
-            dataGridAccess.Columns[1].Name = "Total Access";
-            dataGridAccess.Columns[1].Width = 100;            
+            dataGridAccess.Columns[0].ValueType = typeof(System.String);
+            dataGridAccess.Columns[1].Name = "Day";
+            dataGridAccess.Columns[1].Width = 80;
+            dataGridAccess.Columns[1].ValueType = typeof(System.Int32);
+            dataGridAccess.Columns[2].Name = "Total Access";
+            dataGridAccess.Columns[2].Width = 100;
+            dataGridAccess.Columns[2].ValueType = typeof(System.Int32);
 
             dataGridAccess.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridAccess.MultiSelect = false;
-            
         }
         private void GenerateGraph()
         {
             GraphPane pane = zedAccessPage1.GraphPane;
-
             pane.Title.Text = "The 5 Top of Total Access Page Graph";
-            pane.XAxis.Title.Text = "Date";
-            pane.XAxis.Scale.Format = "yyyy-MMM-dd";
-            pane.YAxis.Title.Text = "Total Hits";
-            pane.BarSettings.Type = BarType.Stack;
+            pane.CurveList.Clear();
+            
+            pane.Legend.Position = LegendPos.InsideTopLeft;
+            pane.Chart.Fill = new Fill(Color.White, Color.Orange, 90F);
+            pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
-            if (_items.Count > 0)
+            if (_listTopOf5.Count > 0)
             {
-                List<double> listX = new List<double>();
-                List<string> labels = new List<string>();
-                Dictionary<string, List<double>> listBar = new Dictionary<string, List<double>>();
-
-                var items = from k in _items["General"].Colls
-                            orderby k.Key ascending
-                            select k;
-
-                foreach (KeyValuePair<string, WebLog> item in items)
+                double total = _totalAccessYear;
+                double itemTotal = 0;
+                for (int i = 0; i < _listTopOf5.Count;i++ )
                 {
-                    if (item.Value != null)
+                    itemTotal = itemTotal + _listTopOf5[i].Total;
+                    switch(i)
                     {
-                        DateTime date = DateTime.ParseExact(item.Key, "yyyy-MM-dd", null);
-                        listX.Add(date.ToOADate());
+                        case 0:
+                            pane.AddPieSlice(_listTopOf5[i].Total,
+                            Color.Blue,
+                            Color.White, 45f, 0.2,
+                            _listTopOf5[i].Page_Access + " (" +
+                            string.Format("{0:0.##}", (double)(_listTopOf5[i].Total * 100 / total)) + " %)");
+                            break;
+                        case 1:
+                            pane.AddPieSlice(_listTopOf5[i].Total,
+                            Color.Red,
+                            Color.White, 45f, 0.2,
+                            _listTopOf5[i].Page_Access + " (" +
+                            string.Format("{0:0.##}", (double)(_listTopOf5[i].Total * 100 / total)) + " %)");
+                            break;
+                        case 2:
+                            pane.AddPieSlice(_listTopOf5[i].Total,
+                            Color.Green,
+                            Color.White, 45f, 0.2,
+                            _listTopOf5[i].Page_Access + " (" +
+                            string.Format("{0:0.##}", (double)(_listTopOf5[i].Total * 100 / total)) + " %)");
+                            break;
+                        case 3: 
+                            pane.AddPieSlice(_listTopOf5[i].Total,
+                            Color.Cyan,
+                            Color.White, 45f, 0.2,
+                            _listTopOf5[i].Page_Access + " (" +
+                            string.Format("{0:0.##}", (double)(_listTopOf5[i].Total * 100 / total)) + " %)");
+                            break;
+                        case 4:
+                            pane.AddPieSlice(_listTopOf5[i].Total,
+                            Color.Purple,
+                            Color.White, 45f, 0.2,
+                            _listTopOf5[i].Page_Access + " (" +
+                            string.Format("{0:0.##}", (double)(_listTopOf5[i].Total * 100 / total)) + " %)");                            
+                            break;
 
-                        if (!labels.Contains(item.Key))
-                            labels.Add(date.ToString("yyyy-MMM-dd"));
-
-                        foreach (KeyValuePair<string, string> ilog in item.Value.Items)
-                        {
-                            if (listBar.ContainsKey(ilog.Key))
-                                listBar[ilog.Key].Add(Convert.ToDouble(ilog.Value));
-                            else
-                            {
-                                List<double> data = new List<double>();
-                                data.Add(Convert.ToDouble(ilog.Value));
-
-                                listBar.Add(ilog.Key, data);
-                            }
-                        }
                     }
+                    
                 }
-                
-                if (listBar.Count > 0)
+                double remain = total - itemTotal;
+                if (remain > 0)
                 {
-                    int total = 0;
-                    bool draw = true;
-                    List<Color> listColor = new List<Color>();
-                    Random random = new Random();
-
-                    Dictionary<string, List<double>> newList = CollectionHelper.SortList(listBar);
-                    foreach (KeyValuePair<string, List<double>> item in newList)
-                    {
-                        if (draw)
-                        {
-                            Color color = Color.FromArgb(0, 0, 0);
-                            do
-                            {
-                                color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
-
-                            } while (listColor.Contains(color));
-                            listColor.Add(color);
-
-                            BarItem bar = pane.AddBar(item.Key, listX.ToArray(), item.Value.ToArray(), color);
-                            bar.Bar.Fill = new Fill(color, Color.White, color);
-                            total++;
-                            if (total > 4)
-                                draw = false;
-                        }
-
-                        List<object> data = new List<object>();
-                        data.Add(item.Key);
-                        data.Add((int)item.Value.Sum());
-                        this.dataGridAccess.Rows.Add(data.ToArray());
-                        
-                    }
+                    pane.AddPieSlice(remain,
+                            Color.Purple,
+                            Color.White, 45f, 0.2,
+                            "Others (" +
+                            string.Format("{0:0.##}", (double)(remain * 100 / total)) + " %)");
                 }
-
-                pane.XAxis.Type = AxisType.Date; 
-                pane.Chart.Fill = new Fill(Color.White,Color.FromArgb(255, 255, 166), 90F);
-                pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
             }
-
-            dataGridAccess.Columns[0].DisplayIndex = 0;
-            dataGridAccess.Columns[1].DisplayIndex = 1;
-            dataGridAccess.Columns[1].ValueType = typeof(System.Int32);
 
             zedAccessPage1.IsShowPointValues = true;
             zedAccessPage1.AxisChange();
 
+        }
+        private void GenerateGrid()
+        {
+            if (_listAccessPage.Count > 0)
+            {
+                for (int i = 0; i < _listAccessPage.Count; i++)
+                {
+                    List<object> data = new List<object>();
+                    data.Add(_listAccessPage[i].Page_Access);
+                    data.Add(_listAccessPage[i].Day);
+                    data.Add(_listAccessPage[i].Total);
+
+                    dataGridAccess.Rows.Add(data.ToArray());
+                }
+            }
         }
 
         private void SetSize()
@@ -169,6 +180,116 @@ namespace Indihiang.Modules
         private void AccessPageControl_Resize(object sender, EventArgs e)
         {
             SetSize();
+        }
+
+        private void backgroundJob_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            try
+            {
+                LogDataFacade facade = new LogDataFacade(_guid);                
+                _listYears = facade.GetListyearLogFile();
+
+                for (int i = 0; i < _listYears.Count; i++)
+                {
+                    List<string> list = facade.GetMonthLogFileListByYear(_listYears[i]);
+                    for (int j = 0; j < list.Count; j++)
+                    {
+                        string monthYear = string.Format("{0}-{1}", IndihiangHelper.GetMonth(Convert.ToInt32(list[j])), _listYears[i]);
+                        _listYearMonth.Add(monthYear);
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundJob_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            cboParams1.Items.AddRange(_listYears.ToArray());
+            cboParams2.Items.AddRange(_listYearMonth.ToArray());
+
+            SetIntialLayout();
+            SetSize();
+
+            RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.ACCESS, _fileName);
+            _synContext.Post(OnRenderHandler, info);
+        }
+
+        private void backgroundJobGraph_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                string par = e.Argument.ToString();
+                LogDataFacade facade = new LogDataFacade(_guid);
+
+                _listTopOf5 = new List<DumpData>(facade.GetTop5OfAccessPageByYear(Convert.ToInt32(par)));
+                _totalAccessYear = facade.GetTotalHitsccessPageByYear(Convert.ToInt32(par));
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundJobGraph_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            GenerateGraph();
+            SetSize();
+
+            btnGenerate1.Text = "Generate";
+            btnGenerate1.Enabled = true;
+        }
+
+        private void backgroundJobGrid_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                string par = e.Argument.ToString();
+                string[] items = par.Split(new char[] { '-' });
+                int month = IndihiangHelper.GetMonth(items[0]);
+                int year = Convert.ToInt32(items[1]); ;
+
+                LogDataFacade facade = new LogDataFacade(_guid);
+                _listAccessPage = new List<DumpData>(facade.GetAccessPageByYearMonth(year,month));
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundJobGrid_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            GenerateGrid();
+
+            btnGenerate2.Text = "Generate";
+            btnGenerate2.Enabled = true;
+        }
+
+        private void btnGenerate1_Click(object sender, EventArgs e)
+        {
+            if (cboParams1.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please choose year", "Information");
+                return;
+            }
+            btnGenerate1.Text = "Generating...";
+            btnGenerate1.Enabled = false;
+            backgroundJobGraph.RunWorkerAsync(cboParams1.SelectedItem);
+        }
+
+        private void btnGenerate2_Click(object sender, EventArgs e)
+        {
+            if (cboParams2.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please choose time", "Information");
+                return;
+            }
+            btnGenerate2.Text = "Generating...";
+            btnGenerate2.Enabled = false;
+            backgroundJobGrid.RunWorkerAsync(cboParams2.SelectedItem);
         }
 
 

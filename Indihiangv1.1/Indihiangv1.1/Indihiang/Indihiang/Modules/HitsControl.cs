@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Threading;
@@ -9,8 +8,8 @@ using System.Threading;
 using Indihiang.Data;
 using Indihiang.DomainObject;
 using Indihiang.Cores.Features;
-using ZedGraph;
 using Indihiang.Cores;
+using ZedGraph;
 namespace Indihiang.Modules
 {
     public partial class HitsControl : UserControl,BaseControl
@@ -18,9 +17,10 @@ namespace Indihiang.Modules
         private SynchronizationContext _synContext;
         private List<string> _listYears = new List<string>();
         private List<DumpData> _listHits1 = new List<DumpData>();
+        private List<DumpData> _listHits2 = new List<DumpData>();
+        private List<DumpData> _listHits3 = new List<DumpData>();
         private string _guid;
-        private string _fileName;
-        private Dictionary<string, LogCollection> _items;
+        private string _fileName;        
 
         public HitsControl()
         {
@@ -56,19 +56,40 @@ namespace Indihiang.Modules
         }
         public void Populate()
         {
-            SetGridLayout();
             backgroundJob.RunWorkerAsync();
             
         }
         #endregion
+        protected virtual void OnRenderHandler(RenderInfoEventArgs e)
+        {
+            if (RenderHandler != null)
+                RenderHandler(this, e);
+        }
 
-        private void SetGridLayout()
+        private void SetGridLayout1()
         {
             dataGridHits.ColumnCount = 2;
             dataGridHits.Columns[0].Name = "Hits";
-            dataGridHits.Columns[0].Width = 300;
+            dataGridHits.Columns[0].Width = 150;
+            dataGridHits.Columns[0].ValueType = typeof(System.DateTime);
+            dataGridHits.Columns[0].DefaultCellStyle.Format = "dd MMM yyyy";
             dataGridHits.Columns[1].Name = "Total Hits";
             dataGridHits.Columns[1].Width = 100;
+            dataGridHits.Columns[0].ValueType = typeof(System.Int32);
+
+            dataGridHits.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridHits.MultiSelect = false;
+        }
+        private void SetGridLayout2()
+        {
+            dataGridHits.ColumnCount = 2;
+            dataGridHits.Columns[0].Name = "Hits (Month)";
+            dataGridHits.Columns[0].Width = 150;
+            dataGridHits.Columns[0].ValueType = typeof(System.DateTime);
+            dataGridHits.Columns[0].DefaultCellStyle.Format = "MMM yyyy";
+            dataGridHits.Columns[1].Name = "Total Hits";
+            dataGridHits.Columns[1].Width = 100;
+            dataGridHits.Columns[0].ValueType = typeof(System.Int32);
 
             dataGridHits.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridHits.MultiSelect = false;
@@ -102,7 +123,7 @@ namespace Indihiang.Modules
                 }
         
 
-                LineItem line = pane.AddCurve("Hits per Day",list1, Color.Red, SymbolType.None);
+                LineItem line = pane.AddCurve("Hits per Day",list1, Color.Red, SymbolType.Star);
                 line.Line.IsSmooth = true;
             }
 
@@ -117,54 +138,70 @@ namespace Indihiang.Modules
             pane.Title.Text = "Total Hist per Month Graph";
             pane.XAxis.Title.Text = "Month";
             pane.XAxis.Type = AxisType.DateAsOrdinal;
-            pane.XAxis.Scale.Format = "yyyy-MMM";
+            pane.XAxis.Scale.Format = "MMM";
             pane.YAxis.Title.Text = "Total Hits";
             pane.Chart.Fill = new Fill(Color.White, Color.FromArgb(255, 255, 166), 90F);
             pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
-            if (_items.Count > 0)
+            if (_listHits2.Count > 0)
             {
                 double x, y;
                 PointPairList list1 = new PointPairList();
 
-                var items = from k in _items["General"].Colls
-                            orderby k.Key ascending
-                            select k;
-
-                Dictionary<DateTime, int> monthData = new Dictionary<DateTime, int>();
-                foreach (KeyValuePair<string, WebLog> item in items)
+                string year = cboYear2.SelectedItem.ToString();
+                for (int i = 0; i < _listHits2.Count; i++)
                 {
-                    if (item.Value != null)
-                    {
-                        DateTime date = DateTime.ParseExact(item.Key, "yyyy-MM-dd", null);
-                        DateTime newDate = new DateTime(date.Year, date.Month, 1);
+                    DateTime date = new DateTime(Convert.ToInt32(year), _listHits2[i].Month, 1);
+                    x = date.ToOADate();
 
-                        if (monthData.ContainsKey(newDate))
-                            monthData[newDate] = monthData[newDate] + Convert.ToInt32(item.Value.Items[item.Key]);
-                        else
-                            monthData.Add(newDate, Convert.ToInt32(item.Value.Items[item.Key]));
-                    }
-                }
-                var items2 = from k in monthData
-                        orderby k.Key ascending
-                        select k;
-                foreach (KeyValuePair<DateTime, int> item in items2)
-                {
-                    x = item.Key.ToOADate();
-                    y = Convert.ToDouble(item.Value);
+                    y = Convert.ToDouble(_listHits2[i].Total);
                     list1.Add(x, y);
                 }
 
-                LineItem line = pane.AddCurve("Hits per Month", list1, Color.Red, SymbolType.Diamond);
-                BarItem bar = pane.AddBar("Hits per Month", list1, Color.Blue);
-                bar.Bar.Fill = new Fill(Color.Blue, Color.White, Color.Blue);
-                
+                LineItem line = pane.AddCurve("Hits per Month", list1, Color.Red, SymbolType.Star);
+                line.Line.IsSmooth = true;
             }
 
             zedHits2.IsShowPointValues = true;
             zedHits2.AxisChange();
-
         }
+        private void GenerateGraphHitsGrid()
+        {
+            string selectedHits = cboHitsData.SelectedItem.ToString();
+            if (_listHits3.Count>0)
+            {
+                dataGridHits.Rows.Clear();
+                int year = Convert.ToInt32(cboYear3.SelectedItem);
+                if (selectedHits == "Hits per Day")
+                {
+                    SetGridLayout1();
+                    for (int i = 0; i < _listHits3.Count; i++)
+                    {
+                        DateTime dt = new DateTime(year, _listHits3[i].Month, _listHits3[i].Day);
+                        List<object> data = new List<object>();
+                        data.Add(dt);
+                        data.Add(_listHits3[i].Total);
+
+                        dataGridHits.Rows.Add(data.ToArray());
+                    }
+                
+                }
+                if (selectedHits == "Hits per Month")
+                {
+                    SetGridLayout2();
+                    for (int i = 0; i < _listHits3.Count; i++)
+                    {
+                        DateTime dt = new DateTime(year, _listHits3[i].Month, 1);
+                        List<object> data = new List<object>();
+                        data.Add(dt);
+                        data.Add(_listHits3[i].Total);
+
+                        dataGridHits.Rows.Add(data.ToArray());
+                    }
+                }
+            }
+        }
+
         private void SetSize()
         {
             zedHits1.Location = new Point(10, 10);
@@ -195,67 +232,9 @@ namespace Indihiang.Modules
             return String.Format("[{0:yyyy-MMM} --> {1:f2} Hit(s)]", date, pt.Y);
         }
 
-        private void cboHitsData_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string selectedHits = cboHitsData.SelectedItem.ToString();
-            if (!string.IsNullOrEmpty(selectedHits))
-            {
-                dataGridHits.Rows.Clear();
-                if (selectedHits == "Hits per Day")
-                {
-                    var items = from k in _items["General"].Colls
-                                orderby k.Key ascending
-                                select k;
 
-                    foreach (KeyValuePair<string, WebLog> item in items)
-                    {
-                        if (item.Value != null)
-                        {
-                            DateTime date = DateTime.ParseExact(item.Key, "yyyy-MM-dd", null);
-                            List<object> data = new List<object>();
-                            data.Add(date.ToString("yyyy-MMM-dd"));
-                            data.Add(Convert.ToInt32(item.Value.Items[item.Key]));
 
-                            dataGridHits.Rows.Add(data.ToArray());
-                        }
-                    }                
-                }
-                if (selectedHits == "Hits per Month")
-                {
-                    var items = from k in _items["General"].Colls
-                                orderby k.Key ascending
-                                select k;
-
-                    Dictionary<DateTime, int> monthData = new Dictionary<DateTime, int>();
-                    foreach (KeyValuePair<string, WebLog> item in items)
-                    {
-                        if (item.Value != null)
-                        {
-                            DateTime date = DateTime.ParseExact(item.Key, "yyyy-MM-dd", null);
-                            DateTime newDate = new DateTime(date.Year, date.Month, 1);
-
-                            if (monthData.ContainsKey(newDate))
-                                monthData[newDate] = monthData[newDate] + Convert.ToInt32(item.Value.Items[item.Key]);
-                            else
-                                monthData.Add(newDate, Convert.ToInt32(item.Value.Items[item.Key]));
-                        }
-                    }
-                    var items2 = from k in monthData
-                                 orderby k.Key ascending
-                                 select k;
-                    foreach (KeyValuePair<DateTime, int> item in items2)
-                    {
-                        List<object> data = new List<object>();
-                        data.Add(item.Key.ToString("yyyy-MMM"));
-                        data.Add(Convert.ToInt32(item.Value));
-
-                        dataGridHits.Rows.Add(data.ToArray());
-                    }
-                }
-            }
-        }
-
-        private void backgroundJob_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void backgroundJob_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -268,13 +247,14 @@ namespace Indihiang.Modules
             }
         }
 
-        private void backgroundJob_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void backgroundJob_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             cboYear1.Items.AddRange(_listYears.ToArray());
             cboYear2.Items.AddRange(_listYears.ToArray());
+            cboYear3.Items.AddRange(_listYears.ToArray());
 
-            //GenerateGraphHitsPerMonth();
-            //SetSize();
+            RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.HITS, _fileName);
+            _synContext.Post(OnRenderHandler, info);
         }
 
         private void btnGenerate1_Click(object sender, EventArgs e)
@@ -284,13 +264,21 @@ namespace Indihiang.Modules
                 MessageBox.Show("Please choose report year", "Information");
                 return;
             }
+            btnGenerate1.Text = "Generating...";
             btnGenerate1.Enabled = false;
             backgroundJobHitsDay.RunWorkerAsync(cboYear1.SelectedItem);
         }
 
         private void btnGenerate2_Click(object sender, EventArgs e)
         {
-
+            if (cboYear2.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please choose report year", "Information");
+                return;
+            }
+            btnGenerate2.Text = "Generating...";
+            btnGenerate2.Enabled = false;
+            backgroundJobHitsMonth.RunWorkerAsync(cboYear2.SelectedItem);
         }
 
         private void backgroundJobHitsDay_DoWork(object sender, DoWorkEventArgs e)
@@ -315,7 +303,82 @@ namespace Indihiang.Modules
                 GenerateGraphHitsPerDay();
                 SetSize();
             }
+            btnGenerate1.Text = "Generate";
             btnGenerate1.Enabled = true;
+        }
+
+        private void backgroundJobHitsMonth_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                string par = e.Argument.ToString();
+                LogDataFacade facade = new LogDataFacade(_guid);
+
+                _listHits2 = new List<DumpData>(facade.GetMonthHitsByParams(Convert.ToInt32(par)));
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundJobHitsMonth_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (_listHits2.Count > 0)
+            {
+                GenerateGraphHitsPerMonth();
+                SetSize();
+            }
+            btnGenerate2.Text = "Generate";
+            btnGenerate2.Enabled = true;
+        }
+
+        private void btnGenerate3_Click(object sender, EventArgs e)
+        {
+            if (cboHitsData.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please choose report type", "Information");
+                return;
+            }
+            if (cboYear3.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please choose report year", "Information");
+                return;
+            }
+            btnGenerate3.Text = "Generating...";
+            btnGenerate3.Enabled = false;
+            backgroundJobHitsDataGrid.RunWorkerAsync(string.Format("{0};{1}", cboHitsData.SelectedItem, cboYear3.SelectedItem));
+        }
+
+        private void backgroundJobHitsDataGrid_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                string par = e.Argument.ToString();
+                string[] items = par.Split(new char[] { ';' });
+
+                LogDataFacade facade = new LogDataFacade(_guid);
+
+                if (items[0] == "Hits per Day")
+                    _listHits3 = new List<DumpData>(facade.GetHitsByParams(Convert.ToInt32(items[1])));
+
+                if (items[0] == "Hits per Month")
+                    _listHits3 = new List<DumpData>(facade.GetMonthHitsByParams(Convert.ToInt32(items[1])));
+               
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundJobHitsDataGrid_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (_listHits3.Count > 0)
+                GenerateGraphHitsGrid();
+
+            btnGenerate3.Text = "Generate";
+            btnGenerate3.Enabled = true;
         }
     }
 }

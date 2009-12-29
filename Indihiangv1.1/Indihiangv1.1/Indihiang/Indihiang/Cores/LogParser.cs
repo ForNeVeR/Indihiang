@@ -12,7 +12,7 @@ namespace Indihiang.Cores
 {
     public class LogParser
     {
-        private bool _finish = false;
+        private bool _finish;
         private bool _useParallel;
         private SynchronizationContext _synContext;
         private string _fileName;
