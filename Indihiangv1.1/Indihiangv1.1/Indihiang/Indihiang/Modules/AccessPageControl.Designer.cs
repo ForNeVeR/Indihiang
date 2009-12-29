@@ -154,10 +154,13 @@ namespace Indihiang.Modules
             // 
             // dataGridAccess
             // 
+            this.dataGridAccess.AllowUserToAddRows = false;
+            this.dataGridAccess.AllowUserToDeleteRows = false;
             this.dataGridAccess.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridAccess.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridAccess.Location = new System.Drawing.Point(3, 45);
             this.dataGridAccess.Name = "dataGridAccess";
+            this.dataGridAccess.ReadOnly = true;
             this.dataGridAccess.Size = new System.Drawing.Size(771, 362);
             this.dataGridAccess.TabIndex = 3;
             // 

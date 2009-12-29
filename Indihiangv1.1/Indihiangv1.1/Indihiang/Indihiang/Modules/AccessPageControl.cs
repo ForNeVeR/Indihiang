@@ -139,14 +139,14 @@ namespace Indihiang.Modules
                     }
                     
                 }
-                double remain = total - itemTotal;
-                if (remain > 0)
+                double remains = total - itemTotal;
+                if (remains > 0)
                 {
-                    pane.AddPieSlice(remain,
+                    pane.AddPieSlice(remains,
                             Color.Purple,
                             Color.White, 45f, 0.2,
                             "Others (" +
-                            string.Format("{0:0.##}", (double)(remain * 100 / total)) + " %)");
+                            string.Format("{0:0.##}", (double)(remains * 100 / total)) + " %)");
                 }
 
             }
@@ -157,6 +157,7 @@ namespace Indihiang.Modules
         }
         private void GenerateGrid()
         {
+            dataGridAccess.Rows.Clear();
             if (_listAccessPage.Count > 0)
             {
                 for (int i = 0; i < _listAccessPage.Count; i++)
@@ -225,7 +226,7 @@ namespace Indihiang.Modules
                 LogDataFacade facade = new LogDataFacade(_guid);
 
                 _listTopOf5 = new List<DumpData>(facade.GetTop5OfAccessPageByYear(Convert.ToInt32(par)));
-                _totalAccessYear = facade.GetTotalHitsccessPageByYear(Convert.ToInt32(par));
+                _totalAccessYear = facade.GetTotalData(Convert.ToInt32(par));
             }
             catch (Exception err)
             {
@@ -249,7 +250,7 @@ namespace Indihiang.Modules
                 string par = e.Argument.ToString();
                 string[] items = par.Split(new char[] { '-' });
                 int month = IndihiangHelper.GetMonth(items[0]);
-                int year = Convert.ToInt32(items[1]); ;
+                int year = Convert.ToInt32(items[1]); 
 
                 LogDataFacade facade = new LogDataFacade(_guid);
                 _listAccessPage = new List<DumpData>(facade.GetAccessPageByYearMonth(year,month));
