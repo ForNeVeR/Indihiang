@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 using Indihiang.Cores;
+using Indihiang.Data;
 using Indihiang.Cores.Features;
 namespace Indihiang.Modules
 {
@@ -43,12 +45,22 @@ namespace Indihiang.Modules
         public void Populate(LogParser parser)
         {
             PopulateParalel(parser);
-        }        
+        }
+
+        private List<string> GetListOfYear(string guid)
+        {
+            LogDataFacade facade = new LogDataFacade(guid);
+            
+            return facade.GetListyearLogFile();
+        }
 
         private void PopulateParalel(LogParser parser)
         {
             string id = "";
             string info = string.Empty;
+
+            List<string> listOfYear = GetListOfYear(parser.LogParserId.ToString());
+
 
             _totalControls = 5;
             info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on GENERAL...");
@@ -56,8 +68,7 @@ namespace Indihiang.Modules
             id = LogFeature.GENERAL.ToString();
             GeneralControl uc1 = new GeneralControl();
             uc1.FileName = parser.FileName;
-            uc1.FeatureGuid = parser.LogParserId.ToString();
-            uc1.FileNames = IndihiangHelper.ParseFile(parser.FileName);
+            uc1.FeatureGuid = parser.LogParserId.ToString();            
             Attach(uc1, id, "General");
 
             
@@ -67,6 +78,7 @@ namespace Indihiang.Modules
             UserAgentControl uc2 = new UserAgentControl();
             uc2.FileName = parser.FileName;
             uc2.FeatureGuid = parser.LogParserId.ToString();
+            uc2.ListOfYear = listOfYear;
             Attach(uc2, id, "User Agent");
 
            
@@ -76,6 +88,7 @@ namespace Indihiang.Modules
             HitsControl uc3 = new HitsControl();
             uc3.FileName = parser.FileName;
             uc3.FeatureGuid = parser.LogParserId.ToString();
+            uc3.ListOfYear = listOfYear;
             Attach(uc3, id, "Hits");
 
            
@@ -85,6 +98,7 @@ namespace Indihiang.Modules
             AccessPageControl uc4 = new AccessPageControl();
             uc4.FileName = parser.FileName;
             uc4.FeatureGuid = parser.LogParserId.ToString();
+            uc4.ListOfYear = listOfYear;
             Attach(uc4, id, "Access Page");
 
             
@@ -94,6 +108,7 @@ namespace Indihiang.Modules
             IPAddressControl uc5 = new IPAddressControl();
             uc5.FileName = parser.FileName;
             uc5.FeatureGuid = parser.LogParserId.ToString();
+            uc5.ListOfYear = listOfYear;
             Attach(uc5, id, "IP Address");
 /*
            info = String.Format("{0:yyyy/MM/dd HH:mm:ss}[info]: {1}", DateTime.Now, "Populating data on STATUS...");

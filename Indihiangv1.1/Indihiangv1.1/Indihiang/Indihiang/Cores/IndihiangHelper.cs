@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net;
 using System.Collections.Generic;
 using Indihiang.Cores.Features;
 
@@ -296,6 +297,21 @@ namespace Indihiang.Cores
 
             System.Diagnostics.Debug.WriteLine(line);
             return "Unknown";
+        }
+
+        public static double inet_aton(string ipAddress)
+        {
+            
+            IPAddress ip = IPAddress.Parse(ipAddress);
+            int i;
+            double num = 0;
+
+            string[] arrDec = ip.ToString().Split('.');
+            for (i = arrDec.Length - 1; i >= 0; i--)
+            {
+                num += ((int.Parse(arrDec[i]) % 256) * Math.Pow(256, (3 - i)));
+            }
+            return num;
         }
 
 

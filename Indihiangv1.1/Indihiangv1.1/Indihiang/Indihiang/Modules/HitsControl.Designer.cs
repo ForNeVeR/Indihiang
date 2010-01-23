@@ -46,15 +46,14 @@ namespace Indihiang.Modules
             this.tabHitsData = new System.Windows.Forms.TabPage();
             this.dataGridHits = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnGenerate3 = new System.Windows.Forms.Button();
+            this.cboYear3 = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.cboHitsData = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.backgroundJob = new System.ComponentModel.BackgroundWorker();
             this.backgroundJobHitsDay = new System.ComponentModel.BackgroundWorker();
             this.backgroundJobHitsMonth = new System.ComponentModel.BackgroundWorker();
-            this.cboYear3 = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.btnGenerate3 = new System.Windows.Forms.Button();
             this.backgroundJobHitsDataGrid = new System.ComponentModel.BackgroundWorker();
             this.tabControl1.SuspendLayout();
             this.tabHitPerDay.SuspendLayout();
@@ -203,7 +202,6 @@ namespace Indihiang.Modules
             this.btnGenerate2.TabIndex = 5;
             this.btnGenerate2.Text = "Generate";
             this.btnGenerate2.UseVisualStyleBackColor = false;
-            this.btnGenerate2.Click += new System.EventHandler(this.btnGenerate2_Click);
             // 
             // cboYear2
             // 
@@ -262,6 +260,38 @@ namespace Indihiang.Modules
             this.panel1.Size = new System.Drawing.Size(682, 40);
             this.panel1.TabIndex = 0;
             // 
+            // btnGenerate3
+            // 
+            this.btnGenerate3.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.btnGenerate3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGenerate3.Location = new System.Drawing.Point(463, 7);
+            this.btnGenerate3.Name = "btnGenerate3";
+            this.btnGenerate3.Size = new System.Drawing.Size(75, 23);
+            this.btnGenerate3.TabIndex = 6;
+            this.btnGenerate3.Text = "Generate";
+            this.btnGenerate3.UseVisualStyleBackColor = false;
+            this.btnGenerate3.Click += new System.EventHandler(this.btnGenerate3_Click);
+            // 
+            // cboYear3
+            // 
+            this.cboYear3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboYear3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cboYear3.FormattingEnabled = true;
+            this.cboYear3.Location = new System.Drawing.Point(336, 9);
+            this.cboYear3.Name = "cboYear3";
+            this.cboYear3.Size = new System.Drawing.Size(112, 21);
+            this.cboYear3.TabIndex = 3;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(298, 17);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(32, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Year:";
+            // 
             // cboHitsData
             // 
             this.cboHitsData.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -290,58 +320,6 @@ namespace Indihiang.Modules
             this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "grafik.ico");
-            // 
-            // backgroundJob
-            // 
-            this.backgroundJob.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundJob_DoWork);
-            this.backgroundJob.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundJob_RunWorkerCompleted);
-            // 
-            // backgroundJobHitsDay
-            // 
-            this.backgroundJobHitsDay.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundJobHitsDay_DoWork);
-            this.backgroundJobHitsDay.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundJobHitsDay_RunWorkerCompleted);
-            // 
-            // backgroundJobHitsMonth
-            // 
-            this.backgroundJobHitsMonth.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundJobHitsMonth_DoWork);
-            this.backgroundJobHitsMonth.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundJobHitsMonth_RunWorkerCompleted);
-            // 
-            // cboYear3
-            // 
-            this.cboYear3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboYear3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cboYear3.FormattingEnabled = true;
-            this.cboYear3.Location = new System.Drawing.Point(336, 9);
-            this.cboYear3.Name = "cboYear3";
-            this.cboYear3.Size = new System.Drawing.Size(112, 21);
-            this.cboYear3.TabIndex = 3;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(298, 17);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(32, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Year:";
-            // 
-            // btnGenerate3
-            // 
-            this.btnGenerate3.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnGenerate3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnGenerate3.Location = new System.Drawing.Point(463, 7);
-            this.btnGenerate3.Name = "btnGenerate3";
-            this.btnGenerate3.Size = new System.Drawing.Size(75, 23);
-            this.btnGenerate3.TabIndex = 6;
-            this.btnGenerate3.Text = "Generate";
-            this.btnGenerate3.UseVisualStyleBackColor = false;
-            this.btnGenerate3.Click += new System.EventHandler(this.btnGenerate3_Click);
-            // 
-            // backgroundJobHitsDataGrid
-            // 
-            this.backgroundJobHitsDataGrid.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundJobHitsDataGrid_DoWork);
-            this.backgroundJobHitsDataGrid.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundJobHitsDataGrid_RunWorkerCompleted);
             // 
             // HitsControl
             // 
@@ -377,7 +355,6 @@ namespace Indihiang.Modules
         private System.Windows.Forms.ComboBox cboHitsData;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dataGridHits;
-        private System.ComponentModel.BackgroundWorker backgroundJob;
         private ZedGraph.ZedGraphControl zedHits1;
         private System.Windows.Forms.Panel panel2;
         private ZedGraph.ZedGraphControl zedHits2;

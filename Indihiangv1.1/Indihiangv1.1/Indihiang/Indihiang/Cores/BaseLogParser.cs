@@ -654,7 +654,9 @@ namespace Indihiang.Cores
                                         if (currentHeader[i].Equals("cs-username"))
                                             dump.Access_Username = rows[i];
                                         if (currentHeader[i].Equals("c-ip"))
+                                        {
                                             dump.Client_IP = rows[i];
+                                        }
                                         if (currentHeader[i].Equals("cs(User-Agent)"))
                                             dump.User_Agent = IndihiangHelper.CheckUserAgent(rows[i]);
                                         if (currentHeader[i].Equals("sc-status"))

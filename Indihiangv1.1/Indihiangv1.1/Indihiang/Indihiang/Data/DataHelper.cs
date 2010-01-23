@@ -472,8 +472,8 @@ namespace Indihiang.Data
                     StringBuilder builder = new StringBuilder();
                     builder.Append("insert into [log_data](fullfilename,a_day,a_month,server_ip,");
                     builder.Append("server_port,client_ip,page_access,query_page_access,access_username,");
-                    builder.Append("user_agent,protocol_status,bytes_sent,bytes_received,referer)");
-                    builder.Append(" values(@par1,@par2,@par3,@par4,@par5,@par6,@par7,@par8,@par9,@par10,@par11,@par12,@par13,@par14)");
+                    builder.Append("user_agent,protocol_status,bytes_sent,bytes_received,referer,ip_country)");
+                    builder.Append(" values(@par1,@par2,@par3,@par4,@par5,@par6,@par7,@par8,@par9,@par10,@par11,@par12,@par13,@par14,@par15)");
 
                     cmd.CommandText = builder.ToString();
 
@@ -491,21 +491,7 @@ namespace Indihiang.Data
                     SQLiteParameter par12 = cmd.Parameters.Add("@par12", DbType.String);
                     SQLiteParameter par13 = cmd.Parameters.Add("@par13", DbType.String);
                     SQLiteParameter par14 = cmd.Parameters.Add("@par14", DbType.String);
-
-                    //SQLiteParameter par1 = cmd.Parameters.Add("@par1", DbType.String);
-                    //SQLiteParameter par2 = cmd.Parameters.Add("@par2", DbType.Int32);
-                    //SQLiteParameter par3 = cmd.Parameters.Add("@par3", DbType.Int32);
-                    //SQLiteParameter par4 = cmd.Parameters.Add("@par4", DbType.String);
-                    //SQLiteParameter par5 = cmd.Parameters.Add("@par5", DbType.String);
-                    //SQLiteParameter par6 = cmd.Parameters.Add("@par6", DbType.String);
-                    //SQLiteParameter par7 = cmd.Parameters.Add("@par7", DbType.String);
-                    //SQLiteParameter par8 = cmd.Parameters.Add("@par8", DbType.String);
-                    //SQLiteParameter par9 = cmd.Parameters.Add("@par9", DbType.String);
-                    //SQLiteParameter par10 = cmd.Parameters.Add("@par10", DbType.String);
-                    //SQLiteParameter par11 = cmd.Parameters.Add("@par11", DbType.String);
-                    //SQLiteParameter par12 = cmd.Parameters.Add("@par12", DbType.String);
-                    //SQLiteParameter par13 = cmd.Parameters.Add("@par13", DbType.String);
-                    //SQLiteParameter par14 = cmd.Parameters.Add("@par14", DbType.String);
+                    SQLiteParameter par15 = cmd.Parameters.Add("@par15", DbType.String);                
 
                     for (int i = 0; i < dump.Count; i++)
                     {                       
@@ -523,6 +509,7 @@ namespace Indihiang.Data
                         par12.Value = IndihiangHelper.GetStringLogItem(dump[i].Bytes_Sent);
                         par13.Value = IndihiangHelper.GetStringLogItem(dump[i].Bytes_Received);
                         par14.Value = IndihiangHelper.GetStringLogItem(dump[i].Referer);
+                        par15.Value = IndihiangHelper.GetStringLogItem(dump[i].Country);
 
                         cmd.ExecuteNonQuery();
                     }
