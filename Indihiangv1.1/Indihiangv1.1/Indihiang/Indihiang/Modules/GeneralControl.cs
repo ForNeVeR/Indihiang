@@ -20,7 +20,7 @@ namespace Indihiang.Modules
 
         private string _guid;
         private string _fileName;
-
+        
         public List<string> FileNames
         {
             get
@@ -114,6 +114,7 @@ namespace Indihiang.Modules
                 _listFiles = facade.GetLogFileList();
                 _totalData = facade.GetTotalData();
                 _listTime = facade.GetTimeLogFileList();
+                _listFiles = IndihiangHelper.ParseFile(_fileName);
             }
             catch (Exception err)
             {

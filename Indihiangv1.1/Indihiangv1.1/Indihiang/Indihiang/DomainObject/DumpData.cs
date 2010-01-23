@@ -21,6 +21,7 @@ namespace Indihiang.DomainObject
         private string _bytes_sent;
         private string _bytes_received;
         private string _referer;
+        private string _country;
         private long _total;
 
         public int Id
@@ -231,6 +232,19 @@ namespace Indihiang.DomainObject
                 _referer = value;
             }
         }
+        public string Country
+        {
+            get
+            {
+                return _country;
+            }
+            set
+            {
+                if (_country == value)
+                    return;
+                _country = value;
+            }
+        }
         public long Total
         {
             get
@@ -263,6 +277,7 @@ namespace Indihiang.DomainObject
             _server_ip = "";
             _server_port = "";
             _user_agent = "";
+            _country = "";
             _total = 0;
         }
        

@@ -55,12 +55,28 @@ namespace Indihiang.Modules
                 _fileName = value;
             }
         }
+        public List<string> ListOfYear
+        {
+            set
+            {
+                _listYears = value;
+            }
+            get
+            {
+                return _listYears;
+            }
+        }
         public void Populate()
         {
-            backgroundJob.RunWorkerAsync();
-            //SetGridLayout();
-            //GenerateGraph();
-            //SetSize();
+            cboParams1.Items.AddRange(_listYears.ToArray());
+            cboParams2.Items.AddRange(_listYears.ToArray());
+            cboParams3.Items.AddRange(_listYears.ToArray());
+
+            SetGridLayout();
+            SetSize();
+
+            RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.IPADDRESS, _fileName);
+            _synContext.Post(OnRenderHandler, info);
         }
         #endregion
 
@@ -98,9 +114,13 @@ namespace Indihiang.Modules
         private void GenerateGraph()
         {
             GraphPane pane = zedIPAccess1.GraphPane;
+            pane.CurveList.Clear();
 
             pane.Title.Text = "The 5 Top of IP Access Access Page Graph";
             pane.Legend.Position = LegendPos.InsideTopLeft;
+
+            pane.Chart.Fill = new Fill(Color.White, Color.FromArgb(255, 209, 164), Color.White);
+            pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
             if (_listTopOf5.Count > 0)
             {                
@@ -113,7 +133,7 @@ namespace Indihiang.Modules
                     itemTotal = itemTotal + _listTopOf5[i].Total;
                     pane.AddPieSlice(_listTopOf5[i].Total,
                             colors[i],
-                            Color.White, 45f, 0,
+                            Color.White, 45f, 0.2,
                             "IP: " + _listTopOf5[i].Client_IP + " (" +
                             string.Format("{0:0.##}", (double)(_listTopOf5[i].Total * 100 / total)) + " %)");
                 }
@@ -123,14 +143,11 @@ namespace Indihiang.Modules
                 {
                     pane.AddPieSlice(remains,
                             colors[5],
-                            Color.White, 45f, 0,
+                            Color.White, 45f, 0.2,
                             "Others (" +
                             string.Format("{0:0.##}", (double)(remains * 100 / total)) + " %)");
                 }                
-            }
-
-            pane.Chart.Fill = new Fill(Color.White, Color.FromArgb(255, 209, 164), Color.White);
-            pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
+            }            
 
             zedIPAccess1.IsShowPointValues = true;
             zedIPAccess1.AxisChange();
@@ -177,33 +194,6 @@ namespace Indihiang.Modules
         private void IPAddressControl_Resize(object sender, EventArgs e)
         {
             SetSize();
-        }
-
-        private void backgroundJob_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            try
-            {
-                LogDataFacade facade = new LogDataFacade(_guid);
-                _listYears = facade.GetListyearLogFile();
-               
-            }
-            catch (Exception err)
-            {
-                System.Diagnostics.Debug.WriteLine(err.Message);
-            }
-        }
-
-        private void backgroundJob_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-        {
-            cboParams1.Items.AddRange(_listYears.ToArray());
-            cboParams2.Items.AddRange(_listYears.ToArray());
-            cboParams3.Items.AddRange(_listYears.ToArray());
-
-            SetGridLayout();
-            SetSize();
-
-            RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.IPADDRESS, _fileName);
-            _synContext.Post(OnRenderHandler, info);
         }
 
         private void backgroundGraph_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)

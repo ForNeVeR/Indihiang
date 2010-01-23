@@ -54,9 +54,27 @@ namespace Indihiang.Modules
                 _fileName = value;
             }
         }
+        public List<string> ListOfYear
+        {
+            set
+            {
+                _listYears = value;
+            }
+            get
+            {
+                return _listYears;
+            }
+        }
+           
+
         public void Populate()
         {
-            backgroundJob.RunWorkerAsync();
+            cboYear1.Items.AddRange(_listYears.ToArray());
+            cboYear2.Items.AddRange(_listYears.ToArray());
+            cboYear3.Items.AddRange(_listYears.ToArray());
+
+            RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.HITS, _fileName);
+            _synContext.Post(OnRenderHandler, info);
             
         }
         #endregion
@@ -234,28 +252,28 @@ namespace Indihiang.Modules
 
 
 
-        private void backgroundJob_DoWork(object sender, DoWorkEventArgs e)
-        {
-            try
-            {
-                LogDataFacade facade = new LogDataFacade(_guid);
-                _listYears = facade.GetListyearLogFile();
-            }
-            catch (Exception err)
-            {
-                System.Diagnostics.Debug.WriteLine(err.Message);
-            }
-        }
+        //private void backgroundJob_DoWork(object sender, DoWorkEventArgs e)
+        //{
+        //    try
+        //    {
+        //        LogDataFacade facade = new LogDataFacade(_guid);
+        //        _listYears = facade.GetListyearLogFile();
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(err.Message);
+        //    }
+        //}
 
-        private void backgroundJob_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            cboYear1.Items.AddRange(_listYears.ToArray());
-            cboYear2.Items.AddRange(_listYears.ToArray());
-            cboYear3.Items.AddRange(_listYears.ToArray());
+        //private void backgroundJob_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        //{
+        //    cboYear1.Items.AddRange(_listYears.ToArray());
+        //    cboYear2.Items.AddRange(_listYears.ToArray());
+        //    cboYear3.Items.AddRange(_listYears.ToArray());
 
-            RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.HITS, _fileName);
-            _synContext.Post(OnRenderHandler, info);
-        }
+        //    RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.HITS, _fileName);
+        //    _synContext.Post(OnRenderHandler, info);
+        //}
 
         private void btnGenerate1_Click(object sender, EventArgs e)
         {

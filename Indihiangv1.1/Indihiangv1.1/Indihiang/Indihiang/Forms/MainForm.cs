@@ -300,8 +300,9 @@ namespace Indihiang.Forms
                 {
                     if (hit.Node != null)
                     {
+                        treeMain.SelectedNode = hit.Node;
                         if (hit.Node.Equals(_logFileaNode) || hit.Node.Equals(_computersNode))
-                        {
+                        {                            
                             if (hit.Node.Equals(_logFileaNode))
                                 ctxTree1.Items[0].Text = "Open Log File(s)";
                             else

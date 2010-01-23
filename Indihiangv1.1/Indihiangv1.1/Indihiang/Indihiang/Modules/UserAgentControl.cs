@@ -55,6 +55,18 @@ namespace Indihiang.Modules
                 _fileName = value;
             }
         }
+        public List<string> ListOfYear
+        {
+            set
+            {
+                _listYears = value;
+            }
+            get
+            {
+                return _listYears;
+            }
+        }
+
         public void Populate()
         {
             backgroundJob.RunWorkerAsync();            
@@ -268,7 +280,7 @@ namespace Indihiang.Modules
             {
                 LogDataFacade facade = new LogDataFacade(_guid);
                 _listPerAgent = facade.GetTotalPerUserAgent();
-                _listYears = facade.GetListyearLogFile();
+                //_listYears = facade.GetListyearLogFile();
 
                 for (int i = 0; i < _listYears.Count; i++)
                 {

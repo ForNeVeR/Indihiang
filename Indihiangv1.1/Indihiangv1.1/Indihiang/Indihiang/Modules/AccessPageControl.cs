@@ -54,6 +54,17 @@ namespace Indihiang.Modules
                 _fileName = value;
             }
         }
+        public List<string> ListOfYear
+        {
+            set
+            {
+                _listYears = value;
+            }
+            get
+            {
+                return _listYears;
+            }
+        }
         public void Populate()
         {
             backgroundJob.RunWorkerAsync();            
@@ -176,7 +187,7 @@ namespace Indihiang.Modules
         {
             zedAccessPage1.Location = new Point(10, 10);
             zedAccessPage1.Size = new Size(ClientRectangle.Width - 20, ClientRectangle.Height - 20);
-        }        
+        }
 
         private void AccessPageControl_Resize(object sender, EventArgs e)
         {
@@ -187,8 +198,7 @@ namespace Indihiang.Modules
         {
             try
             {
-                LogDataFacade facade = new LogDataFacade(_guid);                
-                _listYears = facade.GetListyearLogFile();
+                LogDataFacade facade = new LogDataFacade(_guid);                                
 
                 for (int i = 0; i < _listYears.Count; i++)
                 {
