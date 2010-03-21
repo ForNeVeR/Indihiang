@@ -118,6 +118,9 @@ namespace Indihiang.Modules
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 System.Diagnostics.Debug.WriteLine(err.Message);
             }
 

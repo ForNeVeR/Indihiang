@@ -63,7 +63,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(413, 143);
+            this.panel1.Size = new System.Drawing.Size(499, 172);
             this.panel1.TabIndex = 2;
             // 
             // LoadingControl
@@ -75,7 +75,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Name = "LoadingControl";
-            this.Size = new System.Drawing.Size(413, 143);
+            this.Size = new System.Drawing.Size(499, 172);
             this.ResumeLayout(false);
             this.PerformLayout();
 

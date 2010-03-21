@@ -76,7 +76,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(690, 395);
+            this.tabControl1.Size = new System.Drawing.Size(688, 393);
             this.tabControl1.TabIndex = 0;
             // 
             // tabHitPerDay
@@ -87,7 +87,7 @@
             this.tabHitPerDay.Location = new System.Drawing.Point(4, 26);
             this.tabHitPerDay.Name = "tabHitPerDay";
             this.tabHitPerDay.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHitPerDay.Size = new System.Drawing.Size(682, 365);
+            this.tabHitPerDay.Size = new System.Drawing.Size(680, 363);
             this.tabHitPerDay.TabIndex = 0;
             this.tabHitPerDay.Text = "Hits per Day";
             this.tabHitPerDay.UseVisualStyleBackColor = true;
@@ -104,7 +104,7 @@
             this.zedHits1.ScrollMinX = 0;
             this.zedHits1.ScrollMinY = 0;
             this.zedHits1.ScrollMinY2 = 0;
-            this.zedHits1.Size = new System.Drawing.Size(676, 319);
+            this.zedHits1.Size = new System.Drawing.Size(674, 317);
             this.zedHits1.TabIndex = 1;
             this.zedHits1.PointValueEvent += new ZedGraph.ZedGraphControl.PointValueHandler(this.zedHits1_PointValueEvent);
             // 
@@ -117,7 +117,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(676, 40);
+            this.panel2.Size = new System.Drawing.Size(674, 40);
             this.panel2.TabIndex = 0;
             // 
             // btnGenerate1
@@ -202,6 +202,7 @@
             this.btnGenerate2.TabIndex = 5;
             this.btnGenerate2.Text = "Generate";
             this.btnGenerate2.UseVisualStyleBackColor = false;
+            this.btnGenerate2.Click += new System.EventHandler(this.btnGenerate2_Click);
             // 
             // cboYear2
             // 
@@ -321,13 +322,29 @@
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "grafik.ico");
             // 
+            // backgroundJobHitsDay
+            // 
+            this.backgroundJobHitsDay.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundJobHitsDay_DoWork);
+            this.backgroundJobHitsDay.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundJobHitsDay_RunWorkerCompleted);
+            // 
+            // backgroundJobHitsMonth
+            // 
+            this.backgroundJobHitsMonth.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundJobHitsMonth_DoWork);
+            this.backgroundJobHitsMonth.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundJobHitsMonth_RunWorkerCompleted);
+            // 
+            // backgroundJobHitsDataGrid
+            // 
+            this.backgroundJobHitsDataGrid.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundJobHitsDataGrid_DoWork);
+            this.backgroundJobHitsDataGrid.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundJobHitsDataGrid_RunWorkerCompleted);
+            // 
             // HitsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.tabControl1);
             this.Name = "HitsControl";
-            this.Size = new System.Drawing.Size(690, 395);
+            this.Size = new System.Drawing.Size(688, 393);
             this.Resize += new System.EventHandler(this.HitsControl_Resize);
             this.tabControl1.ResumeLayout(false);
             this.tabHitPerDay.ResumeLayout(false);

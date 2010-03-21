@@ -8,21 +8,14 @@ using System.Threading.Tasks;
 using System.Threading.Collections;
 
 using Indihiang.Data;
-using Indihiang.Cores.Features;
 namespace Indihiang.Cores
 {
     public abstract class BaseLogParser
     {
-
-        protected List<BaseLogAnalyzeFeature> _features;
-        protected List<BaseLogAnalyzeFeature> _paralleFeatures;
+ 
         private SynchronizationContext _synContext;
         private LazyInit<TaskManager> _taskManager;
-        //private Task _mainTask;
-        private ConcurrentQueue<FeatureDataRow> _featureQueue;
-        //private ConcurrentQueue<DumpLogData> _dumpLogQueue;
         private ConcurrentQueue<List<Indihiang.DomainObject.DumpData>> _dumpLogQueue;
-        //List<Indihiang.DomainObject.DumpData>
         private Thread _dataQueue;
         private bool _finish;
         private ManualResetEventSlim _exitDump;
@@ -33,34 +26,7 @@ namespace Indihiang.Cores
         public string LogFile { get; set; }
         public string ParserID { get; set; }
         public EnumLogFile LogFileFormat { get; protected set; }
-        public bool UseParallel { get; set; }        
-        public List<BaseLogAnalyzeFeature> Features
-        {
-            get
-            {
-                return _features;
-            }
-            set
-            {
-                if (_features == value)
-                    return;
-                _features = value;
-            }
-        }
-  
-        public List<BaseLogAnalyzeFeature> ParalleFeatures
-        {
-            get
-            {
-                return _paralleFeatures;
-            }
-            set
-            {
-                if (_paralleFeatures == value)
-                    return;
-                _paralleFeatures = value;
-            }
-        }
+        public bool UseParallel { get; set; }            
 
         protected BaseLogParser(string logFile, EnumLogFile logFileFormat)
         {            
@@ -72,17 +38,12 @@ namespace Indihiang.Cores
 
         private void Initilaize()
         {
-            //_spinLock = new SpinLock();
-            _features = new List<BaseLogAnalyzeFeature>();
-            _paralleFeatures = new List<BaseLogAnalyzeFeature>();
             _synContext = AsyncOperationManager.SynchronizationContext;
 
             _taskManager = new LazyInit<TaskManager>(() => new TaskManager(
                               new TaskManagerPolicy(1, Environment.ProcessorCount)),
                               LazyInitMode.AllowMultipleExecution);
 
-            _featureQueue = new ConcurrentQueue<FeatureDataRow>();
-            //_dumpLogQueue = new ConcurrentQueue<DumpLogData>();
             _dumpLogQueue = new ConcurrentQueue<List<Indihiang.DomainObject.DumpData>>();
         }
 
@@ -97,84 +58,38 @@ namespace Indihiang.Cores
         public bool Parse()
         {
             bool success = false;
-            if (LogFile.StartsWith("--"))
-            {
-                if (_dataQueue == null)
-                    _dataQueue = new Thread(DumpData);
-                
-                _finish = false;
-                _dataQueue.IsBackground = true;
-                _dataQueue.Start();
+            if (_dataQueue == null)
+                _dataQueue = new Thread(DumpData);
 
+            _finish = false;
+            _dataQueue.IsBackground = true;
+            _dataQueue.Start();
+
+            List<string> listFiles = new List<string>();
+            if (LogFile.StartsWith("--"))
+            {                
                 string tmp = LogFile.Substring(2);
-                string[] files = tmp.Split(new char[] { ';' });
-                List<string> listFiles = new List<string>();
+                string[] files = tmp.Split(new char[] { ';' });                
                 for (int i = 0; i < files.Length; i++)
                 {
                     if (!string.IsNullOrEmpty(files[i]))
                         if (!listFiles.Contains(files[i].ToLower().Trim()))
                             listFiles.Add(files[i].ToLower().Trim());
-                }
-
-                success = ParallelParse(success, listFiles);
+                }                
             }
             else
-            {
-                ParseLogFile(_paralleFeatures, LogFile);
+            {                
+                listFiles.Add(LogFile.ToLower().Trim());
             }
+
+            success = ParallelParse(success, listFiles);
+
             _finish = true;
             Thread.Sleep(100);
             ExitDumpThread();
 
             return success;
         }
-
-        //private bool NonParallelParse(bool success, List<string> listFiles, Dictionary<string, List<BaseLogAnalyzeFeature>> resultData)
-        //{
-        //    for (int i = 0; i < listFiles.Count; i++)
-        //    {
-        //        try
-        //        {
-
-
-        //            if (!string.IsNullOrEmpty(listFiles[i]))
-        //            {
-        //                List<BaseLogAnalyzeFeature> features = IndihiangHelper.GenerateFeatures(LogFileFormat);
-        //                resultData.Add(listFiles[i], ParseLogFile(features, listFiles[i]));
-        //                //resultData.Add(listFiles[i], ParseLogFile(_features, listFiles[i]));
-        //            }
-        //        }
-        //        catch (Exception err)
-        //        {
-        //            #region Handle Exception
-        //            LogInfoEventArgs logInfo = new LogInfoEventArgs(
-        //               ParserID,
-        //               EnumLogFile.UNKNOWN,
-        //               LogProcessStatus.SUCCESS,
-        //               "ParseLogFile()",
-        //               String.Format("Internal Error: {0}", err.Message));
-        //            _synContext.Post(OnParseLog, logInfo);
-        //            logInfo = new LogInfoEventArgs(
-        //                   ParserID,
-        //                   EnumLogFile.UNKNOWN,
-        //                   LogProcessStatus.SUCCESS,
-        //                   "ParseLogFile()",
-        //                   String.Format("Source Internal Error: {0}", err.Source));
-        //            _synContext.Post(OnParseLog, logInfo);
-        //            logInfo = new LogInfoEventArgs(
-        //                   ParserID,
-        //                   EnumLogFile.UNKNOWN,
-        //                   LogProcessStatus.SUCCESS,
-        //                   "ParseLogFile()",
-        //                   String.Format("Detail Internal Error: {0}", err.StackTrace));
-        //            _synContext.Post(OnParseLog, logInfo);
-
-        //            #endregion
-        //        }
-        //    }
-        //    success = true;
-        //    return success;
-        //}
 
         private bool ParallelParse(bool success, List<string> listFiles)
         {
@@ -266,6 +181,9 @@ namespace Indihiang.Cores
             }
             catch (AggregateException err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 #region Handle Exception
                 LogInfoEventArgs logInfo = new LogInfoEventArgs(
                    ParserID,
@@ -301,6 +219,9 @@ namespace Indihiang.Cores
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 #region Handle Exception
                 LogInfoEventArgs logInfo = new LogInfoEventArgs(
                    ParserID,
@@ -349,12 +270,47 @@ namespace Indihiang.Cores
         private void DumpData()
         {
             List<Indihiang.DomainObject.DumpData> listDump;
+            DataHelper helper = new DataHelper(IndihiangHelper.GetIPCountryDb());
+            List<Indihiang.DomainObject.IPCountry> listIpCountry = helper.GetAllIpCountry();
+
+            Dictionary<string, string> cacheIpCountry = new Dictionary<string, string>();
+            cacheIpCountry.Add("127.0.0.1", "(Local)");
+
             while (!_finish)
             {                
                 try
                 {
                     if (_dumpLogQueue.TryDequeue(out listDump))
                     {
+                        for (int j = 0; j < listDump.Count; j++)
+                        {
+                            if (!string.IsNullOrEmpty(listDump[j].Client_IP))
+                            {
+                                if (!cacheIpCountry.ContainsKey(listDump[j].Client_IP))
+                                {
+                                    double ip = IndihiangHelper.IPAddressToNumber(listDump[j].Client_IP);
+                                    for (int k = 0; k < listIpCountry.Count; k++)
+                                    {
+                                        if (ip >= listIpCountry[k].IpStart && ip <= listIpCountry[k].IpEnd)
+                                        {
+                                            Indihiang.DomainObject.DumpData obj = listDump[j];
+                                            obj.IPClientCountry = listIpCountry[k].CoutryName;
+                                            listDump[j] = obj;
+
+                                            cacheIpCountry.Add(listDump[j].Client_IP, listIpCountry[k].CoutryName);
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Indihiang.DomainObject.DumpData obj = listDump[j];
+                                    obj.IPClientCountry = cacheIpCountry[listDump[j].Client_IP];
+                                    listDump[j] = obj;
+                                }
+                            }
+
+                        }    
                         PerformDump(listDump);
                         listDump.Clear();
                     }
@@ -363,6 +319,9 @@ namespace Indihiang.Cores
                 }
                 catch(Exception err) 
                 {
+                    Logger.Write(err.Message);
+                    Logger.Write(err.StackTrace);
+
                     Debug.WriteLine(err.Message);
                 }
             }
@@ -373,9 +332,42 @@ namespace Indihiang.Cores
                 for (int i = 0; i < list.Length; i++)
                 {
                     Debug.WriteLine(string.Format("Dump data: {0}:{1}", i+1,_dumpLogQueue.Count));
+
+                    for (int j = 0; j < list[i].Count; j++)
+                    {
+                        if (!string.IsNullOrEmpty(list[i][j].Client_IP))
+                        {
+                            if (!cacheIpCountry.ContainsKey(list[i][j].Client_IP))
+                            {
+                                double ip = IndihiangHelper.IPAddressToNumber(list[i][j].Client_IP);
+                                for (int k = 0; k < listIpCountry.Count; k++)
+                                {
+                                    if (ip >= listIpCountry[k].IpStart && ip <= listIpCountry[k].IpEnd)
+                                    {
+                                        Indihiang.DomainObject.DumpData obj = list[i][j];
+                                        obj.IPClientCountry = listIpCountry[k].CoutryName;
+                                        list[i][j] = obj;
+
+                                        cacheIpCountry.Add(list[i][j].Client_IP, listIpCountry[k].CoutryName);
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Indihiang.DomainObject.DumpData obj = list[i][j];
+                                obj.IPClientCountry = cacheIpCountry[list[i][j].Client_IP];
+                                list[i][j] = obj;
+                            }
+                        }
+                        
+                    }                        
                     PerformDump(list[i]);
-                }
+                    list[i].Clear();
+                }                
             }
+            cacheIpCountry.Clear();
+            listIpCountry.Clear();
             _exitDump.Set();
         }
 
@@ -390,6 +382,7 @@ namespace Indihiang.Cores
                 if (!File.Exists(file))
                 {
                     IndihiangHelper.CopyLogDB(file);
+                    IndihiangHelper.InitialIndihiangFile(file, listDump[0].Year.ToString());
                     helper = new DataHelper(file);
                 }
                 else
@@ -399,213 +392,12 @@ namespace Indihiang.Cores
             }
         }
 
-
-
-        protected List<BaseLogAnalyzeFeature> ParseLogFile(List<BaseLogAnalyzeFeature> features,string logFile)
-        {
-            if (features == null)
-                return null;
-
-            //if (UseParallel)
-            //{
-                #region Logging
-                LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                   ParserID,
-                   EnumLogFile.UNKNOWN,
-                   LogProcessStatus.SUCCESS,
-                   "ParseLogFile()",
-                   String.Format("Read File: {0}", logFile));
-                _synContext.Post(OnParseLog, logInfo);
-
-                Debug.WriteLine(String.Format("Read File: {0}", logFile));
-                #endregion
-
-                foreach (var feature in features)
-                {
-                    using (StreamReader sr = new StreamReader(logFile))
-                    {                       
-                        //try
-                        //{
-
-                            string line = sr.ReadLine();
-                            //Debug.WriteLine(String.Format("Indihiang Read: {0}", line));
-
-                            List<string> currentHeader = new List<string>();
-                            while (!string.IsNullOrEmpty(line))
-                            {
-                                //Debug.WriteLine(String.Format("Read: {0}", line));
-                                if (IsLogHeader(line))
-                                {
-                                    List<string> list1 = ParseHeader(line);
-                                    if (list1 != null)
-                                        currentHeader = new List<string>(list1);
-                                }
-                                else
-                                {
-                                    if (!string.IsNullOrEmpty(line))
-                                    {
-                                        string[] rows = line.Split(new char[] { ' ' });
-                                        if (rows != null)
-                                        {
-                                            if (rows.Length > 0)
-                                            {
-                                                feature.Parse(currentHeader, rows);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                line = sr.ReadLine();
-                                if (!string.IsNullOrEmpty(line))
-                                    line = line.Trim();
-                                //if (!string.IsNullOrEmpty(line))
-                                //    line = line.TrimEnd('\0');
-
-                            }
-
-                        //}
-                        //catch (AggregateException err)
-                        //{
-                        //    #region Handle Exception
-                        //    LogInfoEventArgs logInfo = new LogInfoEventArgs(
-                        //       ParserID,
-                        //       EnumLogFile.UNKNOWN,
-                        //       LogProcessStatus.SUCCESS,
-                        //       "Parse()",
-                        //       String.Format("Internal Error: {0}", err.Message));
-                        //    _synContext.Post(OnParseLog, logInfo);
-                        //    logInfo = new LogInfoEventArgs(
-                        //           ParserID,
-                        //           EnumLogFile.UNKNOWN,
-                        //           LogProcessStatus.SUCCESS,
-                        //           "Parse()",
-                        //           String.Format("Source Internal Error: {0}", err.Source));
-                        //    _synContext.Post(OnParseLog, logInfo);
-                        //    logInfo = new LogInfoEventArgs(
-                        //           ParserID,
-                        //           EnumLogFile.UNKNOWN,
-                        //           LogProcessStatus.SUCCESS,
-                        //           "Parse()",
-                        //           String.Format("Detail Internal Error: {0}", err.StackTrace));
-                        //    _synContext.Post(OnParseLog, logInfo);
-                        //    logInfo = new LogInfoEventArgs(
-                        //           ParserID,
-                        //           EnumLogFile.UNKNOWN,
-                        //           LogProcessStatus.SUCCESS,
-                        //           "Parse()",
-                        //           String.Format("Internal Exception Error: {0}", err.InnerException.Message));
-                        //    _synContext.Post(OnParseLog, logInfo);
-
-                        //    #endregion
-
-                        //}
-                        //catch (ArgumentOutOfRangeException err)
-                        //{
-                        //    #region Logging
-                        //    System.Diagnostics.Debug.WriteLine(err.Message);
-                        //    logInfo = new LogInfoEventArgs(
-                        //          ParserID,
-                        //          EnumLogFile.UNKNOWN,
-                        //          LogProcessStatus.FAILED,
-                        //          "ParseLogFile()",
-                        //          String.Format("Internal Error on ParseLogFile: {0}", err.Message));
-                        //    _synContext.Post(OnParseLog, logInfo);
-                        //    logInfo = new LogInfoEventArgs(
-                        //          ParserID,
-                        //          EnumLogFile.UNKNOWN,
-                        //          LogProcessStatus.FAILED,
-                        //          "ParseLogFile()",
-                        //          String.Format("Detail: {0} ", err.StackTrace));
-                        //    _synContext.Post(OnParseLog, logInfo);
-                        //    #endregion
-                        //}
-                        //catch (Exception err)
-                        //{
-                        //    #region Logging
-                        //    System.Diagnostics.Debug.WriteLine(err.Message);
-                        //    logInfo = new LogInfoEventArgs(
-                        //          ParserID,
-                        //          EnumLogFile.UNKNOWN,
-                        //          LogProcessStatus.FAILED,
-                        //          "ParseLogFile()",
-                        //          String.Format("Internal Error on ParseLogFile: {0}", err.Message));
-                        //    _synContext.Post(OnParseLog, logInfo);
-                        //    logInfo = new LogInfoEventArgs(
-                        //          ParserID,
-                        //          EnumLogFile.UNKNOWN,
-                        //          LogProcessStatus.FAILED,
-                        //          "ParseLogFile()",
-                        //          String.Format("Detail: {0} ", err.StackTrace));
-                        //    _synContext.Post(OnParseLog, logInfo);
-                        //    #endregion
-                        //}
-                       
-                    }                    
-                }
-
-                #region Logging
-                logInfo = new LogInfoEventArgs(
-                          ParserID,
-                          EnumLogFile.UNKNOWN,
-                          LogProcessStatus.SUCCESS,
-                          "ParseLogFile()",
-                          String.Format("Read File: {0} is done", logFile));
-                _synContext.Post(OnParseLog, logInfo);
-                #endregion
-            //}
-
-            return features;
-
-        }
-
-        //protected void RunParse(BaseLogAnalyzeFeature feature, string logFile)
-        //{
-        //    if (feature == null)
-        //        return;
-
-
-        //    Dictionary<string, List<string>> dictRows = new Dictionary<string, List<string>>();
-        //    using (StreamReader sr = new StreamReader(File.Open(logFile,FileMode.Open,FileAccess.Read,FileShare.Read)))
-        //    {               
-        //        string line = sr.ReadLine();
-
-        //        List<string> currentHeader = new List<string>();
-        //        while (!string.IsNullOrEmpty(line))
-        //        {
-        //            if (IsLogHeader(line))
-        //            {
-        //                List<string> list1 = ParseHeader(line);
-        //                if (list1 != null)
-        //                    currentHeader = new List<string>(list1);
-        //            }
-        //            else
-        //            {
-        //                if (!string.IsNullOrEmpty(line))
-        //                {
-        //                    string[] rows = line.Split(new char[] { ' ' });
-        //                    if (rows != null)
-        //                    {
-        //                        if (rows.Length > 0)
-        //                        {
-        //                            dictRows.Add(Guid.NewGuid().ToString(), new List<string>(rows));                                    
-        //                        }
-        //                    }
-        //                }
-        //            }
-
-        //            line = sr.ReadLine();
-        //            if (!string.IsNullOrEmpty(line))
-        //                line = line.Trim();
-        //        }
-        //    }
-        //}
-
         protected void RunParse(string logFile)
         {
             List<Indihiang.DomainObject.DumpData> listDump = new List<Indihiang.DomainObject.DumpData>();
             using (StreamReader sr = new StreamReader(File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                string line = sr.ReadLine();
+                string line = sr.ReadLine();                
 
                 List<string> currentHeader = new List<string>();
                 while (!string.IsNullOrEmpty(line))
@@ -654,9 +446,7 @@ namespace Indihiang.Cores
                                         if (currentHeader[i].Equals("cs-username"))
                                             dump.Access_Username = rows[i];
                                         if (currentHeader[i].Equals("c-ip"))
-                                        {
                                             dump.Client_IP = rows[i];
-                                        }
                                         if (currentHeader[i].Equals("cs(User-Agent)"))
                                             dump.User_Agent = IndihiangHelper.CheckUserAgent(rows[i]);
                                         if (currentHeader[i].Equals("sc-status"))
@@ -670,11 +460,34 @@ namespace Indihiang.Cores
                                             dump.Protocol_Status = string.Format("{0}.{1}", dump.Protocol_Status, rows[i]);
 
                                         if (currentHeader[i].Equals("cs(Referer)"))
+                                        {
                                             dump.Referer = rows[i];
+                                            dump.RefererClass = IndihiangHelper.GetRefererClass(rows[i]);
+                                        }                                        
+
                                         if (currentHeader[i].Equals("sc-bytes"))
-                                            dump.Bytes_Sent = rows[i];
+                                        {
+                                            if (!string.IsNullOrEmpty(rows[i]))
+                                                dump.Bytes_Sent = Convert.ToInt64(rows[i]);
+                                            else
+                                                dump.Bytes_Sent = 0;
+                                        }
+                                        
                                         if (currentHeader[i].Equals("cs-bytes"))
-                                            dump.Bytes_Received = rows[i];
+                                        {
+                                            if (!string.IsNullOrEmpty(rows[i]))
+                                                dump.Bytes_Received = Convert.ToInt64(rows[i]);
+                                            else
+                                                dump.Bytes_Received = 0;                                            
+                                        }
+                                        if (currentHeader[i].Equals("time-taken"))
+                                        {
+                                            if (!string.IsNullOrEmpty(rows[i]))
+                                                dump.TimeTaken = Convert.ToInt64(rows[i]);
+                                            else
+                                                dump.TimeTaken = 0;
+                                        }                                     
+                                        
                                     }
 
                                     listDump.Add(dump);
@@ -693,8 +506,6 @@ namespace Indihiang.Cores
 
             }
         }
-
-        
 
 
         protected abstract bool IsLogHeader(string line);

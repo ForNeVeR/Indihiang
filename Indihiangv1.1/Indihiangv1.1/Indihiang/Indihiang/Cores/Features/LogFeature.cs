@@ -12,6 +12,7 @@ namespace Indihiang.Cores.Features
         IPADDRESS,
         METHODS,
         BANDWIDTH,
-        REQUEST
+        REQUEST,
+        REFERER
     }
 }

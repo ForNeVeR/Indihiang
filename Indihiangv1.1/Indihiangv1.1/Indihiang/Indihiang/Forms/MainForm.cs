@@ -13,7 +13,8 @@ namespace Indihiang.Forms
     {
         private TreeNode _rootNode;
         private TreeNode _logFileaNode;
-        private TreeNode _computersNode;   
+        private TreeNode _computersNode;
+        private TreeNode _reportFileNode;
         //private LogParser _parser = null;
         private Dictionary<string, LogParser> _listParser = new Dictionary<string, LogParser>();
         private int _consolidationId;
@@ -112,6 +113,10 @@ namespace Indihiang.Forms
             _computersNode.ImageIndex = 3;
             _computersNode.SelectedImageIndex = 3;
 
+            _reportFileNode = _rootNode.Nodes.Add("Report Log Files", "Report Log Files");
+            _reportFileNode.ImageIndex = 8;
+            _reportFileNode.SelectedImageIndex = 8;
+
             treeMain.Nodes.Add(_rootNode);
             treeMain.ExpandAll();
         }      
@@ -203,7 +208,7 @@ namespace Indihiang.Forms
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 if (frm.IISSelected != null)
-                {
+                {                    
                     IISInfo iis = frm.IISSelected;
                     string key = string.Format("$${0}", iis.IISInfoDisplay);
                     Guid guidKey = Guid.NewGuid();
@@ -301,12 +306,17 @@ namespace Indihiang.Forms
                     if (hit.Node != null)
                     {
                         treeMain.SelectedNode = hit.Node;
-                        if (hit.Node.Equals(_logFileaNode) || hit.Node.Equals(_computersNode))
+                        if (hit.Node.Equals(_logFileaNode) || hit.Node.Equals(_computersNode) || hit.Node.Equals(_reportFileNode))
                         {                            
                             if (hit.Node.Equals(_logFileaNode))
                                 ctxTree1.Items[0].Text = "Open Log File(s)";
                             else
-                                ctxTree1.Items[0].Text = "Open Remote IIS Server";
+                                if (hit.Node.Equals(_computersNode))
+                                    ctxTree1.Items[0].Text = "Open Remote IIS Server";
+                                else
+                                    if (hit.Node.Equals(_reportFileNode))
+                                        ctxTree1.Items[0].Text = "Open Report Log File";
+
                             ctxTree1.Show(treeMain, e.Location);
                             
                         }
@@ -317,7 +327,7 @@ namespace Indihiang.Forms
                             }
                             else
                             {
-                                if (hit.Node.Parent.Equals(_logFileaNode) || hit.Node.Parent.Equals(_computersNode))
+                                if (hit.Node.Parent.Equals(_logFileaNode) || hit.Node.Parent.Equals(_computersNode) || hit.Node.Parent.Equals(_reportFileNode))
                                 {
                                     ctxTree3.Show(treeMain, e.Location);
                                 }
@@ -391,6 +401,7 @@ namespace Indihiang.Forms
 
                 _logFileaNode.Nodes.Clear();
                 _computersNode.Nodes.Clear();
+                _reportFileNode.Nodes.Clear();
                 _listParser.Clear();
             }
         }
@@ -489,7 +500,7 @@ namespace Indihiang.Forms
                     }
 
 
-                    if (key.StartsWith("$$"))
+                    if (key.StartsWith("$$") || key.StartsWith("!!"))
                     {
                         tabMain.TabPages.RemoveByKey(key.Substring(2));
                         _computersNode.Nodes.RemoveByKey(key);
@@ -524,23 +535,95 @@ namespace Indihiang.Forms
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //open log file or remote IIS
+            //open log file or remote IIS or report log file
             if (treeMain.SelectedNode.Equals(_logFileaNode))
                 openLogFileToolStripMenuItem_Click(sender, e);
             else
-                toolStripOpenComputer_Click(sender, e);
+                if (treeMain.SelectedNode.Equals(_computersNode))
+                    toolStripOpenComputer_Click(sender, e);
+                else
+                    if (treeMain.SelectedNode.Equals(_reportFileNode))
+                        openIndihiangReportFileToolStripMenuItem_Click(sender, e);
+        }
+
+        private void toolStripOpenReportLogFile_Click(object sender, EventArgs e)
+        {
+            openIndihiangReportFileToolStripMenuItem_Click(sender, e);
         }
 
         private void howToUseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // version 0.2
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo("http://indihiang.aguskurniawan.net");
+            // version 1.0
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo("http://www.indihiang.net");
             System.Diagnostics.Process.Start(startInfo);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+
+        private void exportDataToToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode selected = treeMain.SelectedNode;
+            if (selected != null)
+            {
+                string key = (string)selected.Tag;
+                if (key.StartsWith("$$") || key.StartsWith("!!"))
+                    key = key.Substring(2);
+
+                if (!string.IsNullOrEmpty(key))
+                {
+                    if (_listParser.ContainsKey(key))
+                    {
+                        string path = _listParser[key].LogFilePath;
+                        List<string> files = new List<string>(Directory.GetFiles(path, "*.dat"));
+
+                        ExportDataForm frm = new ExportDataForm();
+                        frm.LogFiles = files;
+                        frm.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Choice log data that you want to export", "Information");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Choice log data that you want to export", "Information");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Choice log data that you want to export", "Information");
+            }
+        }
+
+        private void exportDataToDatabaseServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            exportDataToToolStripMenuItem_Click(sender, e);
+        }
+
+        private void openIndihiangReportFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openResultLogFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string reportFile = openResultLogFileDialog.FileName;
+                if (!string.IsNullOrEmpty(reportFile))
+                {
+                    string name = Path.GetFileName(reportFile);
+
+                    Guid id = Guid.NewGuid();
+                    CreateNewReportNode(id.ToString(), name, 9);
+                    AttachUserControl(id.ToString(), name, 9);
+                    AttachReportLogParser(reportFile, id);
+
+                    tabMain.SelectedTab = tabMain.TabPages[id.ToString()];
+                    _logFileaNode.ExpandAll();
+
+                }
+            }
         }
 
         private TreeNode CreateNewNode(string key,string name,int imageIndex)
@@ -561,6 +644,17 @@ namespace Indihiang.Forms
 
             return item;
         }
+        private TreeNode CreateNewReportNode(string key, string name, int imageIndex)
+        {
+            TreeNode item = _reportFileNode.Nodes.Add(key, name);
+            item.ImageIndex = imageIndex;
+            item.SelectedImageIndex = imageIndex;
+            item.Tag = String.Format("!!{0}", key); // $$ --> report log file
+
+            _reportFileNode.ExpandAll();
+
+            return item;
+        }
         private void AttachUserControl(string key,string name,int imgIndex)
         {
             WebLogUserControl control = new WebLogUserControl();
@@ -574,7 +668,8 @@ namespace Indihiang.Forms
         private void AttachLogParser(string fileNames,Guid id)
         {
             LogParser parser = new LogParser { 
-                FileName = fileNames, 
+                FileName = fileNames,
+                UseExistData = false,
                 UseParallel = true, 
                 LogParserId = id };
 
@@ -589,10 +684,27 @@ namespace Indihiang.Forms
             LogParser parser = new LogParser(info)
             {
                 FileName = name,
+                UseExistData = false,
                 UseParallel = true,
                 LogParserId = id
                 
             };            
+            parser.AnalyzeLogHandler += OnAnalyzeLog;
+            parser.EndAnalyzeHandler += OnEndAnalyze;
+
+            parser.Analyze();
+            _listParser.Add(id.ToString(), parser);
+        }
+        private void AttachReportLogParser(string fileNames, Guid id)
+        {
+            LogParser parser = new LogParser
+            {
+                FileName = fileNames,      
+                UseExistData = true,
+                UseParallel = true,
+                LogParserId = id
+            };
+
             parser.AnalyzeLogHandler += OnAnalyzeLog;
             parser.EndAnalyzeHandler += OnEndAnalyze;
 
@@ -638,7 +750,7 @@ namespace Indihiang.Forms
         }
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);
-
+                               
         
         ///////////////////////////////////////////////////
     }

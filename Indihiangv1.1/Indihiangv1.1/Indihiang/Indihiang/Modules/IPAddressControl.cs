@@ -88,13 +88,16 @@ namespace Indihiang.Modules
 
         private void SetGridLayout()
         {
-            dataGridIP.ColumnCount = 2;
+            dataGridIP.ColumnCount = 3;
             dataGridIP.Columns[0].Name = "IP Address";
             dataGridIP.Columns[0].Width = 200;
-            dataGridIP.Columns[0].ValueType = typeof(System.String);
-            dataGridIP.Columns[1].Name = "Total Access";
-            dataGridIP.Columns[1].Width = 100;
-            dataGridIP.Columns[1].ValueType = typeof(System.Int32);
+            dataGridIP.Columns[0].ValueType = typeof(String);
+            dataGridIP.Columns[1].Name = "Country";
+            dataGridIP.Columns[1].Width = 200;
+            dataGridIP.Columns[1].ValueType = typeof(String);
+            dataGridIP.Columns[2].Name = "Total Access";
+            dataGridIP.Columns[2].Width = 100;
+            dataGridIP.Columns[2].ValueType = typeof(Int32);
 
             dataGridIP.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridIP.MultiSelect = false;
@@ -102,10 +105,10 @@ namespace Indihiang.Modules
             dataGridIPPage.ColumnCount = 2;
             dataGridIPPage.Columns[0].Name = "Page Name";
             dataGridIPPage.Columns[0].Width = 450;
-            dataGridIPPage.Columns[0].ValueType = typeof(System.String);
+            dataGridIPPage.Columns[0].ValueType = typeof(String);
             dataGridIPPage.Columns[1].Name = "Total Access";
             dataGridIPPage.Columns[1].Width = 100;
-            dataGridIPPage.Columns[1].ValueType = typeof(System.Int32);
+            dataGridIPPage.Columns[1].ValueType = typeof(Int32);
 
             dataGridIPPage.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridIPPage.MultiSelect = false;
@@ -119,7 +122,7 @@ namespace Indihiang.Modules
             pane.Title.Text = "The 5 Top of IP Access Access Page Graph";
             pane.Legend.Position = LegendPos.InsideTopLeft;
 
-            pane.Chart.Fill = new Fill(Color.White, Color.FromArgb(255, 209, 164), Color.White);
+            pane.Chart.Fill = new Fill(Color.White, Color.FromArgb(255, 209, 164), Color.White, 90F);
             pane.Fill = new Fill(Color.FromArgb(250, 250, 255));
 
             if (_listTopOf5.Count > 0)
@@ -161,7 +164,8 @@ namespace Indihiang.Modules
                 for (int i = 0; i < _listIPAddressYear.Count; i++)
                 {
                     List<object> data = new List<object>();
-                    data.Add(_listIPAddressYear[i].Client_IP);                    
+                    data.Add(_listIPAddressYear[i].Client_IP);
+                    data.Add(_listIPAddressYear[i].IPClientCountry);
                     data.Add(_listIPAddressYear[i].Total);
 
                     dataGridIP.Rows.Add(data.ToArray());
@@ -196,23 +200,26 @@ namespace Indihiang.Modules
             SetSize();
         }
 
-        private void backgroundGraph_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void backgroundGraph_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
                 string par = e.Argument.ToString();
                 LogDataFacade facade = new LogDataFacade(_guid);
 
-                _listTopOf5 = new List<DumpData>(facade.GetIPaddressAccessByYear(Convert.ToInt32(par),5));
+                _listTopOf5 = new List<DumpData>(facade.GetIPaddressAccessByYear(Convert.ToInt32(par), 5));
                 _totalData = facade.GetTotalData(Convert.ToInt32(par));
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }
 
-        private void backgroundGraph_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void backgroundGraph_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             GenerateGraph();
             SetSize();
@@ -221,22 +228,25 @@ namespace Indihiang.Modules
             btnGenerate1.Enabled = true;
         }
 
-        private void backgroundGrid1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void backgroundGrid1_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
                 string par = e.Argument.ToString();
                 LogDataFacade facade = new LogDataFacade(_guid);
 
-                _listIPAddressYear = new List<DumpData>(facade.GetIPaddressAccessByYear(Convert.ToInt32(par), 0));                
+                _listIPAddressYear = new List<DumpData>(facade.GetIPaddressAccessByYear(Convert.ToInt32(par), 0));
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }
 
-        private void backgroundGrid1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void backgroundGrid1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             GenerateGrid1();
 
@@ -244,7 +254,7 @@ namespace Indihiang.Modules
             btnGenerate2.Enabled = true;
         }
 
-        private void backgroundGrid2_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void backgroundGrid2_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -252,17 +262,20 @@ namespace Indihiang.Modules
                 string[] items = par.Split(new char[] { ';' });
                 int year = Convert.ToInt32(items[0]);
                 string ipAddress = items[1];
-                
+
                 LogDataFacade facade = new LogDataFacade(_guid);
                 _listIPAddressAccessYear = new List<DumpData>(facade.GetIPaddressAccessByYear(year, ipAddress));
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }
 
-        private void backgroundGrid2_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void backgroundGrid2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             GenerateGrid2();
 

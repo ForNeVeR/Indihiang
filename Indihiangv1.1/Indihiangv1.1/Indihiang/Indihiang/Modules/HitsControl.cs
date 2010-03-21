@@ -116,6 +116,7 @@ namespace Indihiang.Modules
         private void GenerateGraphHitsPerDay()
         {
             GraphPane pane = zedHits1.GraphPane;
+            pane.CurveList.Clear();
 
             pane.Title.Text = "Total Hist per Day Graph";
             pane.XAxis.Title.Text = "Date";
@@ -152,6 +153,7 @@ namespace Indihiang.Modules
         private void GenerateGraphHitsPerMonth()
         {
             GraphPane pane = zedHits2.GraphPane;
+            pane.CurveList.Clear();
 
             pane.Title.Text = "Total Hist per Month Graph";
             pane.XAxis.Title.Text = "Month";
@@ -310,6 +312,9 @@ namespace Indihiang.Modules
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }
@@ -336,6 +341,9 @@ namespace Indihiang.Modules
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }
@@ -386,6 +394,9 @@ namespace Indihiang.Modules
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }

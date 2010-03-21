@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
+using Indihiang.Data;
+using Indihiang.DomainObject;
 using Indihiang.Cores;
 using Indihiang.Cores.Features;
 namespace Indihiang.Modules
 {
     public partial class RequestProcessingControl : UserControl, BaseControl
     {
+        private SynchronizationContext _synContext;
         private string _guid;
         private string _fileName;
-        private Dictionary<string, LogCollection> _items;
+        private List<string> _listYears = new List<string>();        
+        private List<DumpData> _listData;
 
         public RequestProcessingControl()
         {
             InitializeComponent();
+            _synContext = AsyncOperationManager.SynchronizationContext;
         }
 
         #region BaseControl Members
@@ -48,77 +50,120 @@ namespace Indihiang.Modules
                 _fileName = value;
             }
         }
+        public List<string> ListOfYear
+        {
+            set
+            {
+                _listYears = value;
+            }
+            get
+            {
+                return _listYears;
+            }
+        }
         public void Populate()
         {
+            cboParams1.Items.AddRange(_listYears.ToArray());
             SetGridLayout();
-            GenerateData();
+
+            RenderInfoEventArgs info = new RenderInfoEventArgs(_guid, LogFeature.REQUEST, _fileName);
+            _synContext.Post(OnRenderHandler, info);
         }
 
         #endregion
 
+        protected virtual void OnRenderHandler(RenderInfoEventArgs e)
+        {
+            if (RenderHandler != null)
+                RenderHandler(this, e);
+        }
         private void SetGridLayout()
-        {            
-            dataGridViewRequest.ColumnCount = 3;
-            dataGridViewRequest.Columns[0].Name = "Request Time";
-            dataGridViewRequest.Columns[0].Width = 120;
-            dataGridViewRequest.Columns[1].Name = "Page Request";
-            dataGridViewRequest.Columns[1].Width = 200;
-            dataGridViewRequest.Columns[2].Name = "Processing Duration";
-            dataGridViewRequest.Columns[2].Width = 200;
+        {
+            dataGridViewRequest.ColumnCount = 5;
+            dataGridViewRequest.Columns[0].Name = "Page Request";
+            dataGridViewRequest.Columns[0].Width = 200;
+            dataGridViewRequest.Columns[0].ValueType = typeof(String);
+            dataGridViewRequest.Columns[1].Name = "Query String";
+            dataGridViewRequest.Columns[1].Width = 120;
+            dataGridViewRequest.Columns[1].ValueType = typeof(String);
+            dataGridViewRequest.Columns[2].Name = "Mean Bytes Sent";
+            dataGridViewRequest.Columns[2].Width = 120;
+            dataGridViewRequest.Columns[2].ValueType = typeof(Double);
+            dataGridViewRequest.Columns[3].Name = "Mean Bytes Sent";
+            dataGridViewRequest.Columns[3].Width = 120;
+            dataGridViewRequest.Columns[3].ValueType = typeof(Double);
+            dataGridViewRequest.Columns[4].Name = "Mean Time Taken";
+            dataGridViewRequest.Columns[4].Width = 120;
+            dataGridViewRequest.Columns[4].ValueType = typeof(Double);
 
             dataGridViewRequest.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridViewRequest.MultiSelect = false;
         }
 
-        private void GenerateData()
+        private void GenerateProcessingData()
         {
-            if (!_items.ContainsKey("TimeTaken"))
-                return;
+            dataGridViewRequest.Rows.Clear();
 
-            if (_items["TimeTaken"].Colls.Count <= 0)
-                return;
-
-            var items = from k in _items["TimeTaken"].Colls
-                        orderby k.Value ascending
-                        select k;
-
-            if (items == null)
-                return;
-
-            int total = 0;
-            foreach (KeyValuePair<string, WebLog> item in items)
+            if (_listData.Count > 0)
             {
-                if (item.Value != null)
+                for (int i = 0; i < _listData.Count; i++)
                 {
-                    foreach (KeyValuePair<string, string> ilog in item.Value.Items)
-                    {
-                        total++;
-                        if (total > 500)
-                            break;
-                        List<object> list = new List<object>();
+                    List<object> data = new List<object>();
 
-                        list.Add(item.Key);
-                        string[] tmp = ilog.Key.Split(new char[] { ';' });
-                        if (tmp.Length > 0)
-                            list.Add(tmp[0]);
-                        else
-                            list.Add("");
-                        list.Add(IndihiangHelper.DurationFormat(Convert.ToInt64(ilog.Value)));
+                    data.Add(_listData[i].Page_Access);
+                    data.Add(_listData[i].Query_Page_Access);
+                    data.Add((Double)((Double)_listData[i].Bytes_Sent / (Double)_listData[i].Total));
+                    data.Add((Double)((Double)_listData[i].Bytes_Received / (Double)_listData[i].Total));
+                    data.Add((Double)((Double)_listData[i].TimeTaken / (Double)_listData[i].Total));
 
-                        dataGridViewRequest.Rows.Add(list.ToArray());
-                    }
-
-
+                    dataGridViewRequest.Rows.Add(data.ToArray());
                 }
-                if (total > 500)
-                    break;
             }
-            
-            //MessageBox.Show(total.ToString());
+            lbTotal.Text = string.Format("Total data: {0}", _listData.Count);
+            lbTotal.Visible = true;
+            _listData.Clear();
+        }
 
-            dataGridViewRequest.Columns[0].DisplayIndex = 0;
-            dataGridViewRequest.Columns[1].DisplayIndex = 1;
-            dataGridViewRequest.Columns[2].DisplayIndex = 2;
+        private void btnGenerate1_Click(object sender, EventArgs e)
+        {
+            if (cboParams1.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please choose year", "Information");
+                return;
+            }
+            btnGenerate1.Text = "Generating...";
+            btnGenerate1.Enabled = false;
+            backgroundWorker1.RunWorkerAsync(cboParams1.SelectedItem);
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                string par = e.Argument.ToString();
+                LogDataFacade facade = new LogDataFacade(_guid);
+
+                _listData = new List<DumpData>(facade.GetRequestProcessingByYear(Convert.ToInt32(par)));
+            }
+            catch (Exception err)
+            {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
+                System.Diagnostics.Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (_listData != null)
+            {
+                // populate 
+                GenerateProcessingData();
+            }
+
+            btnGenerate1.Text = "Generate";
+            btnGenerate1.Enabled = true;
         }
 
 

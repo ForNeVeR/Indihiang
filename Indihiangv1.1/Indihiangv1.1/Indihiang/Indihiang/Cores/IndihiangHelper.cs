@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Collections.Generic;
-using Indihiang.Cores.Features;
+using System.Reflection;
 
+using Indihiang.Data;
 namespace Indihiang.Cores
 {
     public sealed class IndihiangHelper
@@ -41,6 +41,10 @@ namespace Indihiang.Cores
 
             return list;
         }
+        public static string GetIPCountryDb()
+        {
+            return String.Format("{0}\\media\\ipcountry.db", Environment.CurrentDirectory);
+        }
         public static string GetIndihiangFile(string year,string guid)
         {
             if (string.IsNullOrEmpty(year))
@@ -50,8 +54,17 @@ namespace Indihiang.Cores
         }
         public static List<string> GetIndihiangFileList(string guid)
         {
-            string path = String.Format("{0}\\data\\{1}\\", Environment.CurrentDirectory, guid);
-            List<string> list = new List<string>(Directory.GetFiles(path,"*.dat"));
+            List<string> list = new List<string>();
+
+            if (guid.StartsWith("!!"))
+            {
+                list.Add(guid.Substring(2));
+            }
+            else
+            {
+                string path = String.Format("{0}\\data\\{1}\\", Environment.CurrentDirectory, guid);
+                list = new List<string>(Directory.GetFiles(path, "*.dat"));
+            }
 
             return list;
         }
@@ -66,68 +79,77 @@ namespace Indihiang.Cores
             string sourceFile = String.Format("{0}\\media\\dump_indihiang.dat", Environment.CurrentDirectory);
             try
             {
-                File.Copy(sourceFile, file);
+                File.Copy(sourceFile, file);                
+                
             }
             catch (Exception) { }
 
         }
-        public static List<string> MergeFields(List<BaseFeature> features)
-        {
-            List<string> list = new List<string>();
 
-            for (int i = 0; i < features.Count; i++)
+        public static string GetYearDataIndihiangFile(string file)
+        {
+            DataHelper helper = new DataHelper(file);
+            List<Indihiang.DomainObject.Indihiang> list = new List<Indihiang.DomainObject.Indihiang>(helper.GetAllIndihiang());
+
+            for (int i = 0; i < list.Count; i++)
             {
-                for (int j = 0; j < features[i].FeatureFields.Count; i++)
-                {
-                    if (!list.Contains(features[i].FeatureFields[j]))
-                        list.Add(features[i].FeatureFields[j]);
-                }
+                if (list[i].Sys_Item == "data_year")
+                    return list[i].Sys_Value;
             }
 
-            return list;
+            return null;
         }
-        public static List<BaseFeature> GenerateIndihiangFeatures(Guid parserId, EnumLogFile format)
-        {
-            List<BaseFeature> features = new List<BaseFeature>();
-            features.Add(new GeneralFeature(format));
-            //features.Add(new HitsFeature(format));
-            //features.Add(new UserAgentFeature(format));
-            //features.Add(new AccessPageFeature(format));
-            //features.Add(new IPAddressFeature(format));
-            //features.Add(new AccessStatusFeature(format));
-            //features.Add(new BandwidthFeature(format));
-            //features.Add(new RequestFeature(format));
 
-            return features;
-        }
-        public static List<BaseLogAnalyzeFeature> GenerateParallelFeatures(Guid parserId,EnumLogFile format)
+        public static void InitialIndihiangFile(string file, string year)
         {
-            List<BaseLogAnalyzeFeature> features = new List<BaseLogAnalyzeFeature>();
-            //features.Add(new GeneralFeature(format));
-            features.Add(new HitsFeature(format));
-            features.Add(new UserAgentFeature(format));
-            features.Add(new AccessPageFeature(format));
-            features.Add(new IPAddressFeature(format));
-            features.Add(new AccessStatusFeature(format));
-            features.Add(new BandwidthFeature(format));
-            features.Add(new RequestFeature(format)); 
+            try
+            {
+                DataHelper helper = new DataHelper(file);
 
-            return features;
-        }
-        public static List<BaseLogAnalyzeFeature> GenerateFeatures(EnumLogFile format)
-        {
-            List<BaseLogAnalyzeFeature> features = new List<BaseLogAnalyzeFeature>();
-            //features.Add(new GeneralFeature(format));
-            features.Add(new HitsFeature(format));
-            features.Add(new UserAgentFeature(format));
-            features.Add(new AccessPageFeature(format));
-            features.Add(new IPAddressFeature(format));
-            features.Add(new AccessStatusFeature(format));
-            features.Add(new BandwidthFeature(format));
-            features.Add(new RequestFeature(format));  
+                Indihiang.DomainObject.Indihiang obj = new Indihiang.DomainObject.Indihiang();
+                obj.Sys_Item = "indihiang_version";
+                obj.Sys_Value = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                helper.InsertIndihiang(obj);                
 
-            return features;
+                obj = new Indihiang.DomainObject.Indihiang();
+                obj.Sys_Item = "dotnet_version";
+                obj.Sys_Value = Environment.Version.ToString();
+                helper.InsertIndihiang(obj);
+
+                obj = new Indihiang.DomainObject.Indihiang();
+                obj.Sys_Item = "hostname";
+                obj.Sys_Value = Environment.MachineName;
+                helper.InsertIndihiang(obj);
+
+                obj = new Indihiang.DomainObject.Indihiang();
+                obj.Sys_Item = "username";
+                obj.Sys_Value = Environment.UserName;
+                helper.InsertIndihiang(obj);
+
+                obj = new Indihiang.DomainObject.Indihiang();
+                obj.Sys_Item = "os_version";
+                obj.Sys_Value = Environment.OSVersion.VersionString;
+                helper.InsertIndihiang(obj);
+
+                obj = new Indihiang.DomainObject.Indihiang();
+                obj.Sys_Item = "working_directory";
+                obj.Sys_Value = Environment.CurrentDirectory;
+                helper.InsertIndihiang(obj);
+
+                obj = new Indihiang.DomainObject.Indihiang();
+                obj.Sys_Item = "data_year";
+                obj.Sys_Value = year;
+                helper.InsertIndihiang(obj);
+
+                obj = new Indihiang.DomainObject.Indihiang();
+                obj.Sys_Item = "last_acces";
+                obj.Sys_Value = DateTime.Now.ToString();
+                helper.InsertIndihiang(obj);
+
+            }
+            catch (Exception) { }
         }
+      
 
         public static string GetMonth(int month)
         {
@@ -245,25 +267,6 @@ namespace Indihiang.Cores
             return string.Format(format[i], s.ToString("#.##"));
         }
 
-        public static void DumpToFile(string guid, string file, Dictionary<string, WebLog> logs)
-        {
-            string path = Environment.CurrentDirectory;
-            if(!Directory.Exists(String.Format("{0}\\{1}\\", path, guid)))
-                Directory.CreateDirectory(String.Format("{0}\\{1}\\", path, guid));
-
-            using(StreamWriter sw = new StreamWriter(String.Format("{0}\\{1}\\", path, guid),false))
-            {
-                foreach (KeyValuePair<string, WebLog> pair1 in logs)
-                {
-                    foreach (KeyValuePair<string, string> pair2 in pair1.Value.Items)
-                    {
-                        string data = String.Format("{0};{1};{2}", pair1.Key, pair2.Key, pair2.Value);
-                        sw.WriteLine(data);
-                    }
-                }
-            }
-
-        }
 
         public static string CheckUserAgent(string line)
         {
@@ -299,19 +302,45 @@ namespace Indihiang.Cores
             return "Unknown";
         }
 
-        public static double inet_aton(string ipAddress)
+        public static string GetRefererClass(string line)
         {
             
-            IPAddress ip = IPAddress.Parse(ipAddress);
-            int i;
-            double num = 0;
+            if (string.IsNullOrEmpty(line) || line == "-")
+                return "Direct Traffic";
 
-            string[] arrDec = ip.ToString().Split('.');
-            for (i = arrDec.Length - 1; i >= 0; i--)
+            //list of search engine could be found on
+            //http://en.wikipedia.org/wiki/List_of_search_engines
+            //you can add another search engine
+            if (line.ToLower().Contains("google.") || line.ToLower().Contains("yahoo.") ||
+                line.ToLower().Contains("bing.") || line.Contains("ask.") ||
+                line.ToLower().Contains("cuil.") || line.Contains("duckduckgo.") ||
+                line.ToLower().Contains("sogou.") || line.Contains("baidu.") || line.Contains("kosmix."))
+                return "Search Engines";
+
+
+            return "Referring Sites";
+        }
+
+        /// Credits to
+        /// http://www.justin-cook.com/wp/2006/11/28/convert-an-ip-address-to-ip-number-with-php-asp-c-and-vbnet/
+        public static double IPAddressToNumber(string IPaddress)
+        {
+            int i;
+            string[] arrDec;
+            double num = 0;
+            if (IPaddress == "" || IPaddress.StartsWith("::"))
             {
-                num += ((int.Parse(arrDec[i]) % 256) * Math.Pow(256, (3 - i)));
+                return 0;
             }
-            return num;
+            else
+            {
+                arrDec = IPaddress.Split('.');
+                for (i = arrDec.Length - 1; i >= 0; i--)
+                {
+                    num += ((int.Parse(arrDec[i]) % 256) * Math.Pow(256, (3 - i)));
+                }
+                return num;
+            }
         }
 
 
