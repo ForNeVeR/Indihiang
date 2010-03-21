@@ -35,14 +35,19 @@ namespace Indihiang.Forms
             this.openLogFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openRemoteWebServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+            this.openIndihiangReportFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportDataToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.howToUseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.visitToIndhiangWebsiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.checkNewVersionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolstatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -71,12 +76,16 @@ namespace Indihiang.Forms
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.closeAllToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTree3 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.exportDataToDatabaseServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTree2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openLogFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openRemoteIISServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.closeAllToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.openResultLogFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.toolStripOpenReportLogFile = new System.Windows.Forms.ToolStripButton();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -96,6 +105,7 @@ namespace Indihiang.Forms
             // 
             this.menuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuMain.Location = new System.Drawing.Point(0, 0);
             this.menuMain.Name = "menuMain";
@@ -109,6 +119,8 @@ namespace Indihiang.Forms
             this.openLogFileToolStripMenuItem,
             this.openRemoteWebServerToolStripMenuItem,
             this.toolStripMenuItem3,
+            this.openIndihiangReportFileToolStripMenuItem,
+            this.toolStripMenuItem6,
             this.closeToolStripMenuItem,
             this.closeAllToolStripMenuItem1,
             this.toolStripMenuItem1,
@@ -120,47 +132,74 @@ namespace Indihiang.Forms
             // openLogFileToolStripMenuItem
             // 
             this.openLogFileToolStripMenuItem.Name = "openLogFileToolStripMenuItem";
-            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
             this.openLogFileToolStripMenuItem.Text = "Open Log File";
             this.openLogFileToolStripMenuItem.Click += new System.EventHandler(this.openLogFileToolStripMenuItem_Click);
             // 
             // openRemoteWebServerToolStripMenuItem
             // 
             this.openRemoteWebServerToolStripMenuItem.Name = "openRemoteWebServerToolStripMenuItem";
-            this.openRemoteWebServerToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.openRemoteWebServerToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
             this.openRemoteWebServerToolStripMenuItem.Text = "Open Remote Web Server";
             this.openRemoteWebServerToolStripMenuItem.Click += new System.EventHandler(this.openRemoteWebServerToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(206, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(212, 6);
+            // 
+            // openIndihiangReportFileToolStripMenuItem
+            // 
+            this.openIndihiangReportFileToolStripMenuItem.Name = "openIndihiangReportFileToolStripMenuItem";
+            this.openIndihiangReportFileToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.openIndihiangReportFileToolStripMenuItem.Text = "Open Indihiang Report File";
+            this.openIndihiangReportFileToolStripMenuItem.Click += new System.EventHandler(this.openIndihiangReportFileToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem6
+            // 
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(212, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // closeAllToolStripMenuItem1
             // 
             this.closeAllToolStripMenuItem1.Name = "closeAllToolStripMenuItem1";
-            this.closeAllToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
+            this.closeAllToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
             this.closeAllToolStripMenuItem1.Text = "Close All";
             this.closeAllToolStripMenuItem1.Click += new System.EventHandler(this.closeAllToolStripMenuItem1_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(206, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(212, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportDataToToolStripMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // exportDataToToolStripMenuItem
+            // 
+            this.exportDataToToolStripMenuItem.Name = "exportDataToToolStripMenuItem";
+            this.exportDataToToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.exportDataToToolStripMenuItem.Text = "Export Data to Database Server";
+            this.exportDataToToolStripMenuItem.Click += new System.EventHandler(this.exportDataToToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -168,6 +207,7 @@ namespace Indihiang.Forms
             this.howToUseToolStripMenuItem,
             this.visitToIndhiangWebsiteToolStripMenuItem,
             this.toolStripMenuItem2,
+            this.checkNewVersionToolStripMenuItem1,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -191,6 +231,12 @@ namespace Indihiang.Forms
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(203, 6);
+            // 
+            // checkNewVersionToolStripMenuItem1
+            // 
+            this.checkNewVersionToolStripMenuItem1.Name = "checkNewVersionToolStripMenuItem1";
+            this.checkNewVersionToolStripMenuItem1.Size = new System.Drawing.Size(206, 22);
+            this.checkNewVersionToolStripMenuItem1.Text = "Check New Version";
             // 
             // aboutToolStripMenuItem
             // 
@@ -228,6 +274,7 @@ namespace Indihiang.Forms
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripOpenLogFile,
             this.toolStripOpenComputer,
+            this.toolStripOpenReportLogFile,
             this.toolStripSeparator1,
             this.toolStripRunAnalyzer});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
@@ -283,6 +330,8 @@ namespace Indihiang.Forms
             this.imgList.Images.SetKeyName(5, "server.ico");
             this.imgList.Images.SetKeyName(6, "help.ico");
             this.imgList.Images.SetKeyName(7, "dbs.ico");
+            this.imgList.Images.SetKeyName(8, "Messages.ico");
+            this.imgList.Images.SetKeyName(9, "SingleMessage.ico");
             // 
             // panel1
             // 
@@ -447,14 +496,28 @@ namespace Indihiang.Forms
             // ctxTree3
             // 
             this.ctxTree3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportDataToDatabaseServerToolStripMenuItem,
+            this.toolStripMenuItem7,
             this.closeToolStripMenuItem2});
             this.ctxTree3.Name = "contextMenuStrip1";
-            this.ctxTree3.Size = new System.Drawing.Size(104, 26);
+            this.ctxTree3.Size = new System.Drawing.Size(235, 54);
+            // 
+            // exportDataToDatabaseServerToolStripMenuItem
+            // 
+            this.exportDataToDatabaseServerToolStripMenuItem.Name = "exportDataToDatabaseServerToolStripMenuItem";
+            this.exportDataToDatabaseServerToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.exportDataToDatabaseServerToolStripMenuItem.Text = "Export Data to Database Server";
+            this.exportDataToDatabaseServerToolStripMenuItem.Click += new System.EventHandler(this.exportDataToDatabaseServerToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem7
+            // 
+            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(231, 6);
             // 
             // closeToolStripMenuItem2
             // 
             this.closeToolStripMenuItem2.Name = "closeToolStripMenuItem2";
-            this.closeToolStripMenuItem2.Size = new System.Drawing.Size(103, 22);
+            this.closeToolStripMenuItem2.Size = new System.Drawing.Size(234, 22);
             this.closeToolStripMenuItem2.Text = "Close";
             this.closeToolStripMenuItem2.Click += new System.EventHandler(this.closeToolStripMenuItem2_Click);
             // 
@@ -493,6 +556,20 @@ namespace Indihiang.Forms
             this.closeAllToolStripMenuItem3.Size = new System.Drawing.Size(197, 22);
             this.closeAllToolStripMenuItem3.Text = "Close All";
             this.closeAllToolStripMenuItem3.Click += new System.EventHandler(this.closeAllToolStripMenuItem3_Click);
+            // 
+            // openResultLogFileDialog
+            // 
+            this.openResultLogFileDialog.Filter = "Report log file|*.dat|All report files|*.*";
+            // 
+            // toolStripOpenReportLogFile
+            // 
+            this.toolStripOpenReportLogFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripOpenReportLogFile.Image = ((System.Drawing.Image)(resources.GetObject("toolStripOpenReportLogFile.Image")));
+            this.toolStripOpenReportLogFile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripOpenReportLogFile.Name = "toolStripOpenReportLogFile";
+            this.toolStripOpenReportLogFile.Size = new System.Drawing.Size(23, 22);
+            this.toolStripOpenReportLogFile.ToolTipText = "Open report log file";
+            this.toolStripOpenReportLogFile.Click += new System.EventHandler(this.toolStripOpenReportLogFile_Click);
             // 
             // MainForm
             // 
@@ -584,6 +661,15 @@ namespace Indihiang.Forms
         private System.Windows.Forms.ToolStripMenuItem openRemoteIISServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem closeAllToolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem openIndihiangReportFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportDataToToolStripMenuItem;        
+        private System.Windows.Forms.ToolStripMenuItem checkNewVersionToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem exportDataToDatabaseServerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
+        private System.Windows.Forms.OpenFileDialog openResultLogFileDialog;
+        private System.Windows.Forms.ToolStripButton toolStripOpenReportLogFile;
 
     }
 }

@@ -18,10 +18,12 @@ namespace Indihiang.DomainObject
         private string _access_username;
         private string _user_agent;
         private string _protocol_status;
-        private string _bytes_sent;
-        private string _bytes_received;
+        private long _bytes_sent;
+        private long _bytes_received;
         private string _referer;
         private string _country;
+        private string _referer_class;
+        private long _time_taken;        
         private long _total;
 
         public int Id
@@ -193,7 +195,7 @@ namespace Indihiang.DomainObject
                 _protocol_status = value;
             }
         }
-        public string Bytes_Sent
+        public long Bytes_Sent
         {
             get
             {
@@ -206,7 +208,7 @@ namespace Indihiang.DomainObject
                 _bytes_sent = value;
             }
         }
-        public string Bytes_Received
+        public long Bytes_Received
         {
             get
             {
@@ -232,7 +234,7 @@ namespace Indihiang.DomainObject
                 _referer = value;
             }
         }
-        public string Country
+        public string IPClientCountry
         {
             get
             {
@@ -243,6 +245,32 @@ namespace Indihiang.DomainObject
                 if (_country == value)
                     return;
                 _country = value;
+            }
+        }
+        public string RefererClass
+        {
+            get
+            {
+                return _referer_class;
+            }
+            set
+            {
+                if (_referer_class == value)
+                    return;
+                _referer_class = value;
+            }
+        }
+        public long TimeTaken
+        {
+            get
+            {
+                return _time_taken;
+            }
+            set
+            {
+                if (_time_taken == value)
+                    return;
+                _time_taken = value;
             }
         }
         public long Total
@@ -265,8 +293,8 @@ namespace Indihiang.DomainObject
             _a_month = -1;
             _a_year = -1;
             _access_username = "";
-            _bytes_received = "";
-            _bytes_sent = "";
+            _bytes_received = 0;
+            _bytes_sent = 0;
             _client_ip = "";
             _fullFileName = "";
             _id = -1;
@@ -278,6 +306,8 @@ namespace Indihiang.DomainObject
             _server_port = "";
             _user_agent = "";
             _country = "";
+            _referer_class = "";
+            _time_taken = 0;
             _total = 0;
         }
        

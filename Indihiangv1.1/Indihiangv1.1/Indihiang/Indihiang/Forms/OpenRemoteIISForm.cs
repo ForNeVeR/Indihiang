@@ -8,7 +8,7 @@ namespace Indihiang.Forms
 {
     public partial class OpenRemoteIISForm : Form
     {
-        private List<IISInfo> _listIISInfo = null;
+        private List<IISInfo> _listIISInfo;
 
         public IISInfo IISSelected { get; private set; }
         public OpenRemoteIISForm()

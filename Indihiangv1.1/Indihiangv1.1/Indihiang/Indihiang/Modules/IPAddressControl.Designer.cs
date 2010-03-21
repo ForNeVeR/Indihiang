@@ -77,7 +77,7 @@ namespace Indihiang.Modules
             this.tabIPAddress.Location = new System.Drawing.Point(0, 0);
             this.tabIPAddress.Name = "tabIPAddress";
             this.tabIPAddress.SelectedIndex = 0;
-            this.tabIPAddress.Size = new System.Drawing.Size(701, 422);
+            this.tabIPAddress.Size = new System.Drawing.Size(699, 420);
             this.tabIPAddress.TabIndex = 0;
             // 
             // tabIPAccess
@@ -88,7 +88,7 @@ namespace Indihiang.Modules
             this.tabIPAccess.Location = new System.Drawing.Point(4, 26);
             this.tabIPAccess.Name = "tabIPAccess";
             this.tabIPAccess.Padding = new System.Windows.Forms.Padding(3);
-            this.tabIPAccess.Size = new System.Drawing.Size(693, 392);
+            this.tabIPAccess.Size = new System.Drawing.Size(691, 390);
             this.tabIPAccess.TabIndex = 0;
             this.tabIPAccess.Text = "IP Access";
             this.tabIPAccess.UseVisualStyleBackColor = true;
@@ -105,7 +105,7 @@ namespace Indihiang.Modules
             this.zedIPAccess1.ScrollMinX = 0;
             this.zedIPAccess1.ScrollMinY = 0;
             this.zedIPAccess1.ScrollMinY2 = 0;
-            this.zedIPAccess1.Size = new System.Drawing.Size(687, 344);
+            this.zedIPAccess1.Size = new System.Drawing.Size(685, 342);
             this.zedIPAccess1.TabIndex = 3;
             // 
             // panel2
@@ -117,7 +117,7 @@ namespace Indihiang.Modules
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(687, 42);
+            this.panel2.Size = new System.Drawing.Size(685, 42);
             this.panel2.TabIndex = 2;
             // 
             // btnGenerate1
@@ -334,9 +334,10 @@ namespace Indihiang.Modules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.tabIPAddress);
             this.Name = "IPAddressControl";
-            this.Size = new System.Drawing.Size(701, 422);
+            this.Size = new System.Drawing.Size(699, 420);
             this.Resize += new System.EventHandler(this.IPAddressControl_Resize);
             this.tabIPAddress.ResumeLayout(false);
             this.tabIPAccess.ResumeLayout(false);

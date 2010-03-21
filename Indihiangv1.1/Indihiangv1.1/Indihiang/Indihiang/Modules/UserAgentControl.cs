@@ -294,6 +294,8 @@ namespace Indihiang.Modules
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
                 System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }
@@ -318,13 +320,19 @@ namespace Indihiang.Modules
             cboParams.Items.Clear();
             if (cboReport.SelectedIndex == 0)
             {
-                cboParams.Items.AddRange(_listYears.ToArray());
-                cboParams.SelectedIndex = 0;
+                if (_listYears != null)
+                {
+                    cboParams.Items.AddRange(_listYears.ToArray());
+                    cboParams.SelectedIndex = 0;
+                }
             }
             if (cboReport.SelectedIndex == 1)
             {
-                cboParams.Items.AddRange(_listYearMonth.ToArray());
-                cboParams.SelectedIndex = 0;
+                if (_listYearMonth != null)
+                {
+                    cboParams.Items.AddRange(_listYearMonth.ToArray());
+                    cboParams.SelectedIndex = 0;
+                }
             }
         }
 
@@ -366,6 +374,9 @@ namespace Indihiang.Modules
             }
             catch (Exception err)
             {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
                 System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }

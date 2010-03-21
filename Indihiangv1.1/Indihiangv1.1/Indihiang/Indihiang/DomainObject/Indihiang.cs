@@ -5,8 +5,8 @@ namespace Indihiang.DomainObject
     public class Indihiang
     {
         private int _id;
-        private string _asm_version;
-        private string _file_version;
+        private string _sys_item;
+        private string _sys_value;
         private DateTime _updateDate;
 
         public int Id
@@ -22,30 +22,30 @@ namespace Indihiang.DomainObject
                 _id = value;
             }
         }
-        public string Asm_Version
+        public string Sys_Item
         {
             get
             {
-                return _asm_version;
+                return _sys_item;
             }
             set
             {
-                if (_asm_version == value)
+                if (_sys_item == value)
                     return;
-                _asm_version = value;
+                _sys_item = value;
             }
         }
-        public string File_Version
+        public string Sys_Value
         {
             get
             {
-                return _file_version;
+                return _sys_value;
             }
             set
             {
-                if (_file_version == value)
+                if (_sys_value == value)
                     return;
-                _file_version = value;
+                _sys_value = value;
             }
         }
         public DateTime UpdateDate

@@ -39,166 +39,6 @@ namespace Indihiang.Data
             return string.Format("Data Source={0}",_dbFile);
         }
 
-        #region Temp
-        //public void InsertFeature(string name,string field)
-        //{
-        //    SQLiteConnection con = null;
-
-        //    try
-        //    {
-        //        con = new SQLiteConnection(GetConnectionStrng());
-        //        con.Open();
-
-        //        string query = String.Format("insert into feature(name,field) values('{0}','{1}')", name,field);
-        //        using (SQLiteCommand cmd = new SQLiteCommand(query, con))
-        //        {
-        //            cmd.ExecuteNonQuery();
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //    }
-        //    finally
-        //    {
-        //        if (con != null)
-        //            con.Close();
-        //    }
-        //}
-        //public void InsertShared(string name, string val)
-        //{
-        //    SQLiteConnection con = null;
-
-        //    try
-        //    {
-        //        con = new SQLiteConnection(GetConnectionStrng());
-        //        con.Open();
-
-        //        string query = String.Format("insert into shared(name,val) values('{0}','{1}')", name, val);
-        //        using (SQLiteCommand cmd = new SQLiteCommand(query, con))
-        //        {
-        //            cmd.ExecuteNonQuery();
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //    }
-        //    finally
-        //    {
-        //        if (con != null)
-        //            con.Close();
-        //    }
-        //}
-        //public void InsertFeatureData(string featureName, string field, string data1, string data2, string data3)
-        //{
-        //    SQLiteConnection con = null;
-        //    SQLiteDataReader rd = null;
-        //    try
-        //    {
-        //        con = new SQLiteConnection(GetConnectionStrng());
-        //        con.Open();
-
-        //        int id = -1;
-        //        string query = String.Format("select id from feature where name like '{0}' and field like '{1}'", featureName, field);
-        //        SQLiteCommand cmd = new SQLiteCommand(query, con);
-        //        rd = cmd.ExecuteReader();
-        //        if (rd.Read())
-        //        {
-        //            if (!rd.IsDBNull(rd.GetOrdinal("id")))
-        //                id = (int)rd["id"];
-        //        }
-        //        rd.Close();
-
-        //        if (id > 0)
-        //        {
-        //            query = String.Format("insert into featuredata(featureid,val1,val2,val3) values({0},'{1}','{2}','{3}')", id, data1, data2, data3);
-        //            cmd = new SQLiteCommand(query, con);
-        //            cmd.ExecuteNonQuery();
-        //        }
-                
-        //    }
-        //    catch (Exception)
-        //    {
-        //    }
-        //    finally
-        //    {
-        //        if (rd != null)
-        //            rd.Close();
-        //        if (con != null)
-        //            con.Close();
-        //    }
-        //}
-        //public int GetSharedId(string name,string val)
-        //{
-        //    int id = -1;
-        //    SQLiteConnection con = null;
-        //    SQLiteDataReader rd = null;
-
-        //    try
-        //    {
-        //        con = new SQLiteConnection(GetConnectionStrng());
-        //        con.Open();
-
-        //        string query = String.Format("select id from shared where name like '{0}' and val like '{1}'", name, val);
-        //        using (SQLiteCommand cmd = new SQLiteCommand(query, con))
-        //        {
-        //            rd = cmd.ExecuteReader();
-        //            if (rd.Read())
-        //                if (!rd.IsDBNull(rd.GetOrdinal("id")))
-        //                    id = (int)rd["id"];
-        //        }
-
-        //    }
-        //    catch (Exception)
-        //    {
-        //    }
-        //    finally
-        //    {
-        //        if (rd != null)
-        //            rd.Close();
-        //        if (con != null)
-        //            con.Close();
-        //    }
-
-        //    return id;
-        //}
-        //public int GetFeaturedDataId(string featureName, int shareId,string val1)
-        //{
-        //    int id = -1;
-        //    SQLiteConnection con = null;
-        //    SQLiteDataReader rd = null;
-
-        //    try
-        //    {
-        //        con = new SQLiteConnection(GetConnectionStrng());
-        //        con.Open();
-
-        //        string query = String.Format("select id from featuredata where featurename like '{0}' and shareid={1} and val1 like '{2}'", featureName, shareId, val1);
-        //        SQLiteCommand cmd = new SQLiteCommand(query, con);
-        //        rd = cmd.ExecuteReader();
-        //        if (rd.Read())
-        //        {
-        //            if (!rd.IsDBNull(rd.GetOrdinal("id")))
-        //                id = (int)rd["id"];
-        //        }
-
-        //    }
-        //    catch (Exception)
-        //    {
-        //    }
-        //    finally
-        //    {
-        //        if (rd != null)
-        //            rd.Close();
-        //        if (con != null)
-        //            con.Close();
-        //    }
-
-        //    return id;
-        //}
-
-        #endregion
-
-
         #region Indihiang
         public int InsertIndihiang(Indihiang.DomainObject.Indihiang obj)
         {
@@ -209,10 +49,10 @@ namespace Indihiang.Data
                 con = new SQLiteConnection(GetConnectionStrng());
                 con.Open();
 
-                string query = String.Format("insert into indihiang(asm_version,file_version,updatedate) values('{0}','{1}','{2}');select last_insert_rowid();", obj.Asm_Version, obj.File_Version, obj.UpdateDate.ToString());
+                string query = String.Format("insert into sys_indihiang(sys_item,sys_value) values('{0}','{1}')", obj.Sys_Item, obj.Sys_Value);
                 using (SQLiteCommand cmd = new SQLiteCommand(query, con))
                 {
-                    id = Convert.ToInt32(cmd.ExecuteScalar());
+                    cmd.ExecuteNonQuery();
                 }
 
             }
@@ -238,24 +78,24 @@ namespace Indihiang.Data
                 con = new SQLiteConnection(GetConnectionStrng());
                 con.Open();
 
-                string query = "select id,asm_version,file_version,updatedate from indihiang";
+                string query = "select * from sys_indihiang";
                 SQLiteCommand cmd = new SQLiteCommand(query, con);
                 rd = cmd.ExecuteReader();
                 while (rd.Read())
                 {
                     Indihiang.DomainObject.Indihiang obj = new Indihiang.DomainObject.Indihiang();
                     if (!rd.IsDBNull(rd.GetOrdinal("id")))
-                        obj.Id = (int)rd["id"];
+                        obj.Id = Convert.ToInt32(rd["id"].ToString());
                     else
                         obj.Id = -1;
-                    if (!rd.IsDBNull(rd.GetOrdinal("asm_version")))
-                        obj.Asm_Version = (string)rd["asm_version"];
-                    if (!rd.IsDBNull(rd.GetOrdinal("file_version")))
-                        obj.File_Version = (string)rd["file_version"];
-                    if (!rd.IsDBNull(rd.GetOrdinal("updatedate")))
-                        obj.UpdateDate = (DateTime)rd["updatedate"];
+                    if (!rd.IsDBNull(rd.GetOrdinal("sys_item")))
+                        obj.Sys_Item = (string)rd["sys_item"];
                     else
-                        obj.UpdateDate = DateTime.MinValue;
+                        obj.Sys_Item = "";
+                    if (!rd.IsDBNull(rd.GetOrdinal("sys_value")))
+                        obj.Sys_Value = (string)rd["sys_value"];
+                    else
+                        obj.Sys_Value = "";
 
                     list.Add(obj);
                 }
@@ -472,8 +312,8 @@ namespace Indihiang.Data
                     StringBuilder builder = new StringBuilder();
                     builder.Append("insert into [log_data](fullfilename,a_day,a_month,server_ip,");
                     builder.Append("server_port,client_ip,page_access,query_page_access,access_username,");
-                    builder.Append("user_agent,protocol_status,bytes_sent,bytes_received,referer,ip_country)");
-                    builder.Append(" values(@par1,@par2,@par3,@par4,@par5,@par6,@par7,@par8,@par9,@par10,@par11,@par12,@par13,@par14,@par15)");
+                    builder.Append("user_agent,protocol_status,bytes_sent,bytes_received,referer,ip_country,time_taken,referer_class)");
+                    builder.Append(" values(@par1,@par2,@par3,@par4,@par5,@par6,@par7,@par8,@par9,@par10,@par11,@par12,@par13,@par14,@par15,@par16,@par17)");
 
                     cmd.CommandText = builder.ToString();
 
@@ -491,7 +331,9 @@ namespace Indihiang.Data
                     SQLiteParameter par12 = cmd.Parameters.Add("@par12", DbType.String);
                     SQLiteParameter par13 = cmd.Parameters.Add("@par13", DbType.String);
                     SQLiteParameter par14 = cmd.Parameters.Add("@par14", DbType.String);
-                    SQLiteParameter par15 = cmd.Parameters.Add("@par15", DbType.String);                
+                    SQLiteParameter par15 = cmd.Parameters.Add("@par15", DbType.String);
+                    SQLiteParameter par16 = cmd.Parameters.Add("@par16", DbType.String);
+                    SQLiteParameter par17 = cmd.Parameters.Add("@par17", DbType.String);
 
                     for (int i = 0; i < dump.Count; i++)
                     {                       
@@ -506,10 +348,12 @@ namespace Indihiang.Data
                         par9.Value = IndihiangHelper.GetStringLogItem(dump[i].Access_Username);
                         par10.Value = IndihiangHelper.GetStringLogItem(dump[i].User_Agent);
                         par11.Value = IndihiangHelper.GetStringLogItem(dump[i].Protocol_Status);
-                        par12.Value = IndihiangHelper.GetStringLogItem(dump[i].Bytes_Sent);
-                        par13.Value = IndihiangHelper.GetStringLogItem(dump[i].Bytes_Received);
+                        par12.Value = dump[i].Bytes_Sent;
+                        par13.Value = dump[i].Bytes_Received;
                         par14.Value = IndihiangHelper.GetStringLogItem(dump[i].Referer);
-                        par15.Value = IndihiangHelper.GetStringLogItem(dump[i].Country);
+                        par15.Value = IndihiangHelper.GetStringLogItem(dump[i].IPClientCountry);
+                        par16.Value = dump[i].TimeTaken;
+                        par17.Value = IndihiangHelper.GetStringLogItem(dump[i].RefererClass);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -532,9 +376,89 @@ namespace Indihiang.Data
             }
 
             return success;
+        }                
+
+        #endregion
+
+        #region IP Country
+
+        public string GetCountryName(double ipDouble)
+        {
+            SQLiteConnection con = null;
+            string country = "";
+            try
+            {
+                con = new SQLiteConnection(GetConnectionStrng());
+                con.Open();
+
+                string query = string.Format("SELECT country_name FROM ip_country WHERE ({0} BETWEEN ip_start AND ip_end)", ipDouble);
+                SQLiteCommand cmd = new SQLiteCommand(query, con);
+                object obj = cmd.ExecuteScalar();
+
+                if (obj != null)
+                    country = obj.ToString();
+
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.StackTrace);
+            }
+            finally
+            {
+                if (con != null)
+                    con.Close();
+            }
+
+            return country;
         }
 
-        
+        public List<Indihiang.DomainObject.IPCountry> GetAllIpCountry()
+        {
+            SQLiteConnection con = null;
+            SQLiteDataReader rd = null;
+            List<Indihiang.DomainObject.IPCountry> list = new List<Indihiang.DomainObject.IPCountry>();
+            try
+            {
+                con = new SQLiteConnection(GetConnectionStrng());
+                con.Open();
+
+                string query = "SELECT ip_start,ip_end,country_name FROM ip_country";
+                SQLiteCommand cmd = new SQLiteCommand(query, con);
+                rd = cmd.ExecuteReader();
+                while (rd.Read())
+                {
+                    Indihiang.DomainObject.IPCountry obj = new Indihiang.DomainObject.IPCountry();
+                    if (!rd.IsDBNull(rd.GetOrdinal("ip_start")))
+                        obj.IpStart = Convert.ToDouble(rd["ip_start"]);
+                    else
+                        obj.IpStart = 0;
+                    if (!rd.IsDBNull(rd.GetOrdinal("ip_end")))
+                        obj.IpEnd = Convert.ToDouble(rd["ip_end"]);
+                    else
+                        obj.IpEnd = 0;
+                    if (!rd.IsDBNull(rd.GetOrdinal("country_name")))
+                        obj.CoutryName = (string)rd["country_name"];
+                   
+
+                    list.Add(obj);
+
+                }
+
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine(err.StackTrace);
+            }
+            finally
+            {
+                if (rd != null)
+                    rd.Close();
+                if (con != null)
+                    con.Close();
+            }
+
+            return list;
+        }
 
         #endregion
 

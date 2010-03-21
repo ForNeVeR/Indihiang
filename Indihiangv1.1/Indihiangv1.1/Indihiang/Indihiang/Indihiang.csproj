@@ -85,28 +85,12 @@
   <ItemGroup>
     <Compile Include="Cores\BaseLogParser.cs" />
     <Compile Include="Cores\CollectionHelper.cs" />
-    <Compile Include="Cores\Features\AccessPageFeature.cs" />
-    <Compile Include="Cores\Features\AccessStatusFeature.cs" />
-    <Compile Include="Cores\Features\BandwidthFeature.cs" />
-    <Compile Include="Cores\Features\BaseFeature.cs" />
-    <Compile Include="Cores\Features\DumpLogData.cs" />
-    <Compile Include="Cores\Features\FeatureDataRow.cs" />
-    <Compile Include="Cores\Features\FeatureLogFile.cs" />
-    <Compile Include="Cores\Features\FeatureLogHelper.cs">
+    <Compile Include="Cores\EnumLogFile.cs" />
+    <Compile Include="Cores\Features\LogFeature.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Cores\Features\GeneralFeature.cs" />
-    <Compile Include="Cores\Features\GeneralFeature1.cs" />
-    <Compile Include="Cores\Features\HitsFeature.cs" />
-    <Compile Include="Cores\Features\IPAddressFeature.cs" />
-    <Compile Include="Cores\Features\LogCollection.cs" />
-    <Compile Include="Cores\EnumLogFile.cs" />
-    <Compile Include="Cores\Features\BaseLogAnalyzeFeature.cs" />
-    <Compile Include="Cores\Features\LogFeature.cs" />
-    <Compile Include="Cores\Features\RequestFeature.cs" />
-    <Compile Include="Cores\Features\UserAgentFeature.cs" />
-    <Compile Include="Cores\Features\WebLog.cs" />
     <Compile Include="Cores\IndihiangHelper.cs" />
+    <Compile Include="Cores\Logger.cs" />
     <Compile Include="Cores\LogInfoEventArgs.cs" />
     <Compile Include="Cores\LogParser.cs" />
     <Compile Include="Cores\LogParserFactory.cs" />
@@ -114,13 +98,17 @@
     <Compile Include="Cores\RemoteFileCopyHelper.cs" />
     <Compile Include="Cores\ThreadBarrierExtensions.cs" />
     <Compile Include="Cores\W3cExtendedLogParser.cs" />
+    <Compile Include="Data\DataExportDestination.cs" />
+    <Compile Include="Data\IndihiangDataExport.cs" />
     <Compile Include="Data\DataHelper.cs" />
     <Compile Include="Data\LogDataFacade.cs" />
+    <Compile Include="Data\SQLServerDataExport.cs" />
     <Compile Include="DomainObject\DumpData.cs" />
     <Compile Include="DomainObject\Feature.cs" />
     <Compile Include="DomainObject\FeatureData.cs" />
     <Compile Include="DomainObject\IISInfo.cs" />
     <Compile Include="DomainObject\Indihiang.cs" />
+    <Compile Include="DomainObject\IPCountry.cs" />
     <Compile Include="DomainObject\LogData.cs" />
     <Compile Include="DomainObject\LogItem.cs" />
     <Compile Include="DomainObject\LogSource.cs" />
@@ -138,6 +126,12 @@
     </Compile>
     <Compile Include="Forms\ConsolidateForm.Designer.cs">
       <DependentUpon>ConsolidateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ExportDataForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ExportDataForm.Designer.cs">
+      <DependentUpon>ExportDataForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\LightIndihiangForm.cs">
       <SubType>Form</SubType>
@@ -200,6 +194,12 @@
     <Compile Include="Modules\LoadingControl.Designer.cs">
       <DependentUpon>LoadingControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\RefererControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Modules\RefererControl.Designer.cs">
+      <DependentUpon>RefererControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\RenderInfoEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -228,6 +228,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConsolidateForm.resx">
       <DependentUpon>ConsolidateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExportDataForm.resx">
+      <DependentUpon>ExportDataForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LightIndihiangForm.resx">
       <DependentUpon>LightIndihiangForm.cs</DependentUpon>
@@ -258,6 +261,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\LoadingControl.resx">
       <DependentUpon>LoadingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\RefererControl.resx">
+      <DependentUpon>RefererControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\RequestProcessingControl.resx">
       <DependentUpon>RequestProcessingControl.cs</DependentUpon>

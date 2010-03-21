@@ -131,6 +131,9 @@ namespace Indihiang.DomainObject
             }
         }
 
-        public IISInfo() { }
+
+        public IISInfo() 
+        {
+        }
     }
 }

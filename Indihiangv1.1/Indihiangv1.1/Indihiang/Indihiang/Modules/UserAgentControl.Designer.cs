@@ -61,7 +61,7 @@ namespace Indihiang.Modules
             this.tabMainUserAgent.Location = new System.Drawing.Point(0, 0);
             this.tabMainUserAgent.Name = "tabMainUserAgent";
             this.tabMainUserAgent.SelectedIndex = 0;
-            this.tabMainUserAgent.Size = new System.Drawing.Size(805, 411);
+            this.tabMainUserAgent.Size = new System.Drawing.Size(803, 409);
             this.tabMainUserAgent.TabIndex = 0;
             // 
             // tabUserAgent1
@@ -72,7 +72,7 @@ namespace Indihiang.Modules
             this.tabUserAgent1.Location = new System.Drawing.Point(4, 26);
             this.tabUserAgent1.Name = "tabUserAgent1";
             this.tabUserAgent1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabUserAgent1.Size = new System.Drawing.Size(797, 381);
+            this.tabUserAgent1.Size = new System.Drawing.Size(795, 379);
             this.tabUserAgent1.TabIndex = 0;
             this.tabUserAgent1.Text = "UserAgent per Time";
             this.tabUserAgent1.UseVisualStyleBackColor = true;
@@ -89,7 +89,7 @@ namespace Indihiang.Modules
             this.zedUserAgent1.ScrollMinX = 0;
             this.zedUserAgent1.ScrollMinY = 0;
             this.zedUserAgent1.ScrollMinY2 = 0;
-            this.zedUserAgent1.Size = new System.Drawing.Size(791, 333);
+            this.zedUserAgent1.Size = new System.Drawing.Size(789, 331);
             this.zedUserAgent1.TabIndex = 1;
             this.zedUserAgent1.PointValueEvent += new ZedGraph.ZedGraphControl.PointValueHandler(this.zedUserAgent1_PointValueEvent);
             // 
@@ -105,7 +105,7 @@ namespace Indihiang.Modules
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(791, 42);
+            this.panel1.Size = new System.Drawing.Size(789, 42);
             this.panel1.TabIndex = 0;
             // 
             // lbStatus
@@ -136,9 +136,6 @@ namespace Indihiang.Modules
             this.cboParams.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboParams.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cboParams.FormattingEnabled = true;
-            this.cboParams.Items.AddRange(new object[] {
-            "User Agent Report By Year",
-            "User Agent Report By Month"});
             this.cboParams.Location = new System.Drawing.Point(344, 11);
             this.cboParams.Name = "cboParams";
             this.cboParams.Size = new System.Drawing.Size(141, 21);
@@ -183,7 +180,7 @@ namespace Indihiang.Modules
             this.tabUserAgent2.Location = new System.Drawing.Point(4, 26);
             this.tabUserAgent2.Name = "tabUserAgent2";
             this.tabUserAgent2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabUserAgent2.Size = new System.Drawing.Size(797, 381);
+            this.tabUserAgent2.Size = new System.Drawing.Size(795, 379);
             this.tabUserAgent2.TabIndex = 1;
             this.tabUserAgent2.Text = "UserAgent %";
             this.tabUserAgent2.UseVisualStyleBackColor = true;
@@ -200,7 +197,7 @@ namespace Indihiang.Modules
             this.zedUserAgent2.ScrollMinX = 0;
             this.zedUserAgent2.ScrollMinY = 0;
             this.zedUserAgent2.ScrollMinY2 = 0;
-            this.zedUserAgent2.Size = new System.Drawing.Size(791, 375);
+            this.zedUserAgent2.Size = new System.Drawing.Size(789, 373);
             this.zedUserAgent2.TabIndex = 0;
             // 
             // imageList1
@@ -223,9 +220,10 @@ namespace Indihiang.Modules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.tabMainUserAgent);
             this.Name = "UserAgentControl";
-            this.Size = new System.Drawing.Size(805, 411);
+            this.Size = new System.Drawing.Size(803, 409);
             this.Resize += new System.EventHandler(this.UserAgentControl_Resize);
             this.tabMainUserAgent.ResumeLayout(false);
             this.tabUserAgent1.ResumeLayout(false);

@@ -65,7 +65,7 @@ namespace Indihiang.Modules
             this.tabAccessPage.Location = new System.Drawing.Point(0, 0);
             this.tabAccessPage.Name = "tabAccessPage";
             this.tabAccessPage.SelectedIndex = 0;
-            this.tabAccessPage.Size = new System.Drawing.Size(785, 440);
+            this.tabAccessPage.Size = new System.Drawing.Size(783, 438);
             this.tabAccessPage.TabIndex = 0;
             // 
             // tabPageAccess
@@ -76,7 +76,7 @@ namespace Indihiang.Modules
             this.tabPageAccess.Location = new System.Drawing.Point(4, 26);
             this.tabPageAccess.Name = "tabPageAccess";
             this.tabPageAccess.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageAccess.Size = new System.Drawing.Size(777, 410);
+            this.tabPageAccess.Size = new System.Drawing.Size(775, 408);
             this.tabPageAccess.TabIndex = 0;
             this.tabPageAccess.Text = "Access Page";
             this.tabPageAccess.UseVisualStyleBackColor = true;
@@ -93,7 +93,7 @@ namespace Indihiang.Modules
             this.zedAccessPage1.ScrollMinX = 0;
             this.zedAccessPage1.ScrollMinY = 0;
             this.zedAccessPage1.ScrollMinY2 = 0;
-            this.zedAccessPage1.Size = new System.Drawing.Size(771, 362);
+            this.zedAccessPage1.Size = new System.Drawing.Size(769, 360);
             this.zedAccessPage1.TabIndex = 2;
             // 
             // panel1
@@ -105,7 +105,7 @@ namespace Indihiang.Modules
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(771, 42);
+            this.panel1.Size = new System.Drawing.Size(769, 42);
             this.panel1.TabIndex = 1;
             // 
             // btnGenerate1
@@ -232,9 +232,10 @@ namespace Indihiang.Modules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.tabAccessPage);
             this.Name = "AccessPageControl";
-            this.Size = new System.Drawing.Size(785, 440);
+            this.Size = new System.Drawing.Size(783, 438);
             this.Resize += new System.EventHandler(this.AccessPageControl_Resize);
             this.tabAccessPage.ResumeLayout(false);
             this.tabPageAccess.ResumeLayout(false);
