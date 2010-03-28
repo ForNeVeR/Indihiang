@@ -397,7 +397,8 @@ namespace Indihiang.Cores
             List<Indihiang.DomainObject.DumpData> listDump = new List<Indihiang.DomainObject.DumpData>();
             using (StreamReader sr = new StreamReader(File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                string line = sr.ReadLine();                
+                string line = sr.ReadLine();         
+       
 
                 List<string> currentHeader = new List<string>();
                 while (!string.IsNullOrEmpty(line))
@@ -414,9 +415,10 @@ namespace Indihiang.Cores
                     }
                     else
                     {
+                        line = line.Replace('\0', ' ');
                         #region Parse Data
                         if (!string.IsNullOrEmpty(line))
-                        {
+                        {                                                       
                             string[] rows = line.Split(new char[] { ' ' });
                             if (rows != null)
                             {
@@ -427,70 +429,80 @@ namespace Indihiang.Cores
                                     dump.FullFileName = logFile;
                                     for (int i = 0; i < currentHeader.Count; i++)
                                     {
-                                        if (currentHeader[i].Equals("date"))
+                                        try
                                         {
-                                            val = rows[i];
-                                            DateTime datetime = DateTime.Parse(val);
-                                            dump.Day = datetime.Day;
-                                            dump.Month = datetime.Month;
-                                            dump.Year = datetime.Year;
-                                        }
-                                        if (currentHeader[i].Equals("s-ip"))
-                                            dump.Server_IP = rows[i];
-                                        if (currentHeader[i].Equals("s-port"))
-                                            dump.Server_Port = rows[i];
-                                        if (currentHeader[i].Equals("cs-uri-stem"))
-                                            dump.Page_Access = rows[i];
-                                        if (currentHeader[i].Equals("cs-uri-query"))
-                                            dump.Query_Page_Access = rows[i];
-                                        if (currentHeader[i].Equals("cs-username"))
-                                            dump.Access_Username = rows[i];
-                                        if (currentHeader[i].Equals("c-ip"))
-                                            dump.Client_IP = rows[i];
-                                        if (currentHeader[i].Equals("cs(User-Agent)"))
-                                            dump.User_Agent = IndihiangHelper.CheckUserAgent(rows[i]);
-                                        if (currentHeader[i].Equals("sc-status"))
-                                        {
-                                            if (dump.Protocol_Status.Contains("."))
-                                                dump.Protocol_Status = string.Format("{0}{1}", rows[i], dump.Protocol_Status);
-                                            else
-                                                dump.Protocol_Status = rows[i];
-                                        }
-                                        if (currentHeader[i].Equals("sc-substatus"))
-                                            dump.Protocol_Status = string.Format("{0}.{1}", dump.Protocol_Status, rows[i]);
+                                            if (currentHeader[i].Equals("date"))
+                                            {
+                                                val = rows[i];
+                                                if (string.IsNullOrEmpty(val))
+                                                    continue;
+                                                DateTime datetime = DateTime.Parse(val);
+                                                dump.Day = datetime.Day;
+                                                dump.Month = datetime.Month;
+                                                dump.Year = datetime.Year;
+                                            }
+                                            if (currentHeader[i].Equals("s-ip"))
+                                                dump.Server_IP = rows[i];
+                                            if (currentHeader[i].Equals("s-port"))
+                                                dump.Server_Port = rows[i];
+                                            if (currentHeader[i].Equals("cs-uri-stem"))
+                                                dump.Page_Access = rows[i];
+                                            if (currentHeader[i].Equals("cs-uri-query"))
+                                                dump.Query_Page_Access = rows[i];
+                                            if (currentHeader[i].Equals("cs-username"))
+                                                dump.Access_Username = rows[i];
+                                            if (currentHeader[i].Equals("c-ip"))
+                                                dump.Client_IP = rows[i];
+                                            if (currentHeader[i].Equals("cs(User-Agent)"))
+                                                dump.User_Agent = IndihiangHelper.CheckUserAgent(rows[i]);
+                                            if (currentHeader[i].Equals("sc-status"))
+                                            {
+                                                if (dump.Protocol_Status.Contains("."))
+                                                    dump.Protocol_Status = string.Format("{0}{1}", rows[i], dump.Protocol_Status);
+                                                else
+                                                    dump.Protocol_Status = rows[i];
+                                            }
+                                            if (currentHeader[i].Equals("sc-substatus"))
+                                                dump.Protocol_Status = string.Format("{0}.{1}", dump.Protocol_Status, rows[i]);
 
-                                        if (currentHeader[i].Equals("cs(Referer)"))
-                                        {
-                                            dump.Referer = rows[i];
-                                            dump.RefererClass = IndihiangHelper.GetRefererClass(rows[i]);
-                                        }                                        
+                                            if (currentHeader[i].Equals("cs(Referer)"))
+                                            {
+                                                dump.Referer = rows[i];
+                                                dump.RefererClass = IndihiangHelper.GetRefererClass(rows[i]);
+                                            }
 
-                                        if (currentHeader[i].Equals("sc-bytes"))
-                                        {
-                                            if (!string.IsNullOrEmpty(rows[i]))
-                                                dump.Bytes_Sent = Convert.ToInt64(rows[i]);
-                                            else
-                                                dump.Bytes_Sent = 0;
+                                            if (currentHeader[i].Equals("sc-bytes"))
+                                            {
+                                                if (!string.IsNullOrEmpty(rows[i]))
+                                                    dump.Bytes_Sent = Convert.ToInt64(rows[i]);
+                                                else
+                                                    dump.Bytes_Sent = 0;
+                                            }
+
+                                            if (currentHeader[i].Equals("cs-bytes"))
+                                            {
+                                                if (!string.IsNullOrEmpty(rows[i]))
+                                                    dump.Bytes_Received = Convert.ToInt64(rows[i]);
+                                                else
+                                                    dump.Bytes_Received = 0;
+                                            }
+                                            if (currentHeader[i].Equals("time-taken"))
+                                            {
+                                                if (!string.IsNullOrEmpty(rows[i]))
+                                                    dump.TimeTaken = Convert.ToInt64(rows[i]);
+                                                else
+                                                    dump.TimeTaken = 0;
+                                            }
                                         }
-                                        
-                                        if (currentHeader[i].Equals("cs-bytes"))
+                                        catch (Exception err)
                                         {
-                                            if (!string.IsNullOrEmpty(rows[i]))
-                                                dump.Bytes_Received = Convert.ToInt64(rows[i]);
-                                            else
-                                                dump.Bytes_Received = 0;                                            
+                                            Console.WriteLine(err.Message);
                                         }
-                                        if (currentHeader[i].Equals("time-taken"))
-                                        {
-                                            if (!string.IsNullOrEmpty(rows[i]))
-                                                dump.TimeTaken = Convert.ToInt64(rows[i]);
-                                            else
-                                                dump.TimeTaken = 0;
-                                        }                                     
                                         
                                     }
 
-                                    listDump.Add(dump);
+                                    if (dump.Day>0 && dump.Month>0)
+                                        listDump.Add(dump);
                                 }
                             }
                         }

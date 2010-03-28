@@ -161,7 +161,10 @@ namespace Indihiang.Cores
             if (useExistData)
                 _logFilePath = Path.GetDirectoryName(_fileName);
             else
-                _logFilePath = String.Format("{0}\\Data\\{1}\\", Environment.CurrentDirectory, LogParserId.ToString());
+            {
+                string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                _logFilePath = String.Format("{0}\\Data\\{1}\\", path, LogParserId.ToString());
+            }
 
             //_finish = false;
             //if (_dataQueue == null)
@@ -237,7 +240,11 @@ namespace Indihiang.Cores
             _synContext.Post(OnAnalyzeLog, logInfo);
 
             if (!useExistData)
+            {
+                if (_fileName.StartsWith("--"))
+                    _parser.LogFile = _fileName;
                 _parser.Parse();
+            }
                        
             logInfo = new LogInfoEventArgs(
                    LogParserId.ToString(),
@@ -275,7 +282,8 @@ namespace Indihiang.Cores
             if (!_iisInfo.LocalComputer)
             {
                 RemoteFileCopyHelper.CopyRemoteFiles(_iisInfo);
-                sourceFiles = String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, _iisInfo.RemoteServer, _iisInfo.Id);
+                string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                sourceFiles = String.Format("{0}\\Temp\\{1}{2}\\", path, _iisInfo.RemoteServer, _iisInfo.Id);
             }
             else
                 sourceFiles = String.Format("{0}\\W3SVC{1}\\", _iisInfo.LogPath, _iisInfo.Id);

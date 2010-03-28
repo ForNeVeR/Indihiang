@@ -44,7 +44,10 @@ namespace Indihiang.Forms
             string name = Path.GetFileName(_fileName);
 
             Text = String.Format("Indihiang - {0}", name);
-            _parser.FileName = _fileName;           
+            _parser.FileName = _fileName;
+            _parser.UseExistData = false;
+            _parser.LogParserId = Guid.NewGuid();
+            _parser.UseParallel = true;
             _parser.Analyze();           
         }
         internal void OnAnalyzeLog(object sender, LogInfoEventArgs e)

@@ -194,6 +194,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OpenRemoteIISForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Open Remote IIS";
             ((System.ComponentModel.ISupportInitialize)(this.iISInfoBindingSource1)).EndInit();
             this.ResumeLayout(false);
