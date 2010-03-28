@@ -7,7 +7,7 @@ namespace Indihiang.Cores
     {
         public static void Write(string message)
         {
-            string path = string.Format("{0}\\Log", Environment.CurrentDirectory);
+            string path = string.Format("{0}\\Indihiang\\Log\\", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 

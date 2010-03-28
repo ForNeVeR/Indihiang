@@ -53,7 +53,8 @@ namespace Indihiang.Cores
                     if (!iisInfo.LocalComputer)
                         pathSource = iisInfo.LogPath.Replace(":", "$");
 
-                    string pathDest = String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, iisInfo.RemoteServer, iisInfo.Id);
+                    string dir = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                    string pathDest = String.Format("{0}\\Temp\\{1}{2}\\", dir, iisInfo.RemoteServer, iisInfo.Id);
 
                     wid_admin = new WindowsIdentity(admin_token);
                     wic = wid_admin.Impersonate();
@@ -92,14 +93,15 @@ namespace Indihiang.Cores
 
         private static void ConfigureDestinationPath(IISInfo iisInfo)
         {
-            if (!Directory.Exists(String.Format("{0}\\Temp\\", Environment.CurrentDirectory)))
-                Directory.CreateDirectory(String.Format("{0}\\Temp\\", Environment.CurrentDirectory));
+            string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            if (!Directory.Exists(String.Format("{0}\\Temp\\", path)))
+                Directory.CreateDirectory(String.Format("{0}\\Temp\\", path));
 
-            if (!Directory.Exists(String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, iisInfo.RemoteServer, iisInfo.Id)))
-                Directory.CreateDirectory(String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, iisInfo.RemoteServer, iisInfo.Id));
+            if (!Directory.Exists(String.Format("{0}\\Temp\\{1}{2}\\", path, iisInfo.RemoteServer, iisInfo.Id)))
+                Directory.CreateDirectory(String.Format("{0}\\Temp\\{1}{2}\\", path, iisInfo.RemoteServer, iisInfo.Id));
             else
             {
-                string[] filePaths = Directory.GetFiles(String.Format("{0}\\Temp\\{1}{2}\\", Environment.CurrentDirectory, iisInfo.RemoteServer, iisInfo.Id));
+                string[] filePaths = Directory.GetFiles(String.Format("{0}\\Temp\\{1}{2}\\", path, iisInfo.RemoteServer, iisInfo.Id));
                 Array.ForEach(filePaths, File.Delete);
             }
             

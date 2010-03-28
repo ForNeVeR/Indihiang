@@ -29,6 +29,7 @@ namespace Indihiang.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutIndihiang));
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.labelAssemblyVersion = new System.Windows.Forms.Label();
             this.logoPictureBox = new System.Windows.Forms.PictureBox();
             this.labelProductName = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
@@ -36,7 +37,6 @@ namespace Indihiang.Forms
             this.labelCompanyName = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.labelAssemblyVersion = new System.Windows.Forms.Label();
             this.tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.SuspendLayout();
@@ -68,6 +68,18 @@ namespace Indihiang.Forms
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel.Size = new System.Drawing.Size(417, 273);
             this.tableLayoutPanel.TabIndex = 0;
+            // 
+            // labelAssemblyVersion
+            // 
+            this.labelAssemblyVersion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelAssemblyVersion.Location = new System.Drawing.Point(143, 48);
+            this.labelAssemblyVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
+            this.labelAssemblyVersion.MaximumSize = new System.Drawing.Size(0, 17);
+            this.labelAssemblyVersion.Name = "labelAssemblyVersion";
+            this.labelAssemblyVersion.Size = new System.Drawing.Size(271, 17);
+            this.labelAssemblyVersion.TabIndex = 26;
+            this.labelAssemblyVersion.Text = "Assembly Version";
+            this.labelAssemblyVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // logoPictureBox
             // 
@@ -151,18 +163,6 @@ namespace Indihiang.Forms
             this.textBox1.Size = new System.Drawing.Size(274, 97);
             this.textBox1.TabIndex = 25;
             this.textBox1.Text = "IIS Log analyzer tool.\r\n\r\nCredits:\r\n - ZedGraph (www.zedgraph.org)\r\n";
-            // 
-            // labelAssemblyVersion
-            // 
-            this.labelAssemblyVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelAssemblyVersion.Location = new System.Drawing.Point(143, 48);
-            this.labelAssemblyVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelAssemblyVersion.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelAssemblyVersion.Name = "labelAssemblyVersion";
-            this.labelAssemblyVersion.Size = new System.Drawing.Size(271, 17);
-            this.labelAssemblyVersion.TabIndex = 26;
-            this.labelAssemblyVersion.Text = "Assembly Version";
-            this.labelAssemblyVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // AboutIndihiang
             // 

@@ -7,6 +7,7 @@ using System.IO;
 using Indihiang.DomainObject;
 using Indihiang.Cores;
 using Indihiang.Modules;
+using System.Diagnostics;
 namespace Indihiang.Forms
 {
     public partial class MainForm : Form
@@ -15,7 +16,6 @@ namespace Indihiang.Forms
         private TreeNode _logFileaNode;
         private TreeNode _computersNode;
         private TreeNode _reportFileNode;
-        //private LogParser _parser = null;
         private Dictionary<string, LogParser> _listParser = new Dictionary<string, LogParser>();
         private int _consolidationId;
 
@@ -23,8 +23,6 @@ namespace Indihiang.Forms
         {
             InitializeComponent();
 
-            //_parser = new LogParser();
-            //_parser.AnalyzeLogHandler += new EventHandler<LogInfoEventArgs>(OnAnalyzeLog);            
         }
 
         internal void OnAnalyzeLog(object sender, LogInfoEventArgs e)
@@ -139,7 +137,7 @@ namespace Indihiang.Forms
                         {
                             name1 = "";
 
-                            while (name1 == "")
+                            while (String.Compare(name1, "", false) == 0)
                             {                                
                                 if (frm.ShowDialog() != DialogResult.OK)
                                 {
@@ -271,7 +269,7 @@ namespace Indihiang.Forms
 
         private void visitToIndhiangWebsiteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo("http://www.codeplex.com/indihiang");
+            ProcessStartInfo startInfo = new ProcessStartInfo("http://www.indihiang.com");
             System.Diagnostics.Process.Start(startInfo);
         }
 
@@ -284,8 +282,8 @@ namespace Indihiang.Forms
         {
             if (e.Button == MouseButtons.Right)
             {
-                TCHITTESTINFO HTI = new TCHITTESTINFO(e.X, e.Y);
-                TabPage hotTab = tabMain.TabPages[SendMessage(tabMain.Handle, TCM_HITTEST, IntPtr.Zero, ref HTI)];
+                //TCHITTESTINFO HTI = new TCHITTESTINFO(e.X, e.Y);
+                //TabPage hotTab = tabMain.TabPages[SendMessage(tabMain.Handle, TCM_HITTEST, IntPtr.Zero, ref HTI)];
                 tabMain.ContextMenuStrip = ctxTab;
 
             }
@@ -365,7 +363,7 @@ namespace Indihiang.Forms
                         }
                     }
 
-                    if (selectedTab.Text != "Welcome")
+                    if (String.Compare(selectedTab.Text, "Welcome", false) != 0)
                         tabMain.TabPages.Remove(selectedTab);
 
                     if (key.StartsWith("$$"))
@@ -395,7 +393,7 @@ namespace Indihiang.Forms
                 {
 
                     int index = tabMain.TabPages.Count - 1;
-                    if (tabMain.TabPages[index].Text != "Welcome")
+                    if (String.Compare(tabMain.TabPages[index].Text, "Welcome", false) != 0)
                         tabMain.TabPages.RemoveAt(index);
                 }
 
@@ -433,7 +431,7 @@ namespace Indihiang.Forms
                 int totalTabs = tabMain.TabPages.Count;
                 for (int i = 0; i < totalTabs; i++)
                 {
-                    if (tabMain.TabPages[i].Text != "Welcome")
+                    if (String.Compare(tabMain.TabPages[i].Text, "Welcome", false) != 0)
                     {
                         if (!tabMain.TabPages[i].Tag.ToString().StartsWith("$$"))
                         {
@@ -554,7 +552,7 @@ namespace Indihiang.Forms
         private void howToUseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // version 1.0
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo("http://www.indihiang.net");
+            ProcessStartInfo startInfo = new ProcessStartInfo("http://wiki.indihiang.com");
             System.Diagnostics.Process.Start(startInfo);
         }
 
@@ -563,12 +561,20 @@ namespace Indihiang.Forms
             Close();
         }
 
+        private void checkNewVersionToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            CheckLatestVersionForm frm = new CheckLatestVersionForm();
+            frm.ShowDialog();
+        }
+
 
         private void exportDataToToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TreeNode selected = treeMain.SelectedNode;
             if (selected != null)
             {
+                if (selected.Tag == null)
+                    return;
                 string key = (string)selected.Tag;
                 if (key.StartsWith("$$") || key.StartsWith("!!"))
                     key = key.Substring(2);
@@ -597,6 +603,40 @@ namespace Indihiang.Forms
             else
             {
                 MessageBox.Show("Choice log data that you want to export", "Information");
+            }
+        }
+        private void browsePhysicalFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode selected = treeMain.SelectedNode;
+            if (selected != null)
+            {
+                if (selected.Tag == null)
+                    return;
+                string key = (string)selected.Tag;
+                if (key.StartsWith("$$") || key.StartsWith("!!"))
+                    key = key.Substring(2);
+
+                if (!string.IsNullOrEmpty(key))
+                {
+                    if (_listParser.ContainsKey(key))
+                    {
+                        string path = _listParser[key].LogFilePath;
+                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo(path);
+                        System.Diagnostics.Process.Start(startInfo);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Choice log data that you want to browse", "Information");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Choice log data that you want to browse", "Information");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Choice log data that you want to browse", "Information");
             }
         }
 
@@ -749,8 +789,7 @@ namespace Indihiang.Forms
             }
         }
         [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);
-                               
+        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);                                              
         
         ///////////////////////////////////////////////////
     }

@@ -12,15 +12,17 @@ namespace Indihiang
         [STAThread]
         static void Main(string[] args)
         {
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //args = new string[] { "c:\\Data_sample_2008.log" };           
+            //args = new string[] { @"C:\Users\Agus Kurniawan\Documents\PECollege\indihiang\Sample Log\ex081221.log" };           
             if (args.Length >= 1)
                 Application.Run(new LightIndihiangForm(args[0]));
             else
                 Application.Run(new MainForm());
-
+           
+ 
             Application.ThreadException += Application_ThreadException;
         }
 

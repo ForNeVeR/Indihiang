@@ -43,14 +43,16 @@ namespace Indihiang.Cores
         }
         public static string GetIPCountryDb()
         {
-            return String.Format("{0}\\media\\ipcountry.db", Environment.CurrentDirectory);
+            string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            return String.Format("{0}\\Media\\ipcountry.db", path);
         }
         public static string GetIndihiangFile(string year,string guid)
         {
             if (string.IsNullOrEmpty(year))
                 return string.Empty;
 
-            return String.Format("{0}\\data\\{1}\\log{2}.dat", Environment.CurrentDirectory, guid, year);
+            string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            return String.Format("{0}\\Data\\{1}\\log{2}.dat", path, guid, year);
         }
         public static List<string> GetIndihiangFileList(string guid)
         {
@@ -62,7 +64,8 @@ namespace Indihiang.Cores
             }
             else
             {
-                string path = String.Format("{0}\\data\\{1}\\", Environment.CurrentDirectory, guid);
+                string dir = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                string path = String.Format("{0}\\Data\\{1}\\", dir, guid);
                 list = new List<string>(Directory.GetFiles(path, "*.dat"));
             }
 
@@ -76,7 +79,8 @@ namespace Indihiang.Cores
             if (!Directory.Exists(Path.GetDirectoryName(file)))
                 Directory.CreateDirectory(Path.GetDirectoryName(file));
 
-            string sourceFile = String.Format("{0}\\media\\dump_indihiang.dat", Environment.CurrentDirectory);
+            string dir = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            string sourceFile = String.Format("{0}\\Media\\dump_indihiang.dat", dir);
             try
             {
                 File.Copy(sourceFile, file);                
@@ -328,7 +332,7 @@ namespace Indihiang.Cores
             int i;
             string[] arrDec;
             double num = 0;
-            if (IPaddress == "" || IPaddress.StartsWith("::"))
+            if (IPaddress == "" || IPaddress.Contains("::"))
             {
                 return 0;
             }

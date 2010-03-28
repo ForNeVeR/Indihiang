@@ -87,6 +87,7 @@ namespace Indihiang.Forms
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ConsolidateForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Log File Consolidation Form";
             this.ResumeLayout(false);
             this.PerformLayout();

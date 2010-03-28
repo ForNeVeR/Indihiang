@@ -55,6 +55,7 @@ namespace Indihiang.Forms
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripOpenLogFile = new System.Windows.Forms.ToolStripButton();
             this.toolStripOpenComputer = new System.Windows.Forms.ToolStripButton();
+            this.toolStripOpenReportLogFile = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripRunAnalyzer = new System.Windows.Forms.ToolStripButton();
             this.imgList = new System.Windows.Forms.ImageList(this.components);
@@ -85,7 +86,7 @@ namespace Indihiang.Forms
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.closeAllToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.openResultLogFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.toolStripOpenReportLogFile = new System.Windows.Forms.ToolStripButton();
+            this.browsePhysicalFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -237,6 +238,7 @@ namespace Indihiang.Forms
             this.checkNewVersionToolStripMenuItem1.Name = "checkNewVersionToolStripMenuItem1";
             this.checkNewVersionToolStripMenuItem1.Size = new System.Drawing.Size(206, 22);
             this.checkNewVersionToolStripMenuItem1.Text = "Check New Version";
+            this.checkNewVersionToolStripMenuItem1.Click += new System.EventHandler(this.checkNewVersionToolStripMenuItem1_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -302,6 +304,16 @@ namespace Indihiang.Forms
             this.toolStripOpenComputer.Size = new System.Drawing.Size(23, 22);
             this.toolStripOpenComputer.ToolTipText = "View current log file on remote computer";
             this.toolStripOpenComputer.Click += new System.EventHandler(this.toolStripOpenComputer_Click);
+            // 
+            // toolStripOpenReportLogFile
+            // 
+            this.toolStripOpenReportLogFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripOpenReportLogFile.Image = ((System.Drawing.Image)(resources.GetObject("toolStripOpenReportLogFile.Image")));
+            this.toolStripOpenReportLogFile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripOpenReportLogFile.Name = "toolStripOpenReportLogFile";
+            this.toolStripOpenReportLogFile.Size = new System.Drawing.Size(23, 22);
+            this.toolStripOpenReportLogFile.ToolTipText = "Open report log file";
+            this.toolStripOpenReportLogFile.Click += new System.EventHandler(this.toolStripOpenReportLogFile_Click);
             // 
             // toolStripSeparator1
             // 
@@ -497,10 +509,11 @@ namespace Indihiang.Forms
             // 
             this.ctxTree3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportDataToDatabaseServerToolStripMenuItem,
+            this.browsePhysicalFolderToolStripMenuItem,
             this.toolStripMenuItem7,
             this.closeToolStripMenuItem2});
             this.ctxTree3.Name = "contextMenuStrip1";
-            this.ctxTree3.Size = new System.Drawing.Size(235, 54);
+            this.ctxTree3.Size = new System.Drawing.Size(235, 98);
             // 
             // exportDataToDatabaseServerToolStripMenuItem
             // 
@@ -561,15 +574,12 @@ namespace Indihiang.Forms
             // 
             this.openResultLogFileDialog.Filter = "Report log file|*.dat|All report files|*.*";
             // 
-            // toolStripOpenReportLogFile
+            // browsePhysicalFolderToolStripMenuItem
             // 
-            this.toolStripOpenReportLogFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripOpenReportLogFile.Image = ((System.Drawing.Image)(resources.GetObject("toolStripOpenReportLogFile.Image")));
-            this.toolStripOpenReportLogFile.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripOpenReportLogFile.Name = "toolStripOpenReportLogFile";
-            this.toolStripOpenReportLogFile.Size = new System.Drawing.Size(23, 22);
-            this.toolStripOpenReportLogFile.ToolTipText = "Open report log file";
-            this.toolStripOpenReportLogFile.Click += new System.EventHandler(this.toolStripOpenReportLogFile_Click);
+            this.browsePhysicalFolderToolStripMenuItem.Name = "browsePhysicalFolderToolStripMenuItem";
+            this.browsePhysicalFolderToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.browsePhysicalFolderToolStripMenuItem.Text = "Browse Physical Folder";
+            this.browsePhysicalFolderToolStripMenuItem.Click += new System.EventHandler(this.browsePhysicalFolderToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -670,6 +680,7 @@ namespace Indihiang.Forms
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
         private System.Windows.Forms.OpenFileDialog openResultLogFileDialog;
         private System.Windows.Forms.ToolStripButton toolStripOpenReportLogFile;
+        private System.Windows.Forms.ToolStripMenuItem browsePhysicalFolderToolStripMenuItem;
 
     }
 }
