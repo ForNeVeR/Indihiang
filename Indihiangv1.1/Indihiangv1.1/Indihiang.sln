@@ -1,6 +1,6 @@
 
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indihiang", "Indihiang\Indihiang.csproj", "{C0C487B2-AB24-474A-AAEB-AA09C632EAD9}"
 EndProject
 Global
@@ -10,7 +10,7 @@ Global
 		SccTeamFoundationServer = https://tfs09.codeplex.com/
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = Indihiang\\Indihiang.csproj
-		SccProjectName1 = Indihiang/Indihiang
+		SccProjectName1 = Indihiang
 		SccLocalPath1 = Indihiang
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
