@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Indihiang.Cores.BaseLogParser">
+    <Position X="4" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAgIAAAAAAAAAAIAAABAAAAAAiBAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Cores\BaseLogParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Indihiang.Cores.W3cExtendedLogParser">
+    <Position X="7" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Cores\W3cExtendedLogParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Indihiang.Cores.LogParser">
+    <Position X="1.25" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAIAAYQAAgABAAABEIEAAAAAIBAAAABgAAA=</HashCode>
+      <FileName>Cores\LogParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
