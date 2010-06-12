@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Collections;
+using System.Collections.Concurrent;
 
 using Indihiang.Data;
 namespace Indihiang.Cores
@@ -14,7 +14,6 @@ namespace Indihiang.Cores
     {
  
         private SynchronizationContext _synContext;
-        private LazyInit<TaskManager> _taskManager;
         private ConcurrentQueue<List<Indihiang.DomainObject.DumpData>> _dumpLogQueue;
         private Thread _dataQueue;
         private bool _finish;
@@ -38,12 +37,7 @@ namespace Indihiang.Cores
 
         private void Initilaize()
         {
-            _synContext = AsyncOperationManager.SynchronizationContext;
-
-            _taskManager = new LazyInit<TaskManager>(() => new TaskManager(
-                              new TaskManagerPolicy(1, Environment.ProcessorCount)),
-                              LazyInitMode.AllowMultipleExecution);
-
+            _synContext = AsyncOperationManager.SynchronizationContext;        
             _dumpLogQueue = new ConcurrentQueue<List<Indihiang.DomainObject.DumpData>>();
         }
 
