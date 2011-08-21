@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 using Indihiang.Data;
 namespace Indihiang.Cores
@@ -83,11 +84,22 @@ namespace Indihiang.Cores
             string sourceFile = String.Format("{0}\\Media\\dump_indihiang.dat", dir);
             try
             {
-                File.Copy(sourceFile, file);                
-                
+                File.Copy(sourceFile, file);
+				return;
             }
-            catch (Exception) { }
+            catch (Exception/* err*/)
+			{
+				//
+			}
 
+			try
+			{
+				File.Copy("dump_indihiang.dat", file);
+			}
+			catch (Exception err)
+			{
+				System.Windows.Forms.MessageBox.Show("Failed to copy database template.\nNo data can be presented to you.\n\nException: " + err.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+			}
         }
 
         public static string GetYearDataIndihiangFile(string file)
@@ -338,12 +350,23 @@ namespace Indihiang.Cores
             }
             else
             {
-                arrDec = IPaddress.Split('.');
-                for (i = arrDec.Length - 1; i >= 0; i--)
-                {
-                    num += ((int.Parse(arrDec[i]) % 256) * Math.Pow(256, (3 - i)));
-                }
-                return num;
+				try
+				{
+					MatchCollection matches = Regex.Matches(IPaddress, @"\d+\.\d+\.\d+\.\d+");
+					if (matches.Count != 0)
+						IPaddress = matches[matches.Count - 1].Value;
+
+					arrDec = IPaddress.Split('.');
+					for (i = arrDec.Length - 1; i >= 0; i--)
+					{
+						num += ((int.Parse(arrDec[i]) % 256) * Math.Pow(256, (3 - i)));
+					}
+					return num;
+				}
+				catch
+				{
+					return 0;
+				}
             }
         }
 

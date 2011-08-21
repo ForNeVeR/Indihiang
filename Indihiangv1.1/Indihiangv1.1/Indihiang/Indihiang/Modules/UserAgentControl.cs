@@ -323,7 +323,8 @@ namespace Indihiang.Modules
                 if (_listYears != null)
                 {
                     cboParams.Items.AddRange(_listYears.ToArray());
-                    cboParams.SelectedIndex = 0;
+					if (cboParams.Items.Count > 0)
+						cboParams.SelectedIndex = 0;
                 }
             }
             if (cboReport.SelectedIndex == 1)
@@ -331,7 +332,8 @@ namespace Indihiang.Modules
                 if (_listYearMonth != null)
                 {
                     cboParams.Items.AddRange(_listYearMonth.ToArray());
-                    cboParams.SelectedIndex = 0;
+					if (cboParams.Items.Count > 0)
+						cboParams.SelectedIndex = 0;
                 }
             }
         }

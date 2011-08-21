@@ -149,7 +149,7 @@ namespace Indihiang.Cores.Features
                         }
                     }
                 }
-                IndihiangHelper.DumpToFile(_parserId.ToString(), String.Format("{0}.txt", _featureName), _logs["TimeTaken"].Colls);
+                //IndihiangHelper.DumpToFile(_parserId.ToString(), String.Format("{0}.txt", _featureName), _logs["TimeTaken"].Colls);
                 success = true;
             }
             catch (Exception err)

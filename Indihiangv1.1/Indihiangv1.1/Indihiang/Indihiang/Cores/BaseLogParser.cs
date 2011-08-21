@@ -282,35 +282,38 @@ namespace Indihiang.Cores
                 {
                     if (_dumpLogQueue.TryDequeue(out listDump))
                     {
-                        for (int j = 0; j < listDump.Count; j++)
-                        {
-                            if (!string.IsNullOrEmpty(listDump[j].Client_IP))
-                            {
-                                if (!cacheIpCountry.ContainsKey(listDump[j].Client_IP))
-                                {
-                                    double ip = IndihiangHelper.IPAddressToNumber(listDump[j].Client_IP);
-                                    for (int k = 0; k < listIpCountry.Count; k++)
-                                    {
-                                        if (ip >= listIpCountry[k].IpStart && ip <= listIpCountry[k].IpEnd)
-                                        {
-                                            Indihiang.DomainObject.DumpData obj = listDump[j];
-                                            obj.IPClientCountry = listIpCountry[k].CoutryName;
-                                            listDump[j] = obj;
+						if (Indihiang.Properties.Settings.Default.FindCountries)
+						{
+							for (int j = 0; j < listDump.Count; j++)
+							{
+								if (!string.IsNullOrEmpty(listDump[j].Client_IP))
+								{
+									if (!cacheIpCountry.ContainsKey(listDump[j].Client_IP))
+									{
+										double ip = IndihiangHelper.IPAddressToNumber(listDump[j].Client_IP);
+										for (int k = 0; k < listIpCountry.Count; k++)
+										{
+											if (ip >= listIpCountry[k].IpStart && ip <= listIpCountry[k].IpEnd)
+											{
+												Indihiang.DomainObject.DumpData obj = listDump[j];
+												obj.IPClientCountry = listIpCountry[k].CoutryName;
+												listDump[j] = obj;
 
-                                            cacheIpCountry.Add(listDump[j].Client_IP, listIpCountry[k].CoutryName);
-                                            break;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    Indihiang.DomainObject.DumpData obj = listDump[j];
-                                    obj.IPClientCountry = cacheIpCountry[listDump[j].Client_IP];
-                                    listDump[j] = obj;
-                                }
-                            }
+												cacheIpCountry.Add(listDump[j].Client_IP, listIpCountry[k].CoutryName);
+												break;
+											}
+										}
+									}
+									else
+									{
+										Indihiang.DomainObject.DumpData obj = listDump[j];
+										obj.IPClientCountry = cacheIpCountry[listDump[j].Client_IP];
+										listDump[j] = obj;
+									}
+								}
 
-                        }    
+							}
+						}
                         PerformDump(listDump);
                         listDump.Clear();
                     }
@@ -333,35 +336,38 @@ namespace Indihiang.Cores
                 {
                     Debug.WriteLine(string.Format("Dump data: {0}:{1}", i+1,_dumpLogQueue.Count));
 
-                    for (int j = 0; j < list[i].Count; j++)
-                    {
-                        if (!string.IsNullOrEmpty(list[i][j].Client_IP))
-                        {
-                            if (!cacheIpCountry.ContainsKey(list[i][j].Client_IP))
-                            {
-                                double ip = IndihiangHelper.IPAddressToNumber(list[i][j].Client_IP);
-                                for (int k = 0; k < listIpCountry.Count; k++)
-                                {
-                                    if (ip >= listIpCountry[k].IpStart && ip <= listIpCountry[k].IpEnd)
-                                    {
-                                        Indihiang.DomainObject.DumpData obj = list[i][j];
-                                        obj.IPClientCountry = listIpCountry[k].CoutryName;
-                                        list[i][j] = obj;
+					if (Indihiang.Properties.Settings.Default.FindCountries)
+					{
+						for (int j = 0; j < list[i].Count; j++)
+						{
+							if (!string.IsNullOrEmpty(list[i][j].Client_IP))
+							{
+								if (!cacheIpCountry.ContainsKey(list[i][j].Client_IP))
+								{
+									double ip = IndihiangHelper.IPAddressToNumber(list[i][j].Client_IP);
+									for (int k = 0; k < listIpCountry.Count; k++)
+									{
+										if (ip >= listIpCountry[k].IpStart && ip <= listIpCountry[k].IpEnd)
+										{
+											Indihiang.DomainObject.DumpData obj = list[i][j];
+											obj.IPClientCountry = listIpCountry[k].CoutryName;
+											list[i][j] = obj;
 
-                                        cacheIpCountry.Add(list[i][j].Client_IP, listIpCountry[k].CoutryName);
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Indihiang.DomainObject.DumpData obj = list[i][j];
-                                obj.IPClientCountry = cacheIpCountry[list[i][j].Client_IP];
-                                list[i][j] = obj;
-                            }
-                        }
-                        
-                    }                        
+											cacheIpCountry.Add(list[i][j].Client_IP, listIpCountry[k].CoutryName);
+											break;
+										}
+									}
+								}
+								else
+								{
+									Indihiang.DomainObject.DumpData obj = list[i][j];
+									obj.IPClientCountry = cacheIpCountry[list[i][j].Client_IP];
+									list[i][j] = obj;
+								}
+							}
+
+						}
+					}
                     PerformDump(list[i]);
                     list[i].Clear();
                 }                
@@ -395,130 +401,150 @@ namespace Indihiang.Cores
         protected void RunParse(string logFile)
         {
             List<Indihiang.DomainObject.DumpData> listDump = new List<Indihiang.DomainObject.DumpData>();
-            using (StreamReader sr = new StreamReader(File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.Read)))
-            {
-                string line = sr.ReadLine();         
-       
+			bool bRead = false;
+			DateTime dt = DateTime.Now;
+			string strError = "(unknown)";
+retry:
+			if (((DateTime.Now - dt).TotalSeconds > 5) && (System.Windows.Forms.MessageBox.Show("Timed out trying to open log file:\n\n" + logFile + "\n\nError: " + strError + "\n\nTry again?", "Time out", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning, System.Windows.Forms.MessageBoxDefaultButton.Button1) != System.Windows.Forms.DialogResult.Yes))
+				return;
+			try
+			{
+				using (StreamReader sr = new StreamReader(File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))	// FileShare.Read
+				{
+					bRead = true;
 
-                List<string> currentHeader = new List<string>();
-                while (!string.IsNullOrEmpty(line))
-                {
-                    if (IsLogHeader(line))
-                    {
-                        #region Parse Header
-                        List<string> list1 = ParseHeader(line);
-                        if (list1 != null)
-                        {
-                            currentHeader = new List<string>(list1);
-                        }
-                        #endregion
-                    }
-                    else
-                    {
-                        line = line.Replace('\0', ' ');
-                        #region Parse Data
-                        if (!string.IsNullOrEmpty(line))
-                        {                                                       
-                            string[] rows = line.Split(new char[] { ' ' });
-                            if (rows != null)
-                            {
-                                if (rows.Length > 0)
-                                {
-                                    string val = string.Empty;
-                                    Indihiang.DomainObject.DumpData dump = new Indihiang.DomainObject.DumpData();
-                                    dump.FullFileName = logFile;
-                                    for (int i = 0; i < currentHeader.Count; i++)
-                                    {
-                                        try
-                                        {
-                                            if (currentHeader[i].Equals("date"))
-                                            {
-                                                val = rows[i];
-                                                if (string.IsNullOrEmpty(val))
-                                                    continue;
-                                                DateTime datetime = DateTime.Parse(val);
-                                                dump.Day = datetime.Day;
-                                                dump.Month = datetime.Month;
-                                                dump.Year = datetime.Year;
-                                            }
-                                            if (currentHeader[i].Equals("s-ip"))
-                                                dump.Server_IP = rows[i];
-                                            if (currentHeader[i].Equals("s-port"))
-                                                dump.Server_Port = rows[i];
-                                            if (currentHeader[i].Equals("cs-uri-stem"))
-                                                dump.Page_Access = rows[i];
-                                            if (currentHeader[i].Equals("cs-uri-query"))
-                                                dump.Query_Page_Access = rows[i];
-                                            if (currentHeader[i].Equals("cs-username"))
-                                                dump.Access_Username = rows[i];
-                                            if (currentHeader[i].Equals("c-ip"))
-                                                dump.Client_IP = rows[i];
-                                            if (currentHeader[i].Equals("cs(User-Agent)"))
-                                                dump.User_Agent = IndihiangHelper.CheckUserAgent(rows[i]);
-                                            if (currentHeader[i].Equals("sc-status"))
-                                            {
-                                                if (dump.Protocol_Status.Contains("."))
-                                                    dump.Protocol_Status = string.Format("{0}{1}", rows[i], dump.Protocol_Status);
-                                                else
-                                                    dump.Protocol_Status = rows[i];
-                                            }
-                                            if (currentHeader[i].Equals("sc-substatus"))
-                                                dump.Protocol_Status = string.Format("{0}.{1}", dump.Protocol_Status, rows[i]);
+					string line = sr.ReadLine();
 
-                                            if (currentHeader[i].Equals("cs(Referer)"))
-                                            {
-                                                dump.Referer = rows[i];
-                                                dump.RefererClass = IndihiangHelper.GetRefererClass(rows[i]);
-                                            }
+					List<string> currentHeader = new List<string>();
+					while (!string.IsNullOrEmpty(line))
+					{
+						if (IsLogHeader(line))
+						{
+							#region Parse Header
+							List<string> list1 = ParseHeader(line);
+							if (list1 != null)
+							{
+								currentHeader = new List<string>(list1);
+							}
+							#endregion
+						}
+						else
+						{
+							line = line.Replace('\0', ' ');
+							#region Parse Data
+							if (!string.IsNullOrEmpty(line))
+							{
+								string[] rows = line.Split(new char[] { ' ' });
+								if (rows != null)
+								{
+									if (rows.Length > 0)
+									{
+										string val = string.Empty;
+										Indihiang.DomainObject.DumpData dump = new Indihiang.DomainObject.DumpData();
+										dump.FullFileName = logFile;
+										for (int i = 0; i < currentHeader.Count; i++)
+										{
+											try
+											{
+												if (currentHeader[i].Equals("date"))
+												{
+													val = rows[i];
+													if (string.IsNullOrEmpty(val))
+														continue;
+													DateTime datetime = DateTime.Parse(val);
+													dump.Day = datetime.Day;
+													dump.Month = datetime.Month;
+													dump.Year = datetime.Year;
+												}
+												if (currentHeader[i].Equals("s-ip"))
+													dump.Server_IP = rows[i];
+												if (currentHeader[i].Equals("s-port"))
+													dump.Server_Port = rows[i];
+												if (currentHeader[i].Equals("cs-uri-stem"))
+													dump.Page_Access = rows[i];
+												if (currentHeader[i].Equals("cs-uri-query"))
+													dump.Query_Page_Access = rows[i];
+												if (currentHeader[i].Equals("cs-username"))
+													dump.Access_Username = rows[i];
+												if (currentHeader[i].Equals("c-ip"))
+													dump.Client_IP = rows[i];
+												if (currentHeader[i].Equals("cs(User-Agent)"))
+													dump.User_Agent = IndihiangHelper.CheckUserAgent(rows[i]);
+												if (currentHeader[i].Equals("sc-status"))
+												{
+													if (dump.Protocol_Status.Contains("."))
+														dump.Protocol_Status = string.Format("{0}{1}", rows[i], dump.Protocol_Status);
+													else
+														dump.Protocol_Status = rows[i];
+												}
+												if (currentHeader[i].Equals("sc-substatus"))
+													dump.Protocol_Status = string.Format("{0}.{1}", dump.Protocol_Status, rows[i]);
 
-                                            if (currentHeader[i].Equals("sc-bytes"))
-                                            {
-                                                if (!string.IsNullOrEmpty(rows[i]))
-                                                    dump.Bytes_Sent = Convert.ToInt64(rows[i]);
-                                                else
-                                                    dump.Bytes_Sent = 0;
-                                            }
+												if (currentHeader[i].Equals("cs(Referer)"))
+												{
+													dump.Referer = rows[i];
+													dump.RefererClass = IndihiangHelper.GetRefererClass(rows[i]);
+												}
 
-                                            if (currentHeader[i].Equals("cs-bytes"))
-                                            {
-                                                if (!string.IsNullOrEmpty(rows[i]))
-                                                    dump.Bytes_Received = Convert.ToInt64(rows[i]);
-                                                else
-                                                    dump.Bytes_Received = 0;
-                                            }
-                                            if (currentHeader[i].Equals("time-taken"))
-                                            {
-                                                if (!string.IsNullOrEmpty(rows[i]))
-                                                    dump.TimeTaken = Convert.ToInt64(rows[i]);
-                                                else
-                                                    dump.TimeTaken = 0;
-                                            }
-                                        }
-                                        catch (Exception err)
-                                        {
-                                            Console.WriteLine(err.Message);
-                                        }
-                                        
-                                    }
+												if (currentHeader[i].Equals("sc-bytes"))
+												{
+													if (!string.IsNullOrEmpty(rows[i]))
+														dump.Bytes_Sent = Convert.ToInt64(rows[i]);
+													else
+														dump.Bytes_Sent = 0;
+												}
 
-                                    if (dump.Day>0 && dump.Month>0)
-                                        listDump.Add(dump);
-                                }
-                            }
-                        }
-                        #endregion
-                    }
+												if (currentHeader[i].Equals("cs-bytes"))
+												{
+													if (!string.IsNullOrEmpty(rows[i]))
+														dump.Bytes_Received = Convert.ToInt64(rows[i]);
+													else
+														dump.Bytes_Received = 0;
+												}
+												if (currentHeader[i].Equals("time-taken"))
+												{
+													if (!string.IsNullOrEmpty(rows[i]))
+														dump.TimeTaken = Convert.ToInt64(rows[i]);
+													else
+														dump.TimeTaken = 0;
+												}
+											}
+											catch (Exception err)
+											{
+												Console.WriteLine(err.Message);
+											}
 
-                    line = sr.ReadLine();
-                    if (!string.IsNullOrEmpty(line))
-                        line = line.Trim();
-                }
-                if (listDump.Count > 0)
-                    _dumpLogQueue.Enqueue(listDump);
+										}
 
-            }
+										if (dump.Day > 0 && dump.Month > 0)
+											listDump.Add(dump);
+									}
+								}
+							}
+							#endregion
+						}
+
+						line = sr.ReadLine();
+						if (!string.IsNullOrEmpty(line))
+							line = line.Trim();
+					}
+					if (listDump.Count > 0)
+						_dumpLogQueue.Enqueue(listDump);
+
+				}
+			}
+			/*catch (IOException)
+			{
+				//
+			}*/
+			catch (Exception ex)
+			{
+				strError = ex.Message;
+			}
+
+			if (bRead == false)
+				goto retry;
         }
-
 
         protected abstract bool IsLogHeader(string line);
         protected abstract List<string> ParseHeader(string line);

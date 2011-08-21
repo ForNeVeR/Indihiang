@@ -414,9 +414,13 @@ namespace Indihiang.Data
 
         public List<Indihiang.DomainObject.IPCountry> GetAllIpCountry()
         {
+			List<Indihiang.DomainObject.IPCountry> list = new List<Indihiang.DomainObject.IPCountry>();
+
+			if (Indihiang.Properties.Settings.Default.FindCountries == false)
+				return list;
+
             SQLiteConnection con = null;
             SQLiteDataReader rd = null;
-            List<Indihiang.DomainObject.IPCountry> list = new List<Indihiang.DomainObject.IPCountry>();
             try
             {
                 con = new SQLiteConnection(GetConnectionStrng());
@@ -448,6 +452,8 @@ namespace Indihiang.Data
             catch (Exception err)
             {
                 System.Diagnostics.Debug.WriteLine(err.StackTrace);
+
+				System.Windows.Forms.MessageBox.Show("There was an error reading the country IP ranges.\n\nHave you installed the \'ipcountry.db\' database into (User Profile Application Data)\\Indihiang\\Media?\n\nException: " + err.Message, "Exception", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
             }
             finally
             {

@@ -68,19 +68,42 @@ namespace Indihiang.Cores
 
             if (File.Exists(logFile))
             {
-                using (StreamReader sr = new StreamReader(logFile))
-                {
-                    string l1 = sr.ReadLine();
-                    string l2 = sr.ReadLine();
-                    string l3 = sr.ReadLine();
-                    if (l1.StartsWith("#") && l2.StartsWith("#") && l3.StartsWith("#"))
-                        logFormat = EnumLogFile.W3CEXT;
-                }
+				bool bRead = false;
+				DateTime dt = DateTime.Now;
+				string strError = "(unknown)";
+			retry:
+				if (((DateTime.Now - dt).TotalSeconds > 5) && (System.Windows.Forms.MessageBox.Show("Timed out trying to open log file:\n\n" + logFile + "\n\nError: " + strError + "\n\nTry again?", "Time out", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning, System.Windows.Forms.MessageBoxDefaultButton.Button1) != System.Windows.Forms.DialogResult.Yes))
+					return logFormat;
+				try
+				{
+					//using (StreamReader sr = new StreamReader(logFile))
+					using (FileStream fs = File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+					{
+						bRead = true;
+						using (StreamReader sr = new StreamReader(fs))
+						{
+							string l1 = sr.ReadLine();
+							string l2 = sr.ReadLine();
+							string l3 = sr.ReadLine();
+							if (l1.StartsWith("#") && l2.StartsWith("#") && l3.StartsWith("#"))
+								logFormat = EnumLogFile.W3CEXT;
+						}
+					}
+				}
+				/*catch (IOException)
+				{
+					//
+				}*/
+				catch (Exception ex)
+				{
+					strError = ex.Message;
+				}
+
+				if (bRead == false)
+					goto retry;
             }
 
             return logFormat;
         }
-
-        
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using Indihiang.Forms;
+
 namespace Indihiang
 {
     static class Program
@@ -12,18 +13,20 @@ namespace Indihiang
         [STAThread]
         static void Main(string[] args)
         {
-            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+			Application.ThreadException += Application_ThreadException;
+
             //args = new string[] { @"C:\Users\Agus Kurniawan\Documents\PECollege\indihiang\Sample Log\ex081221.log" };           
-            if (args.Length >= 1)
-                Application.Run(new LightIndihiangForm(args[0]));
-            else
-                Application.Run(new MainForm());
-           
- 
-            Application.ThreadException += Application_ThreadException;
+			if (args.Length >= 1)
+				Application.Run(new LightIndihiangForm(args[0]));
+			else
+			{
+				Application.Run(new MainForm());
+
+				Indihiang.Properties.Settings.Default.Save();
+			}
         }
 
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
