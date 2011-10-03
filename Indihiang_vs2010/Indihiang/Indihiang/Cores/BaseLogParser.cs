@@ -17,6 +17,7 @@ namespace Indihiang.Cores
         private ConcurrentQueue<List<Indihiang.DomainObject.DumpData>> _dumpLogQueue;
         private Thread _dataQueue;
         private bool _finish;
+        private bool _allDone;
         private ManualResetEventSlim _exitDump;
 
 
@@ -52,12 +53,13 @@ namespace Indihiang.Cores
         public bool Parse()
         {
             bool success = false;
-            if (_dataQueue == null)
-                _dataQueue = new Thread(DumpData);
+            //if (_dataQueue == null)
+            //    _dataQueue = new Thread(DumpData);
 
+            _allDone = false;
             _finish = false;
-            _dataQueue.IsBackground = true;
-            _dataQueue.Start();
+            //_dataQueue.IsBackground = true;
+            //_dataQueue.Start();
 
             List<string> listFiles = new List<string>();
             if (LogFile.StartsWith("--"))
@@ -76,11 +78,11 @@ namespace Indihiang.Cores
                 listFiles.Add(LogFile.ToLower().Trim());
             }
 
-            success = ParallelParse(success, listFiles);
+            success = SequentialParse(success, listFiles);//ParallelParse(success, listFiles);
 
             _finish = true;
             Thread.Sleep(100);
-            ExitDumpThread();
+            //ExitDumpThread();
 
             return success;
         }
@@ -245,6 +247,157 @@ namespace Indihiang.Cores
             return success;
         }
 
+        private bool SequentialParse(bool success, List<string> listFiles)
+        {
+            try
+            {
+                //List<ManualResetEventSlim> resets = new List<ManualResetEventSlim>();
+                //_exitDump = new ManualResetEventSlim(false);
+
+                DataHelper helper = new DataHelper(IndihiangHelper.GetIPCountryDb());
+                List<Indihiang.DomainObject.IPCountry> listIpCountry = helper.GetAllIpCountry();
+
+                Dictionary<string, string> cacheIpCountry = new Dictionary<string, string>();
+                cacheIpCountry.Add("127.0.0.1", "(Local)");
+
+                for (int i = 0; i < listFiles.Count; i++)
+                {
+                    LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                                   ParserID,
+                                   EnumLogFile.UNKNOWN,
+                                   LogProcessStatus.SUCCESS,
+                                   "Parse()",
+                                   String.Format("Run Parse on file {0}", listFiles[i]));
+                    _synContext.Post(OnParseLog, logInfo);
+
+                    try
+                    {
+                        RunParse(listFiles[i]);
+                        DumpPartial(listIpCountry, cacheIpCountry);
+
+                        logInfo = new LogInfoEventArgs(
+                                   ParserID,
+                                   EnumLogFile.UNKNOWN,
+                                   LogProcessStatus.SUCCESS,
+                                   "Parse()",
+                                   String.Format("Run Parse : {0} was done", listFiles[i]));
+                        _synContext.Post(OnParseLog, logInfo);
+                    }
+                    catch (Exception err)
+                    {
+                        logInfo = new LogInfoEventArgs(
+                                   ParserID,
+                                   EnumLogFile.UNKNOWN,
+                                   LogProcessStatus.SUCCESS,
+                                   "Parse()",
+                                   String.Format("Error occurred on file {0}==>{1}\r\n{2}", listFiles[i], err.Message, err.StackTrace));
+                        _synContext.Post(OnParseLog, logInfo);
+                    }
+                }
+
+               
+                _finish = true;
+                
+                //LogInfoEventArgs logInfo2 = new LogInfoEventArgs(
+                //                   ParserID,
+                //                   EnumLogFile.UNKNOWN,
+                //                   LogProcessStatus.SUCCESS,
+                //                   "Parse()",
+                //                   "Consolidating log files...");
+                //_synContext.Post(OnParseLog, logInfo2);
+                //try
+                //{
+                //    //DumpData();
+
+                //    //if (!_exitDump.IsSet)
+                //    //    _exitDump.Wait();
+                //}
+                //catch { }
+
+                LogInfoEventArgs logInfo2 = new LogInfoEventArgs(
+                                   ParserID,
+                                   EnumLogFile.UNKNOWN,
+                                   LogProcessStatus.SUCCESS,
+                                   "Parse()",
+                                   "Consolidated log file was done");
+                _synContext.Post(OnParseLog, logInfo2);               
+
+                Thread.Sleep(100);
+                success = true;
+
+            }
+            catch (AggregateException err)
+            {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
+                #region Handle Exception
+                LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                   ParserID,
+                   EnumLogFile.UNKNOWN,
+                   LogProcessStatus.SUCCESS,
+                   "Parse()",
+                   String.Format("Internal Error: {0}", err.Message));
+                _synContext.Post(OnParseLog, logInfo);
+                logInfo = new LogInfoEventArgs(
+                       ParserID,
+                       EnumLogFile.UNKNOWN,
+                       LogProcessStatus.SUCCESS,
+                       "Parse()",
+                       String.Format("Source Internal Error: {0}", err.Source));
+                _synContext.Post(OnParseLog, logInfo);
+                logInfo = new LogInfoEventArgs(
+                       ParserID,
+                       EnumLogFile.UNKNOWN,
+                       LogProcessStatus.SUCCESS,
+                       "Parse()",
+                       String.Format("Detail Internal Error: {0}", err.StackTrace));
+                _synContext.Post(OnParseLog, logInfo);
+                logInfo = new LogInfoEventArgs(
+                       ParserID,
+                       EnumLogFile.UNKNOWN,
+                       LogProcessStatus.SUCCESS,
+                       "Parse()",
+                       String.Format("Internal Exception Error: {0}", err.InnerException.Message));
+                _synContext.Post(OnParseLog, logInfo);
+
+                #endregion
+
+            }
+            catch (Exception err)
+            {
+                Logger.Write(err.Message);
+                Logger.Write(err.StackTrace);
+
+                #region Handle Exception
+                LogInfoEventArgs logInfo = new LogInfoEventArgs(
+                   ParserID,
+                   EnumLogFile.UNKNOWN,
+                   LogProcessStatus.SUCCESS,
+                   "Parse()",
+                   String.Format("Internal Error: {0}", err.Message));
+                _synContext.Post(OnParseLog, logInfo);
+                logInfo = new LogInfoEventArgs(
+                       ParserID,
+                       EnumLogFile.UNKNOWN,
+                       LogProcessStatus.SUCCESS,
+                       "Parse()",
+                       String.Format("Source Internal Error: {0}", err.Source));
+                _synContext.Post(OnParseLog, logInfo);
+                logInfo = new LogInfoEventArgs(
+                       ParserID,
+                       EnumLogFile.UNKNOWN,
+                       LogProcessStatus.SUCCESS,
+                       "Parse()",
+                       String.Format("Detail Internal Error: {0}", err.StackTrace));
+                _synContext.Post(OnParseLog, logInfo);
+
+                #endregion
+
+            }
+            return success;
+        }
+
         private void ExitDumpThread()
         {
             if (_dataQueue != null)
@@ -304,7 +457,8 @@ namespace Indihiang.Cores
                                 }
                             }
 
-                        }    
+                        }
+                        Debug.WriteLine("PerformDump..");
                         PerformDump(listDump);
                         listDump.Clear();
                     }
@@ -316,16 +470,16 @@ namespace Indihiang.Cores
                     Logger.Write(err.Message);
                     Logger.Write(err.StackTrace);
 
-                    Debug.WriteLine(err.Message);
+                    Debug.WriteLine("DumpData()::" + err.Message);
                 }
             }
             if (!_dumpLogQueue.IsEmpty)
             {
-                Debug.WriteLine(string.Format("Total remain data: {0}",_dumpLogQueue.Count));
+                Debug.WriteLine(string.Format("Total remain data: {0}", _dumpLogQueue.Count));
                 List<Indihiang.DomainObject.DumpData>[] list = _dumpLogQueue.ToArray();
                 for (int i = 0; i < list.Length; i++)
                 {
-                    Debug.WriteLine(string.Format("Dump data: {0}:{1}", i+1,_dumpLogQueue.Count));
+                    Debug.WriteLine(string.Format("Dump data: {0}:{1}", i + 1, _dumpLogQueue.Count));
 
                     for (int j = 0; j < list[i].Count; j++)
                     {
@@ -354,15 +508,66 @@ namespace Indihiang.Cores
                                 list[i][j] = obj;
                             }
                         }
-                        
-                    }                        
+
+                    }
                     PerformDump(list[i]);
                     list[i].Clear();
-                }                
+                }
             }
             cacheIpCountry.Clear();
             listIpCountry.Clear();
+            _allDone = true;
             _exitDump.Set();
+        }
+
+        private void DumpPartial(List<Indihiang.DomainObject.IPCountry> listIpCountry, Dictionary<string, string> cacheIpCountry)
+        {                        
+            if (!_dumpLogQueue.IsEmpty)
+            {
+                Debug.WriteLine(string.Format("Total dumo data: {0}", _dumpLogQueue.Count));
+                List<Indihiang.DomainObject.DumpData>[] list = _dumpLogQueue.ToArray();
+                for (int i = 0; i < list.Length; i++)
+                {
+                    Debug.WriteLine(string.Format("Dump data: {0}:{1}", i + 1, _dumpLogQueue.Count));
+
+                    for (int j = 0; j < list[i].Count; j++)
+                    {
+                        if (!string.IsNullOrEmpty(list[i][j].Client_IP))
+                        {
+                            if (!cacheIpCountry.ContainsKey(list[i][j].Client_IP))
+                            {
+                                double ip = IndihiangHelper.IPAddressToNumber(list[i][j].Client_IP);
+                                for (int k = 0; k < listIpCountry.Count; k++)
+                                {
+                                    if (ip >= listIpCountry[k].IpStart && ip <= listIpCountry[k].IpEnd)
+                                    {
+                                        Indihiang.DomainObject.DumpData obj = list[i][j];
+                                        obj.IPClientCountry = listIpCountry[k].CoutryName;
+                                        list[i][j] = obj;
+
+                                        cacheIpCountry.Add(list[i][j].Client_IP, listIpCountry[k].CoutryName);
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Indihiang.DomainObject.DumpData obj = list[i][j];
+                                obj.IPClientCountry = cacheIpCountry[list[i][j].Client_IP];
+                                list[i][j] = obj;
+                            }
+                        }
+
+                    }
+                    PerformDump(list[i]);
+                    list[i].Clear();
+                }
+            }
+            cacheIpCountry.Clear();
+            listIpCountry.Clear();
+            _allDone = true;
+            
+        
         }
 
         private void PerformDump(List<Indihiang.DomainObject.DumpData> listDump)

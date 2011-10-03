@@ -43,7 +43,7 @@ namespace Indihiang.Cores
         }
         public static string GetIPCountryDb()
         {
-            string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             return String.Format("{0}\\Media\\ipcountry.db", path);
         }
         public static string GetIndihiangFile(string year,string guid)
@@ -51,7 +51,7 @@ namespace Indihiang.Cores
             if (string.IsNullOrEmpty(year))
                 return string.Empty;
 
-            string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             return String.Format("{0}\\Data\\{1}\\log{2}.dat", path, guid, year);
         }
         public static List<string> GetIndihiangFileList(string guid)
@@ -64,9 +64,10 @@ namespace Indihiang.Cores
             }
             else
             {
-                string dir = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                string dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 string path = String.Format("{0}\\Data\\{1}\\", dir, guid);
-                list = new List<string>(Directory.GetFiles(path, "*.dat"));
+                if(Directory.Exists(path))
+                    list = new List<string>(Directory.GetFiles(path, "*.dat"));
             }
 
             return list;
@@ -79,7 +80,7 @@ namespace Indihiang.Cores
             if (!Directory.Exists(Path.GetDirectoryName(file)))
                 Directory.CreateDirectory(Path.GetDirectoryName(file));
 
-            string dir = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            string dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string sourceFile = String.Format("{0}\\Media\\dump_indihiang.dat", dir);
             try
             {

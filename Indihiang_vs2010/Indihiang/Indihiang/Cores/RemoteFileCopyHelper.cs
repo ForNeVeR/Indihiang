@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Reflection;
 
 using Indihiang.DomainObject;
 namespace Indihiang.Cores
@@ -53,7 +54,7 @@ namespace Indihiang.Cores
                     if (!iisInfo.LocalComputer)
                         pathSource = iisInfo.LogPath.Replace(":", "$");
 
-                    string dir = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                    string dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                     string pathDest = String.Format("{0}\\Temp\\{1}{2}\\", dir, iisInfo.RemoteServer, iisInfo.Id);
 
                     wid_admin = new WindowsIdentity(admin_token);
@@ -93,7 +94,7 @@ namespace Indihiang.Cores
 
         private static void ConfigureDestinationPath(IISInfo iisInfo)
         {
-            string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (!Directory.Exists(String.Format("{0}\\Temp\\", path)))
                 Directory.CreateDirectory(String.Format("{0}\\Temp\\", path));
 
