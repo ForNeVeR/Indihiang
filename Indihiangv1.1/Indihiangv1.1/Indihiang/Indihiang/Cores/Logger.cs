@@ -1,13 +1,13 @@
 using System;
 using System.IO;
-
+using System.Reflection;
 namespace Indihiang.Cores
 {
     public class Logger
     {
         public static void Write(string message)
         {
-            string path = string.Format("{0}\\Indihiang\\Log\\", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            string path = string.Format("{0}\\Log\\", Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
