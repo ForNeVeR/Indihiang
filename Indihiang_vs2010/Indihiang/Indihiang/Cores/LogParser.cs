@@ -5,6 +5,7 @@ using System.Threading;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Reflection;
 
 using Indihiang.DomainObject;
 namespace Indihiang.Cores
@@ -162,8 +163,10 @@ namespace Indihiang.Cores
                 _logFilePath = Path.GetDirectoryName(_fileName);
             else
             {
-                string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 _logFilePath = String.Format("{0}\\Data\\{1}\\", path, LogParserId.ToString());
+                if (!Directory.Exists(Path.GetDirectoryName(_logFilePath)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(_logFilePath));
             }
 
             //_finish = false;
@@ -282,7 +285,7 @@ namespace Indihiang.Cores
             if (!_iisInfo.LocalComputer)
             {
                 RemoteFileCopyHelper.CopyRemoteFiles(_iisInfo);
-                string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 sourceFiles = String.Format("{0}\\Temp\\{1}{2}\\", path, _iisInfo.RemoteServer, _iisInfo.Id);
             }
             else

@@ -574,7 +574,10 @@ namespace Indihiang.Forms
             if (selected != null)
             {
                 if (selected.Tag == null)
+                {
+                    MessageBox.Show("Choice log data that you want to export", "Information");
                     return;
+                }
                 string key = (string)selected.Tag;
                 if (key.StartsWith("$$") || key.StartsWith("!!"))
                     key = key.Substring(2);
