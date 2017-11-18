@@ -43,7 +43,7 @@ namespace Indihiang.Forms
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            string path = string.Format("{0}\\Indihiang\\",Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string dir = string.Format("{0}\\temp\\", path);
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
