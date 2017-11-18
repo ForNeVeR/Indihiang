@@ -1,4 +1,4 @@
-Indihiang
+Indihiang [![Build status][badge-appveyor]][build-appveyor]
 =========
 
 Indihiang Project is a web log analyzing tool. The tool analyzes IIS and Apache
@@ -18,3 +18,7 @@ Project Features
 ![Indihiang 1.0 Application][screenshot]
 
 [screenshot]: docs/back.png
+
+[build-appveyor]: https://ci.appveyor.com/project/ForNeVeR/indihiang/branch/master
+
+[badge-appveyor]: https://ci.appveyor.com/api/projects/status/r994nbs4tb71ivf8/branch/master?svg=true
