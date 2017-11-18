@@ -789,7 +789,13 @@ namespace Indihiang.Forms
             }
         }
         [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);                                              
+        private static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref TCHITTESTINFO lParam);
+
+		private void findCountryForIPAddressesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			findCountryForIPAddressesToolStripMenuItem.Checked = !findCountryForIPAddressesToolStripMenuItem.Checked;
+			Indihiang.Properties.Settings.Default.FindCountries = !Indihiang.Properties.Settings.Default.FindCountries;
+		}
         
         ///////////////////////////////////////////////////
     }
