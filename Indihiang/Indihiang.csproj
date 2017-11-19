@@ -137,18 +137,25 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.SQLite, Version=1.0.74.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>ThirdParty\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.106.0\lib\net40\System.Data.SQLite.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.Linq, Version=1.0.74.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>ThirdParty\System.Data.SQLite.Linq.dll</HintPath>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.106.0\lib\net40\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.106.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml.Linq">
@@ -381,6 +388,7 @@
     </Compile>
     <None Include="App.config" />
     <None Include="IndihiangClassDiagram.cd" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -670,12 +678,6 @@
     <Content Include="Images\weblog.ico" />
     <Content Include="Images\webserver.ico" />
     <Content Include="indhiang.ico" />
-    <Content Include="ThirdParty\SQLite.Interop.dll" />
-    <Content Include="ThirdParty\System.Data.SQLite.dll" />
-    <Content Include="ThirdParty\System.Data.SQLite.Linq.dll" />
-    <Content Include="ThirdParty\x64\SQLite.Interop.dll" />
-    <Content Include="ThirdParty\x64\System.Data.SQLite.dll" />
-    <Content Include="ThirdParty\x64\System.Data.SQLite.Linq.dll" />
     <Content Include="ThirdParty\ZedGraph.dll" />
     <None Include="Data\dump_indihiang.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -702,6 +704,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.106.0\build\net40\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.106.0\build\net40\System.Data.SQLite.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
