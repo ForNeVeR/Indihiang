@@ -1,6 +1,7 @@
-
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indihiang", "Indihiang\Indihiang.csproj", "{C0C487B2-AB24-474A-AAEB-AA09C632EAD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indihiang.Web", "Indihiang.Web\Indihiang.Web.csproj", "{B2E76C2B-982A-4198-96E7-3F01669CBDF4}"
@@ -48,5 +49,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {97C648C1-0511-4B8F-B871-F1322B16A1C4}
 	EndGlobalSection
 EndGlobal
