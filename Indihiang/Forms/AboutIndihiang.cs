@@ -14,7 +14,7 @@ namespace Indihiang.Forms
             labelVersion.Text = String.Format("Version {0}", FileVersion);
             labelAssemblyVersion.Text = String.Format("Assembly Version {0}", AssemblyVersion);
             labelCopyright.Text = AssemblyCopyright;
-            labelCompanyName.Text = AssemblyCompany;            
+            labelCompanyName.Text = AssemblyCompany;
         }
 
         #region Assembly Attribute Accessors

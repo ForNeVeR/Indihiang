@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Indhiang")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Indihiang - http://www.indihiang.com")]
+[assembly: AssemblyCompany("Indihiang, http://www.indihiang.com; Indihiang contributors")]
 [assembly: AssemblyProduct("Indihiang")]
-[assembly: AssemblyCopyright("Copyright © Agus Kurniawan 2009-2011. http://www.aguskurniawan.net")]
+[assembly: AssemblyCopyright("Copyright © Agus Kurniawan 2009—2011, http://www.aguskurniawan.net; Indihiang contributors, 2011—2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
