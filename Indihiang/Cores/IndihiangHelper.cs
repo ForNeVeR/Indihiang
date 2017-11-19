@@ -27,7 +27,7 @@ namespace Indihiang.Cores
                 string tmp = listFile;
                 if (tmp.StartsWith("--") || tmp.StartsWith("$$"))
                     tmp = tmp.Substring(2);
-                
+
                 string[] files = tmp.Split(new char[] { ';' });
 
                 if (files != null)
@@ -82,7 +82,7 @@ namespace Indihiang.Cores
                 Directory.CreateDirectory(Path.GetDirectoryName(file));
 
             string dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string sourceFile = String.Format("{0}\\Media\\dump_indihiang.dat", dir);
+            string sourceFile = String.Format("{0}\\Data\\dump_indihiang.dat", dir);
             try
             {
                 File.Copy(sourceFile, file);
@@ -126,7 +126,7 @@ namespace Indihiang.Cores
                 Indihiang.DomainObject.Indihiang obj = new Indihiang.DomainObject.Indihiang();
                 obj.Sys_Item = "indihiang_version";
                 obj.Sys_Value = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                helper.InsertIndihiang(obj);                
+                helper.InsertIndihiang(obj);
 
                 obj = new Indihiang.DomainObject.Indihiang();
                 obj.Sys_Item = "dotnet_version";
@@ -166,7 +166,7 @@ namespace Indihiang.Cores
             }
             catch (Exception) { }
         }
-      
+
 
         public static string GetMonth(int month)
         {
@@ -280,7 +280,7 @@ namespace Indihiang.Cores
                 i = 3;
                 s = s / 3600000;
             }
-             
+
             return string.Format(format[i], s.ToString("#.##"));
         }
 
@@ -313,7 +313,7 @@ namespace Indihiang.Cores
             if (line.Contains("Opera"))
                 return "Opera ";
             if (line.Contains("Netscape") || line.Contains("Navigator"))
-                return "Netscape ";            
+                return "Netscape ";
 
             System.Diagnostics.Debug.WriteLine(line);
             return "Unknown";
@@ -321,7 +321,7 @@ namespace Indihiang.Cores
 
         public static string GetRefererClass(string line)
         {
-            
+
             if (string.IsNullOrEmpty(line) || line == "-")
                 return "Direct Traffic";
 

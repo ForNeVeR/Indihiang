@@ -677,7 +677,9 @@
     <Content Include="ThirdParty\x64\System.Data.SQLite.dll" />
     <Content Include="ThirdParty\x64\System.Data.SQLite.Linq.dll" />
     <Content Include="ThirdParty\ZedGraph.dll" />
-    <None Include="Data\dump_indihiang.dat" />
+    <None Include="Data\dump_indihiang.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\log.indihiang" />
     <None Include="Data\source.indihiang" />
     <None Include="Resources\main2.jpg" />
