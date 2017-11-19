@@ -1,2 +1,15 @@
-before_build:
-    - nuget restore
+before_build: nuget restore
+configuration: Release
+artifacts:
+    - path: Indihiang/bin/$(configuration)
+      name: Binaries
+      type: zip
+
+deploy:
+    provider: GitHub
+    auth_token:
+        secure: ohhpsagvov/EMHRPK9VO/DE0VoB8VKgGqgilK8dDCRaS5KJdEPIUl0NpPuCFajlK
+    artifact: Binaries
+    on:
+        appveyor_repo_tag: true
+        configuration: Release
